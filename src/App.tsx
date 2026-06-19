@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   // 楽曲の状態
@@ -10,14 +10,20 @@ function App() {
   // 重複選曲を許すかどうかの状態
   const [canSelectTwice, setCanSelectTwice] = useState(false);
 
-  // 楽曲群の宣言(とりあえずの動作確認用)
-  const songs = [
-    "Op.I -fear TITΛN-",
-    "MarbleBlue",
-    "Stardust:RAY",
-    "光焔のラテラルアーク",
-    "Selenadia"
-  ];
+  // 楽曲リスト.jsonの読み込み
+  // 状態の用意
+  const [songs, setSongs] = useState<string[]>([]);
+  useEffect(() => {
+    fetch("/songs.json")
+    // jsonとして解釈
+    .then(Response => Response.json())
+    // 状態に保存
+    .then(data => {
+      setSongs(data);
+    });
+  }, []);
+  // ログの出力
+  console.log(songs);
 
   // 抽選可能楽曲の状態
   const availableSongs = canSelectTwice ? songs
@@ -34,10 +40,7 @@ function App() {
     const selectedSong = availableSongs[randomIndex];
     setSong(selectedSong);
     // 抽選済み楽曲リストに追加
-    setSelectedSongs([
-      ...selectedSongs,
-      selectedSong
-    ]);
+    setSelectedSongs(prev => [...prev, selectedSong]);
   };
 
   return (
@@ -55,6 +58,13 @@ function App() {
     <p>{song}</p>
     <button onClick={selectSong}>
       選曲！
+    </button>
+    <p></p>
+    <button onClick={() => {
+      setSong("なし");
+      setSelectedSongs([]);
+    }}>
+      選曲済み楽曲をリセット
     </button>
   </div>
   );
