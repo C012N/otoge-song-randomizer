@@ -1,98 +1,98 @@
 [
     {
-        "round": "先鋒",
+        "name": "先鋒",
         "songs": [
             {
                 "title": "songA",
                 "difficulty": "MASTER",
                 "level": "13",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songB",
                 "difficulty": "MASTER",
                 "level": "13",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songC",
                 "difficulty": "MASTER",
                 "level": "13",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             }
         ]
     },
     {
-        "round": "次鋒",
+        "name": "次鋒",
         "songs": [
             {
                 "title": "songA",
                 "difficulty": "MASTER",
                 "level": "13+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songB",
                 "difficulty": "MASTER",
                 "level": "13+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songC",
                 "difficulty": "MASTER",
                 "level": "13+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             }
         ]
     },
     {
-        "round": "中堅",
+        "name": "中堅",
         "songs": [
             {
                 "title": "songA",
                 "difficulty": "MASTER",
                 "level": "14",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songB",
                 "difficulty": "MASTER",
                 "level": "14",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songC",
                 "difficulty": "MASTER",
                 "level": "14",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             }
         ]
     },
     {
-        "round": "副将",
+        "name": "副将",
         "songs": [
             {
                 "title": "songA",
                 "difficulty": "MASTER",
                 "level": "14+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songB",
                 "difficulty": "MASTER",
                 "level": "14+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             },
             {
                 "title": "songC",
                 "difficulty": "MASTER",
                 "level": "14+",
-                "jacket": "/dummy.png"
+                "jacket": "/jackets/dummy.png"
             }
         ]
     },
     {
-        "round": "大将",
+        "name": "大将",
         "songs": [
             {
                 "title": "Op.I《fear-TITΛN-》",

@@ -8,6 +8,12 @@ type Song = {
   jacket: string;
 };
 
+// ラウンドの型
+type Round = {
+  name: string;
+  songs: Song[];
+};
+
 // 抽選状態の型
 type SelectState =
   | "not_started"
@@ -16,44 +22,52 @@ type SelectState =
   | "finished";
 
 function App() {
-  // 楽曲の状態
+  // "楽曲"を表す
   const [song, setSong] = useState<Song | null>(null);
-
-  // 選曲済み楽曲リストの状態
-  const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
-
-  // 重複選曲を許すかどうかの状態
-  const [canSelectTwice, setCanSelectTwice] = useState(false);
-
-  // 楽曲リスト.jsonの読み込み
-  // 状態の用意
-  const [songs, setSongs] = useState<Song[]>([]);
-  useEffect(() => {
-    fetch("/songs.json")
-    // jsonとして解釈
-    .then(Response => Response.json())
-    // 状態に保存
-    .then(data => {
-      setSongs(data);
-    });
-  }, []);
-  // ログの出力
-  console.log(songs);
-
-  // 抽選可能楽曲の状態
-  const availableSongs = canSelectTwice ? songs
-  : songs.filter(song => !selectedSongs.some(
-    selected => selected.title === song.title));
-
-  // 抽選状態
+  // "試合全体"を表す
+  const [tournament, setTournament] = useState<Round[]>([]);
+  // "今の試合"を表す
+  const [currentRound, setCurrentRound] = useState(0);
+  // "サイトの状態"を表す
   const [selectState, setSelectState] = useState<SelectState>("not_started");
-
-  // 演出用、直前に選ばれた楽曲の状態
+  // 再抽選防止用: 抽選済み楽曲リスト
+  const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
+  // 再抽選防止の切り換え用: 再抽選を許可するかどうか
+  const [canSelectTwice, setCanSelectTwice] = useState(false);
+  // 抽選演出用: 直近の抽選楽曲
   const previousSong = useRef<Song | null>(null);
 
+  // jsonの読み込み
+  useEffect(() => {
+    fetch("/taikai.json")
+      // jsonとして解釈
+      .then(response => response.json())
+      // 状態に保存
+      .then(data => {
+        setTournament(data);
+      });
+  }, []);
+  // 書き込み中の処理
+  if (tournament.length === 0) {
+    return <p>大会データ読み込み中...</p>
+  }
+  // 各データの取得
+  const currentRoundData = tournament[currentRound];
+  const currentSongs = currentRoundData.songs;
+  // デバッグ用: ログの出力
+  // console.log(tournament);
+  // console.log(currentRound);
+  // console.log(currentRoundData);
+  // console.log(currentSongs);
+
+  // 抽選可能楽曲
+  const availableSongs = canSelectTwice ? currentSongs
+    : currentSongs.filter(song => !selectedSongs.some(
+      selected => selected.title === song.title));
 
   // 抽選する関数
   const selectSong = () => {
+    previousSong.current = null;
     if (availableSongs.length === 0) {
       setSong(null);
       // 状態の更新
@@ -63,7 +77,6 @@ function App() {
     // ランダムにインデックスを抽選して選曲しておく
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const selectedSong = availableSongs[randomIndex];
-    setSong(selectedSong);
     // 状態の更新
     setSelectState("spinning");
     // 選曲演出
@@ -75,8 +88,8 @@ function App() {
       40, 40, 40, 40, 40, 40,
       80, 80, 80, 80, 80, 80,
       80, 80, 80, 80, 80, 80,
-      160,160,160,160,160,160,
-      320,320,320,
+      160, 160, 160, 160, 160, 160,
+      320, 320, 320,
       640];
     const spin = (step: number) => {
       if (step >= delays.length) {
@@ -115,6 +128,7 @@ function App() {
     jacket: "/jackets/dummy.png"
   }
 
+  // 楽曲の描画
   let displayByState;
   if (selectState === "not_started") {
     displayByState = (
@@ -158,35 +172,94 @@ function App() {
     );
   }
 
-  return (
-  <div>
-    <h1>Otoge Song Randomizer</h1>
-    <label>
-      <input
-        type="checkbox"
-        checked={canSelectTwice}
-        onChange={(e) => setCanSelectTwice(e.target.checked)}
-      />
-      一度出た楽曲も選曲する
-    </label>
-    <p>現在の曲：</p>
-    {displayByState}
-    <button
-      onClick={selectSong}
-      disabled={selectState === "spinning"}
-    >
-      選曲！
-    </button>
-    <p></p>
-    <button onClick={() => {
-      setSong(null);
-      setSelectedSongs([]);
+  // 試合の進行
+  const previousRound = () => {
+    if (currentRound === 0) {
       setSelectState("not_started");
-    }}
-    disabled={selectState === "spinning"}>
-      選曲済み楽曲をリセット
-    </button>
-  </div>
+      return;
+    }
+    setCurrentRound(prev => prev - 1);
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  }
+  const nextRound = () => {
+    if (currentRound >= tournament.length - 1) {
+      setSelectState("finished");
+      return;
+    }
+    setCurrentRound(prev => prev + 1);
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  };
+
+  // 試合全体のリセット
+  const resetTournament = () => {
+    setCurrentRound(0);
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  };
+
+  return (
+    <div>
+      <h1>Otoge Song Randomizer</h1>
+
+      <button
+        onClick={previousRound}
+        disabled={currentRound === 0}
+      >
+        前の試合へ
+      </button>
+
+      <button
+        onClick={selectSong}
+        disabled={selectState === "spinning"}
+      >
+        選曲！
+      </button>
+
+      <button
+        onClick={nextRound}
+        disabled={currentRound === tournament.length - 1}>
+        次の試合へ
+      </button>
+
+
+      <p>現在の試合: {currentRoundData.name}</p>
+
+      <p>現在の曲：</p>
+      {displayByState}
+
+      <button onClick={() => {
+        setSong(null);
+        setSelectedSongs([]);
+        setSelectState("not_started");
+      }}
+        disabled={selectState === "spinning"}>
+        この試合をリセット
+      </button>
+      <p></p>
+      <button
+        onClick={resetTournament}
+        disabled={selectState === "spinning"}
+      >
+        大会全体をリセット
+      </button>
+      <p></p>
+      <label>
+        <input
+          type="checkbox"
+          checked={canSelectTwice}
+          onChange={(e) => setCanSelectTwice(e.target.checked)}
+        />
+        一度出た楽曲も選曲する
+      </label>
+    </div>
   );
 }
 
