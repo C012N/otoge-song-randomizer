@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // 楽曲の型
 type Song = {
@@ -11,7 +11,8 @@ type Song = {
 // 抽選状態の型
 type SelectState =
   | "not_started"
-  | "selecting"
+  | "spinning"
+  | "displaying"
   | "finished";
 
 function App() {
@@ -47,6 +48,10 @@ function App() {
   // 抽選状態
   const [selectState, setSelectState] = useState<SelectState>("not_started");
 
+  // 演出用、直前に選ばれた楽曲の状態
+  const previousSong = useRef<Song | null>(null);
+
+
   // 抽選する関数
   const selectSong = () => {
     if (availableSongs.length === 0) {
@@ -55,14 +60,51 @@ function App() {
       setSelectState("finished");
       return;
     }
-    // ランダムにインデックスを抽選して選曲
+    // ランダムにインデックスを抽選して選曲しておく
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const selectedSong = availableSongs[randomIndex];
     setSong(selectedSong);
     // 状態の更新
-    setSelectState("selecting");
-    // 抽選済み楽曲リストに追加
-    setSelectedSongs(prev => [...prev, selectedSong]);
+    setSelectState("spinning");
+    // 選曲演出
+    // availableSongsから減速しつつランダム選曲しまくる
+    const delays = [
+      40, 40, 40, 40, 40, 40,
+      40, 40, 40, 40, 40, 40,
+      40, 40, 40, 40, 40, 40,
+      40, 40, 40, 40, 40, 40,
+      80, 80, 80, 80, 80, 80,
+      80, 80, 80, 80, 80, 80,
+      160,160,160,160,160,160,
+      320,320,320,
+      640];
+    const spin = (step: number) => {
+      if (step >= delays.length) {
+        return;
+      }
+      let tempRandomSong: Song;
+      let tempRandomIndex: number;
+      do {
+        tempRandomIndex = Math.floor(Math.random() * availableSongs.length);
+        tempRandomSong = availableSongs[tempRandomIndex];
+      } while (
+        availableSongs.length > 1 &&
+        previousSong.current?.title === tempRandomSong.title
+      );
+      previousSong.current = tempRandomSong;
+      setSong(tempRandomSong);
+      setTimeout(() => {
+        spin(step + 1);
+      }, delays[step]);
+    };
+    spin(0);
+    // 演出終わり
+    const totalDelay = delays.reduce((sum, delay) => sum + delay, 0);
+    setTimeout(() => {
+      setSong(selectedSong);
+      setSelectedSongs(prev => [...prev, selectedSong]);
+      setSelectState("displaying");
+    }, totalDelay);
   };
 
   // null値も自然に描画するための処理
@@ -129,7 +171,10 @@ function App() {
     </label>
     <p>現在の曲：</p>
     {displayByState}
-    <button onClick={selectSong}>
+    <button
+      onClick={selectSong}
+      disabled={selectState === "spinning"}
+    >
       選曲！
     </button>
     <p></p>
@@ -137,7 +182,8 @@ function App() {
       setSong(null);
       setSelectedSongs([]);
       setSelectState("not_started");
-    }}>
+    }}
+    disabled={selectState === "spinning"}>
       選曲済み楽曲をリセット
     </button>
   </div>
