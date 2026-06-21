@@ -1,0 +1,86 @@
+{
+    "name": "Tournament Example",
+    "rounds": [
+        {
+            "name": "先鋒戦",
+            "players": [
+                "playerA",
+                "playerB"
+            ],
+            "songs": [
+                {
+                    "title": "songA",
+                    "difficulty": "MASTER",
+                    "level": "13+",
+                    "jacket": "songA.jpg"
+                },
+                {
+                    "title": "songB",
+                    "difficulty": "MASTER",
+                    "level": "13+",
+                    "jacket": "songB.jpg"
+                },
+                {
+                    "title": "songC",
+                    "difficulty": "MASTER",
+                    "level": "13+",
+                    "jacket": "songC.jpg"
+                }
+            ]
+        },
+        {
+            "name": "中堅戦",
+            "players": [
+                "playerC",
+                "playerD"
+            ],
+            "songs": [
+                {
+                    "title": "songA",
+                    "difficulty": "MASTER",
+                    "level": "14",
+                    "jacket": "songA.jpg"
+                },
+                {
+                    "title": "songB",
+                    "difficulty": "MASTER",
+                    "level": "14",
+                    "jacket": "songB.jpg"
+                },
+                {
+                    "title": "songC",
+                    "difficulty": "MASTER",
+                    "level": "14",
+                    "jacket": "songC.jpg"
+                }
+            ]
+        },
+        {
+            "name": "大将戦",
+            "players": [
+                "playerE",
+                "playerF"
+            ],
+            "songs": [
+                {
+                    "title": "songA",
+                    "difficulty": "MASTER",
+                    "level": "15",
+                    "jacket": "songA.jpg"
+                },
+                {
+                    "title": "songB",
+                    "difficulty": "MASTER",
+                    "level": "15",
+                    "jacket": "songB.jpg"
+                },
+                {
+                    "title": "songC",
+                    "difficulty": "MASTER",
+                    "level": "15",
+                    "jacket": "songC.jpg"
+                }
+            ]
+        }
+    ]
+}

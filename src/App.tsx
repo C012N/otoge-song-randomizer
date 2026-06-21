@@ -8,10 +8,17 @@ type Song = {
   jacket: string;
 };
 
-// ラウンドの型
+// 試合の型
 type Round = {
   name: string;
+  players: string[];
   songs: Song[];
+};
+
+// 大会全体の型
+type Tournament = {
+  name: string;
+  rounds: Round[];
 };
 
 // 抽選状態の型
@@ -22,47 +29,36 @@ type SelectState =
   | "finished";
 
 function App() {
-  // "楽曲"を表す
+  // 大会データ
+  const [tournament, setTournament] = useState<Tournament | null>(null);
+  // ジャケット画像データ: ファイル名->URLのmap
+  const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
+  // 進行状況: 整数値で管理
+  const [numCurrentRound, setNumCurrentRound] = useState(0);
+  // 表示中の楽曲
   const [song, setSong] = useState<Song | null>(null);
-  // "試合全体"を表す
-  const [tournament, setTournament] = useState<Round[]>([]);
-  // "今の試合"を表す
-  const [currentRound, setCurrentRound] = useState(0);
-  // "サイトの状態"を表す
+  // 抽選状態
   const [selectState, setSelectState] = useState<SelectState>("not_started");
-  // 再抽選防止用: 抽選済み楽曲リスト
+  // 重複防止用: 抽選済み楽曲リスト
   const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
-  // 再抽選防止の切り換え用: 再抽選を許可するかどうか
+  // 重複防止用: オプション
   const [canSelectTwice, setCanSelectTwice] = useState(false);
   // 抽選演出用: 直近の抽選楽曲
   const previousSong = useRef<Song | null>(null);
 
-  /*
-  // jsonの読み込み
+  // 大会フォルダ読み込み用
+  const folderInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    fetch("/taikai.json")
-      // jsonとして解釈
-      .then(response => response.json())
-      // 状態に保存
-      .then(data => {
-        setTournament(data);
-      });
+    if (folderInputRef.current) {
+      folderInputRef.current.setAttribute(
+        "webkitdirectory",
+        ""
+      );
+    }
   }, []);
-  // 書き込み中の処理
-  if (tournament.length === 0) {
-    return <p>大会データ読み込み中...</p>
-  }
-  // 各データの取得
-  const currentRoundData = tournament[currentRound];
-  const currentSongs = currentRoundData.songs;
-  */
-  // デバッグ用: ログの出力
-  // console.log(tournament);
-  // console.log(currentRound);
-  // console.log(currentRoundData);
-  // console.log(currentSongs);
 
   // jsonを選択して読み込み
+  /*
   const loadTournament = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -74,7 +70,7 @@ function App() {
       try {
         const data = JSON.parse(e.target?.result as string);
         setTournament(data);
-        setCurrentRound(0);
+        setNumCurrentRound(0);
         setSong(null);
         setSelectedSongs([]);
         setSelectState("not_started");
@@ -85,17 +81,57 @@ function App() {
     };
     reader.readAsText(file);
   }
+  */
+
+  const loadTournament = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
+    let jsonFile: File | null = null;
+    const images = new Map<string, string>();
+    for (const file of Array.from(files)) {
+      if (file.name.endsWith(".json")) {
+        jsonFile = file;
+      }
+      if (file.type.startsWith("image/")) {
+        images.set(
+          file.name,
+          URL.createObjectURL(file)
+        );
+      }
+    }
+    if (!jsonFile) {
+      alert("tournament.json が見つかりません");
+      return;
+    }
+    try {
+      const text = await jsonFile.text();
+      const data: Tournament = JSON.parse(text);
+      setTournament(data);
+      setImageMap(images);
+      setNumCurrentRound(0);
+      setSong(null);
+      setSelectedSongs([]);
+      setSelectState("not_started");
+      previousSong.current = null;
+    } catch {
+      alert("JSONの読み込みに失敗しました");
+    }
+  };
+
   // 読み込み中の処理
-  if (tournament.length === 0) {
+  if (!tournament) {
     return (
       <div>
-        <h1>Ptpge Song Randomizer</h1>
+        <h1>Otoge Song Randomizer</h1>
 
         <p>大会データを選択してください</p>
 
         <input
           type="file"
-          accept=".json"
+          multiple
+          ref={folderInputRef}
           onChange={loadTournament}
         />
       </div>
@@ -103,8 +139,12 @@ function App() {
   }
 
   // 各データの取得
-  const currentRoundData = tournament[currentRound];
-  const currentSongs = currentRoundData.songs;
+  const tournamentName = tournament.name;
+  const allRounds = tournament.rounds;
+  const currentRound = allRounds[numCurrentRound];
+  const currentRoundName = currentRound.name;
+  const currentPlayers = currentRound.players;
+  const currentSongs = currentRound.songs;
 
   // 抽選可能楽曲
   const availableSongs = canSelectTwice ? currentSongs
@@ -171,8 +211,11 @@ function App() {
     title: "???",
     difficulty: "???",
     level: "???",
-    jacket: "/jackets/dummy.png"
+    jacket: "dummy.jpg"
   }
+
+  // プレイヤー名の描画
+  const displayPlayers = (players: string[]) => players.join(" vs ");
 
   // 楽曲の描画
   let displayByState;
@@ -180,7 +223,7 @@ function App() {
     displayByState = (
       <>
         <img
-          src="/jackets/dummy.png"
+          src="dummy.jpg"
           alt="未選曲"
           width={200}
         />
@@ -192,7 +235,7 @@ function App() {
     displayByState = (
       <>
         <img
-          src="/jackets/dummy.png"
+          src="dummy.jpg"
           alt="選曲終了"
           width={200}
         />
@@ -204,7 +247,7 @@ function App() {
     displayByState = (
       <>
         <img
-          src={displaySong.jacket}
+          src={imageMap.get(displaySong.jacket)}
           alt={displaySong.title}
           width={200}
         />
@@ -220,22 +263,22 @@ function App() {
 
   // 試合の進行
   const previousRound = () => {
-    if (currentRound === 0) {
+    if (numCurrentRound === 0) {
       setSelectState("not_started");
       return;
     }
-    setCurrentRound(prev => prev - 1);
+    setNumCurrentRound(prev => prev - 1);
     setSong(null);
     setSelectedSongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   }
   const nextRound = () => {
-    if (currentRound >= tournament.length - 1) {
+    if (numCurrentRound >= allRounds.length - 1) {
       setSelectState("finished");
       return;
     }
-    setCurrentRound(prev => prev + 1);
+    setNumCurrentRound(prev => prev + 1);
     setSong(null);
     setSelectedSongs([]);
     previousSong.current = null;
@@ -244,7 +287,7 @@ function App() {
 
   // 試合全体のリセット
   const resetTournament = () => {
-    setCurrentRound(0);
+    setNumCurrentRound(0);
     setSong(null);
     setSelectedSongs([]);
     previousSong.current = null;
@@ -253,14 +296,9 @@ function App() {
 
   return (
     <div>
-      <h1>Otoge Song Randomizer</h1>
-
-      <button
-        onClick={previousRound}
-        disabled={currentRound === 0}
-      >
-        前の試合へ
-      </button>
+      <h1>{tournamentName}</h1>
+      <h2>現在の試合: {currentRoundName}</h2>
+      <h2>{displayPlayers(currentPlayers)}</h2>
 
       <button
         onClick={selectSong}
@@ -269,17 +307,23 @@ function App() {
         選曲！
       </button>
 
+      <p>現在の曲：</p>
+      {displayByState}
+
+      <button
+        onClick={previousRound}
+        disabled={numCurrentRound === 0}
+      >
+        前の試合へ
+      </button>
+
       <button
         onClick={nextRound}
-        disabled={currentRound === tournament.length - 1}>
+        disabled={numCurrentRound === allRounds.length - 1}>
         次の試合へ
       </button>
 
-
-      <p>現在の試合: {currentRoundData.name}</p>
-
-      <p>現在の曲：</p>
-      {displayByState}
+      <p></p>
 
       <button onClick={() => {
         setSong(null);
