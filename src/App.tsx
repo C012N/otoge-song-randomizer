@@ -31,23 +31,67 @@ type SelectState =
 function App() {
   // 大会データ
   const [tournament, setTournament] = useState<Tournament | null>(null);
+
   // ジャケット画像データ: ファイル名->URLのmap
   const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
+
   // 進行状況: 整数値で管理
   const [numCurrentRound, setNumCurrentRound] = useState(0);
+
   // 表示中の楽曲
   const [song, setSong] = useState<Song | null>(null);
+
   // 抽選状態
   const [selectState, setSelectState] = useState<SelectState>("not_started");
+
   // 重複防止用: 抽選済み楽曲リスト
   const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
+
   // 重複防止用: オプション
   const [canSelectTwice, setCanSelectTwice] = useState(false);
+
   // 抽選演出用: 直近の抽選楽曲
   const previousSong = useRef<Song | null>(null);
 
-  // 大会フォルダ読み込み用
+  // 抽選演出用: 効果音
+  const audioContext = useRef<AudioContext | null>(null);
+  const clickSoundBuffer = useRef<AudioBuffer | null>(null);
+
+  // バッファ生成: クリック音
+  useEffect(() => {
+    const initAudio = async () => {
+      audioContext.current = new AudioContext();
+      const response = await fetch("/click.mp3");
+      const arrayBuffer = await response.arrayBuffer();
+      clickSoundBuffer.current =
+        await audioContext.current.decodeAudioData(arrayBuffer);
+    };
+    initAudio();
+  }, []);
+
+  // 再生: クリック音
+  const playClickSound = () => {
+    if (!audioContext.current || !clickSoundBuffer.current) return;
+    const source = audioContext.current.createBufferSource();
+    source.buffer = clickSoundBuffer.current;
+    source.connect(audioContext.current.destination);
+    source.start();
+  };
+
+  const finishSound = useRef<HTMLAudioElement | null>(null);
+
+  // 生成: 終了音
+  useEffect(() => {
+    finishSound.current = new Audio("finish.mp3");
+    return () => {
+      finishSound.current = null;
+    };
+  }, []);
+
+  // 大会フォルダを受け取って処理
+  // フォルダを受け取る
   const folderInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (folderInputRef.current) {
       folderInputRef.current.setAttribute(
@@ -57,32 +101,7 @@ function App() {
     }
   }, []);
 
-  // jsonを選択して読み込み
-  /*
-  const loadTournament = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const data = JSON.parse(e.target?.result as string);
-        setTournament(data);
-        setNumCurrentRound(0);
-        setSong(null);
-        setSelectedSongs([]);
-        setSelectState("not_started");
-        previousSong.current = null;
-      } catch {
-        alert("JSONの読み込みに失敗しました");
-      }
-    };
-    reader.readAsText(file);
-  }
-  */
-
+  // フォルダを読み込む
   const loadTournament = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -91,6 +110,7 @@ function App() {
     let jsonFile: File | null = null;
     const images = new Map<string, string>();
     for (const file of Array.from(files)) {
+      // 今は1つのjsonを仮定
       if (file.name.endsWith(".json")) {
         jsonFile = file;
       }
@@ -120,7 +140,8 @@ function App() {
     }
   };
 
-  // 読み込み中の処理
+  // useEffect, useRef, useStateはここより前に書く
+  // 読み込み前の画面
   if (!tournament) {
     return (
       <div>
@@ -146,27 +167,31 @@ function App() {
   const currentPlayers = currentRound.players;
   const currentSongs = currentRound.songs;
 
-  // 抽選可能楽曲
+  // 重複不可時: 抽選可能楽曲
   const availableSongs = canSelectTwice ? currentSongs
     : currentSongs.filter(song => !selectedSongs.some(
       selected => selected.title === song.title));
 
-  // 抽選する関数
+  // 抽選
   const selectSong = () => {
+    // 演出用: 直前の選曲を初期化
     previousSong.current = null;
+
+    // 重複不可時: 抽選可能楽曲が無くなったら終了
     if (availableSongs.length === 0) {
       setSong(null);
-      // 状態の更新
       setSelectState("finished");
       return;
     }
-    // ランダムにインデックスを抽選して選曲しておく
+
+    // 演出前に抽選
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const selectedSong = availableSongs[randomIndex];
-    // 状態の更新
+    
     setSelectState("spinning");
-    // 選曲演出
-    // availableSongsから減速しつつランダム選曲しまくる
+
+    // 演出: availableSongsからランダム選曲しまくる
+    // 抽選間隔
     const delays = [
       40, 40, 40, 40, 40, 40,
       40, 40, 40, 40, 40, 40,
@@ -176,13 +201,21 @@ function App() {
       80, 80, 80, 80, 80, 80,
       160, 160, 160, 160, 160, 160,
       320, 320, 320,
-      640];
+      640
+    ];
+
+    // 演出本体
     const spin = (step: number) => {
+      // 終了判定
       if (step >= delays.length) {
         return;
       }
-      let tempRandomSong: Song;
+
+      // 演出のためだけに用意
       let tempRandomIndex: number;
+      let tempRandomSong: Song;
+      
+      // 直前の曲と被らないようにランダム選曲
       do {
         tempRandomIndex = Math.floor(Math.random() * availableSongs.length);
         tempRandomSong = availableSongs[tempRandomIndex];
@@ -190,23 +223,40 @@ function App() {
         availableSongs.length > 1 &&
         previousSong.current?.title === tempRandomSong.title
       );
+
+      // "直前の曲"を更新
       previousSong.current = tempRandomSong;
+
+      // 選んだ楽曲を表示
       setSong(tempRandomSong);
+
+      // クリック音
+      playClickSound();
+
+      // delays[step]ミリ秒待って再帰呼出し
       setTimeout(() => {
         spin(step + 1);
       }, delays[step]);
     };
+
+    // 0ステップ目からスタート
     spin(0);
-    // 演出終わり
+
+    // もともと選んであった曲を演出後に表示
     const totalDelay = delays.reduce((sum, delay) => sum + delay, 0);
     setTimeout(() => {
       setSong(selectedSong);
       setSelectedSongs(prev => [...prev, selectedSong]);
       setSelectState("displaying");
+      // 終了時の効果音
+      if (finishSound.current) {
+        finishSound.current.currentTime = 0;
+        finishSound.current.play();
+      }
     }, totalDelay);
   };
 
-  // null値も自然に描画するための処理
+  // null値も自然に描画
   const displaySong = song ?? {
     title: "???",
     difficulty: "???",
@@ -217,8 +267,9 @@ function App() {
   // プレイヤー名の描画
   const displayPlayers = (players: string[]) => players.join(" vs ");
 
-  // 楽曲の描画
+  // 楽曲の描画を状態ごとに管理
   let displayByState;
+
   if (selectState === "not_started") {
     displayByState = (
       <>
@@ -285,7 +336,15 @@ function App() {
     setSelectState("not_started");
   };
 
-  // 試合全体のリセット
+  // 試合のリセット
+  const resetCurrentRound = () => {
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  }
+
+  // 大会全体のリセット
   const resetTournament = () => {
     setNumCurrentRound(0);
     setSong(null);
@@ -325,11 +384,7 @@ function App() {
 
       <p></p>
 
-      <button onClick={() => {
-        setSong(null);
-        setSelectedSongs([]);
-        setSelectState("not_started");
-      }}
+      <button onClick={resetCurrentRound}
         disabled={selectState === "spinning"}>
         この試合をリセット
       </button>
