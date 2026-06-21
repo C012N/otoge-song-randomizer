@@ -37,6 +37,7 @@ function App() {
   // 抽選演出用: 直近の抽選楽曲
   const previousSong = useRef<Song | null>(null);
 
+  /*
   // jsonの読み込み
   useEffect(() => {
     fetch("/taikai.json")
@@ -54,11 +55,56 @@ function App() {
   // 各データの取得
   const currentRoundData = tournament[currentRound];
   const currentSongs = currentRoundData.songs;
+  */
   // デバッグ用: ログの出力
   // console.log(tournament);
   // console.log(currentRound);
   // console.log(currentRoundData);
   // console.log(currentSongs);
+
+  // jsonを選択して読み込み
+  const loadTournament = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target?.result as string);
+        setTournament(data);
+        setCurrentRound(0);
+        setSong(null);
+        setSelectedSongs([]);
+        setSelectState("not_started");
+        previousSong.current = null;
+      } catch {
+        alert("JSONの読み込みに失敗しました");
+      }
+    };
+    reader.readAsText(file);
+  }
+  // 読み込み中の処理
+  if (tournament.length === 0) {
+    return (
+      <div>
+        <h1>Ptpge Song Randomizer</h1>
+
+        <p>大会データを選択してください</p>
+
+        <input
+          type="file"
+          accept=".json"
+          onChange={loadTournament}
+        />
+      </div>
+    );
+  }
+
+  // 各データの取得
+  const currentRoundData = tournament[currentRound];
+  const currentSongs = currentRoundData.songs;
 
   // 抽選可能楽曲
   const availableSongs = canSelectTwice ? currentSongs
