@@ -1,84 +1,123 @@
 {
     "name": "Tournament Example",
+    "teams": [
+        {
+            "name": "teamA",
+            "members": [
+                {
+                    "name": "playerA",
+                    "selectedSong": {
+                        "title": "songA",
+                        "difficulty": "MASTER",
+                        "level": "13+"
+                    }
+                },
+                {
+                    "name": "playerC",
+                    "selectedSong": {
+                        "title": "songC",
+                        "difficulty": "MASTER",
+                        "level": "14"
+                    }
+                },
+                {
+                    "name": "playerE",
+                    "selectedSong": {
+                        "title": "songE",
+                        "difficulty": "MASTER",
+                        "level": "14+"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "teamB",
+            "members": [
+                {
+                    "name": "playerB",
+                    "selectedSong": {
+                        "title": "songB",
+                        "difficulty": "MASTER",
+                        "level": "13+"
+                    }
+                },
+                {
+                    "name": "playerD",
+                    "selectedSong": {
+                        "title": "songD",
+                        "difficulty": "MASTER",
+                        "level": "14"
+                    }
+                },
+                {
+                    "name": "playerF",
+                    "selectedSong": {
+                        "title": "songF",
+                        "difficulty": "MASTER",
+                        "level": "14+"
+                    }
+                }
+            ]
+        }
+    ],
     "rounds": [
         {
             "name": "先鋒戦",
-            "players": [
-                "playerA",
-                "playerB"
-            ],
             "songs": [
                 {
-                    "title": "songA",
+                    "title": "setSongA",
                     "difficulty": "MASTER",
-                    "level": "13+",
-                    "jacket": "songA.jpg"
+                    "level": "13+"
                 },
                 {
-                    "title": "songB",
+                    "title": "setSongB",
                     "difficulty": "MASTER",
-                    "level": "13+",
-                    "jacket": "songB.jpg"
+                    "level": "13+"
                 },
                 {
-                    "title": "songC",
+                    "title": "setSongC",
                     "difficulty": "MASTER",
-                    "level": "13+",
-                    "jacket": "songC.jpg"
+                    "level": "13+"
                 }
             ]
         },
         {
             "name": "中堅戦",
-            "players": [
-                "playerC",
-                "playerD"
-            ],
             "songs": [
                 {
-                    "title": "songA",
+                    "title": "setSongA",
                     "difficulty": "MASTER",
-                    "level": "14",
-                    "jacket": "songA.jpg"
+                    "level": "14"
                 },
                 {
-                    "title": "songB",
+                    "title": "setSongB",
                     "difficulty": "MASTER",
-                    "level": "14",
-                    "jacket": "songB.jpg"
+                    "level": "14"
                 },
                 {
-                    "title": "songC",
+                    "title": "setSongC",
                     "difficulty": "MASTER",
-                    "level": "14",
-                    "jacket": "songC.jpg"
+                    "level": "14"
                 }
             ]
         },
         {
             "name": "大将戦",
-            "players": [
-                "playerE",
-                "playerF"
-            ],
             "songs": [
                 {
-                    "title": "songA",
+                    "title": "setSongA",
                     "difficulty": "MASTER",
-                    "level": "15",
-                    "jacket": "songA.jpg"
+                    "level": "15"
                 },
                 {
-                    "title": "songB",
+                    "title": "setSongB",
                     "difficulty": "MASTER",
-                    "level": "15",
-                    "jacket": "songB.jpg"
+                    "level": "15"
                 },
                 {
-                    "title": "songC",
+                    "title": "setSongC",
                     "difficulty": "MASTER",
-                    "level": "15",
-                    "jacket": "songC.jpg"
+                    "level": "15"
                 }
             ]
         }

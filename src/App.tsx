@@ -5,19 +5,32 @@ type Song = {
   title: string;
   difficulty: string;
   level: string;
-  jacket: string;
 };
+
+// プレイヤーの型
+type Player = {
+  name: string;
+  selectedSong: Song;
+}
+
+// チームの型
+type Team = {
+  name: string;
+  // アイコンが入るかも
+  members: Player[];
+}
 
 // 試合の型
 type Round = {
   name: string;
-  players: string[];
   songs: Song[];
 };
 
 // 大会全体の型
 type Tournament = {
   name: string;
+  teams: Team[];
+  // バナーやロゴが入るかも
   rounds: Round[];
 };
 
@@ -32,7 +45,7 @@ function App() {
   // 大会データ
   const [tournament, setTournament] = useState<Tournament | null>(null);
 
-  // ジャケット画像データ: ファイル名->URLのmap
+  // 画像データ: ファイル名->URLのmap
   const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
 
   // 進行状況: 整数値で管理
@@ -161,10 +174,12 @@ function App() {
 
   // 各データの取得
   const tournamentName = tournament.name;
+  const teams = tournament.teams;
+  const teamNames = teams.map(team => team.name);
   const allRounds = tournament.rounds;
   const currentRound = allRounds[numCurrentRound];
   const currentRoundName = currentRound.name;
-  const currentPlayers = currentRound.players;
+  const currentPlayers = teams.map(team => team.members[numCurrentRound]);
   const currentSongs = currentRound.songs;
 
   // 重複不可時: 抽選可能楽曲
@@ -187,7 +202,7 @@ function App() {
     // 演出前に抽選
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const selectedSong = availableSongs[randomIndex];
-    
+
     setSelectState("spinning");
 
     // 演出: availableSongsからランダム選曲しまくる
@@ -214,7 +229,7 @@ function App() {
       // 演出のためだけに用意
       let tempRandomIndex: number;
       let tempRandomSong: Song;
-      
+
       // 直前の曲と被らないようにランダム選曲
       do {
         tempRandomIndex = Math.floor(Math.random() * availableSongs.length);
@@ -260,12 +275,35 @@ function App() {
   const displaySong = song ?? {
     title: "???",
     difficulty: "???",
-    level: "???",
-    jacket: "dummy.jpg"
+    level: "???"
+  };
+
+  // チーム名の描画
+  const displayTeams = (teams: Team[]) => {
+    const teamNames = teams.map(team => team.name);
+    return teamNames.join(" vs ");
   }
 
   // プレイヤー名の描画
-  const displayPlayers = (players: string[]) => players.join(" vs ");
+  const displayPlayers = (players: Player[]) => {
+    const playerNames = players.map(player => player.name);
+    return playerNames.join(" vs ");
+  };
+
+  // 自選曲の描画
+  const displaySelectedSongs = (players: Player[]) => {
+    const selectedSongs = players.map(player => player.selectedSong);
+    const selectedSongTitles = selectedSongs.map(song => song.title);
+    const selectedSongDifficulties = selectedSongs.map(song => song.difficulty);
+    const selectedSongLevels = selectedSongs.map(song => song.level);
+    return (
+      <>
+        <h3>{selectedSongTitles.join(" -- ")}</h3>
+        <p>{selectedSongDifficulties.join(" -- ")}</p>
+        <p>{selectedSongLevels.join(" ---- ")}</p>
+      </>
+    )
+  }
 
   // 楽曲の描画を状態ごとに管理
   let displayByState;
@@ -273,11 +311,7 @@ function App() {
   if (selectState === "not_started") {
     displayByState = (
       <>
-        <img
-          src="dummy.jpg"
-          alt="未選曲"
-          width={200}
-        />
+        <h3>{displaySong.title}</h3>
         <p>選曲待機中...</p>
       </>
     );
@@ -285,11 +319,7 @@ function App() {
   else if (selectState === "finished") {
     displayByState = (
       <>
-        <img
-          src="dummy.jpg"
-          alt="選曲終了"
-          width={200}
-        />
+        <h3>{displaySong.title}</h3>
         <p>全曲選曲済み</p>
       </>
     );
@@ -297,17 +327,10 @@ function App() {
   else {
     displayByState = (
       <>
-        <img
-          src={imageMap.get(displaySong.jacket)}
-          alt={displaySong.title}
-          width={200}
-        />
-        <p>{displaySong.title}</p>
-        {song && (
-          <p>
-            {displaySong.difficulty} {displaySong.level}
-          </p>
-        )}
+        <h3>{displaySong.title}</h3>
+        <p>
+          {displaySong.difficulty} {displaySong.level}
+        </p>
       </>
     );
   }
@@ -356,8 +379,12 @@ function App() {
   return (
     <div>
       <h1>{tournamentName}</h1>
+      <h2>{displayTeams(teams)}</h2>
       <h2>現在の試合: {currentRoundName}</h2>
       <h2>{displayPlayers(currentPlayers)}</h2>
+      <h2>自選曲:</h2>
+      <p>{displaySelectedSongs(currentPlayers)}</p>
+      <h2>課題曲:</h2>
 
       <button
         onClick={selectSong}
@@ -366,19 +393,18 @@ function App() {
         選曲！
       </button>
 
-      <p>現在の曲：</p>
       {displayByState}
 
       <button
         onClick={previousRound}
-        disabled={numCurrentRound === 0}
+        disabled={numCurrentRound === 0 || selectState === "spinning"}
       >
         前の試合へ
       </button>
 
       <button
         onClick={nextRound}
-        disabled={numCurrentRound === allRounds.length - 1}>
+        disabled={numCurrentRound === allRounds.length - 1 || selectState === "spinning"}>
         次の試合へ
       </button>
 
