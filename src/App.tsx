@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { z } from "zod";
 import "./App.css"
 
 // 楽曲の型
@@ -41,6 +42,34 @@ type Tournament = {
   // バナーやロゴが入るかも
   divisions: Division[];
 };
+
+const SongSchema = z.object({
+  title: z.string(),
+  difficulty: z.string(),
+  level: z.string(),
+});
+
+const PlayerSchema = z.object({
+  name: z.string(),
+  selectedSong: SongSchema,
+});
+
+const RoundSchema = z.object({
+  name: z.string(),
+  songs: z.array(SongSchema),
+});
+
+const DivisionSchema = z.object({
+  gameTitle: z.string(),
+  rounds: z.array(RoundSchema),
+});
+
+const TournamentSchema = z.object({
+  name: z.string(),
+  teamA: z.object({ name: z.string(), members: z.array(PlayerSchema) }),
+  teamB: z.object({ name: z.string(), members: z.array(PlayerSchema) }),
+  divisions: z.array(DivisionSchema),
+});
 
 // 抽選状態の型
 type SelectState =
@@ -151,17 +180,21 @@ function App() {
     }
     try {
       const text = await jsonFile.text();
-      const data: Tournament = JSON.parse(text);
-      setTournament(data);
-      setImageMap(images);
-      setNumCurrentDivision(0);
-      setNumCurrentRound(0);
-      setSong(null);
-      setSelectedSongs([]);
-      setSelectState("not_started");
-      previousSong.current = null;
-    } catch {
-      alert("JSONの読み込みに失敗しました");
+      const rawData = JSON.parse(text);
+
+      // ここでバリデーション実行
+      const result = TournamentSchema.safeParse(rawData);
+
+      if (!result.success) {
+        console.error(result.error);
+        alert("JSONのフォーマットが正しくありません。\nエラー詳細: " + result.error.message);
+        return;
+      }
+
+      setTournament(result.data); // 型安全なデータが格納される
+      // ...
+    } catch (e) {
+      alert("JSONのパースに失敗しました。ファイル形式を確認してください。");
     }
   };
 
@@ -451,7 +484,7 @@ function App() {
       <button
         onClick={nextRound}
         disabled={numCurrentRound === currentDivision.rounds.length - 1
-        || selectState === "spinning"}>
+          || selectState === "spinning"}>
         次の試合へ
       </button>
 
