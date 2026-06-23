@@ -1,65 +1,63 @@
 {
     "name": "Tournament Example",
-    "teams": [
-        {
-            "name": "teamA",
-            "members": [
-                {
-                    "name": "playerA",
-                    "selectedSong": {
-                        "title": "songA",
-                        "difficulty": "MASTER",
-                        "level": "13+"
-                    }
-                },
-                {
-                    "name": "playerC",
-                    "selectedSong": {
-                        "title": "songC",
-                        "difficulty": "MASTER",
-                        "level": "14"
-                    }
-                },
-                {
-                    "name": "playerE",
-                    "selectedSong": {
-                        "title": "songE",
-                        "difficulty": "MASTER",
-                        "level": "14+"
-                    }
+    "teamA": {
+        "name": "teamA",
+        "members": [
+            {
+                "name": "playerA",
+                "selectedSong": {
+                    "title": "songA",
+                    "difficulty": "MASTER",
+                    "level": "13+"
                 }
-            ]
-        },
-        {
-            "name": "teamB",
-            "members": [
-                {
-                    "name": "playerB",
-                    "selectedSong": {
-                        "title": "songB",
-                        "difficulty": "MASTER",
-                        "level": "13+"
-                    }
-                },
-                {
-                    "name": "playerD",
-                    "selectedSong": {
-                        "title": "songD",
-                        "difficulty": "MASTER",
-                        "level": "14"
-                    }
-                },
-                {
-                    "name": "playerF",
-                    "selectedSong": {
-                        "title": "songF",
-                        "difficulty": "MASTER",
-                        "level": "14+"
-                    }
+            },
+            {
+                "name": "playerC",
+                "selectedSong": {
+                    "title": "songC",
+                    "difficulty": "MASTER",
+                    "level": "14"
                 }
-            ]
-        }
-    ],
+            },
+            {
+                "name": "playerE",
+                "selectedSong": {
+                    "title": "songE",
+                    "difficulty": "MASTER",
+                    "level": "14+"
+                }
+            }
+        ]
+    },
+    "teamB": {
+        "name": "teamB",
+        "members": [
+            {
+                "name": "playerB",
+                "selectedSong": {
+                    "title": "songB",
+                    "difficulty": "MASTER",
+                    "level": "13+"
+                }
+            },
+            {
+                "name": "playerD",
+                "selectedSong": {
+                    "title": "songD",
+                    "difficulty": "MASTER",
+                    "level": "14"
+                }
+            },
+            {
+                "name": "playerF",
+                "selectedSong": {
+                    "title": "songF",
+                    "difficulty": "MASTER",
+                    "level": "14+"
+                }
+            }
+        ]
+    },
     "rounds": [
         {
             "name": "先鋒戦",

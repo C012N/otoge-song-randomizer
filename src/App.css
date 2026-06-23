@@ -182,3 +182,51 @@
     border-right-color: var(--border);
   }
 }
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.tournament-header {
+  text-align: center;
+
+  border: 2px solid black;
+  border-radius: 12px;
+
+  padding: 1rem;
+  margin-bottom: 3rem;
+}
+
+.match-area {
+  display: grid;
+
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items: center;
+
+  gap: 2rem;
+}
+
+.player-area {
+  border: 2px solid black;
+  border-radius: 12px;
+
+  padding: 2rem;
+
+  text-align: center;
+}
+
+.player-area h2 {
+  margin-bottom: 1rem;
+}
+
+.player-area p {
+  margin: 0.5rem 0;
+}
+
+.vs {
+  font-size: 3rem;
+  font-weight: bold;
+}

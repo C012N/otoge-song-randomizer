@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./App.css"
 
 // 楽曲の型
 type Song = {
@@ -29,7 +30,8 @@ type Round = {
 // 大会全体の型
 type Tournament = {
   name: string;
-  teams: Team[];
+  teamA: Team;
+  teamB: Team;
   // バナーやロゴが入るかも
   rounds: Round[];
 };
@@ -174,12 +176,13 @@ function App() {
 
   // 各データの取得
   const tournamentName = tournament.name;
-  const teams = tournament.teams;
-  const teamNames = teams.map(team => team.name);
+  const teamA = tournament.teamA;
+  const teamB = tournament.teamB;
   const allRounds = tournament.rounds;
   const currentRound = allRounds[numCurrentRound];
   const currentRoundName = currentRound.name;
-  const currentPlayers = teams.map(team => team.members[numCurrentRound]);
+  const currentPlayerA = teamA.members[numCurrentRound];
+  const currentPlayerB = teamB.members[numCurrentRound];
   const currentSongs = currentRound.songs;
 
   // 重複不可時: 抽選可能楽曲
@@ -278,38 +281,11 @@ function App() {
     level: "???"
   };
 
-  // チーム名の描画
-  const displayTeams = (teams: Team[]) => {
-    const teamNames = teams.map(team => team.name);
-    return teamNames.join(" vs ");
-  }
-
-  // プレイヤー名の描画
-  const displayPlayers = (players: Player[]) => {
-    const playerNames = players.map(player => player.name);
-    return playerNames.join(" vs ");
-  };
-
-  // 自選曲の描画
-  const displaySelectedSongs = (players: Player[]) => {
-    const selectedSongs = players.map(player => player.selectedSong);
-    const selectedSongTitles = selectedSongs.map(song => song.title);
-    const selectedSongDifficulties = selectedSongs.map(song => song.difficulty);
-    const selectedSongLevels = selectedSongs.map(song => song.level);
-    return (
-      <>
-        <h3>{selectedSongTitles.join(" -- ")}</h3>
-        <p>{selectedSongDifficulties.join(" -- ")}</p>
-        <p>{selectedSongLevels.join(" ---- ")}</p>
-      </>
-    )
-  }
-
   // 楽曲の描画を状態ごとに管理
-  let displayByState;
+  let displaySongByState;
 
   if (selectState === "not_started") {
-    displayByState = (
+    displaySongByState = (
       <>
         <h3>{displaySong.title}</h3>
         <p>選曲待機中...</p>
@@ -317,7 +293,7 @@ function App() {
     );
   }
   else if (selectState === "finished") {
-    displayByState = (
+    displaySongByState = (
       <>
         <h3>{displaySong.title}</h3>
         <p>全曲選曲済み</p>
@@ -325,7 +301,7 @@ function App() {
     );
   }
   else {
-    displayByState = (
+    displaySongByState = (
       <>
         <h3>{displaySong.title}</h3>
         <p>
@@ -377,13 +353,44 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>{tournamentName}</h1>
-      <h2>{displayTeams(teams)}</h2>
-      <h2>現在の試合: {currentRoundName}</h2>
-      <h2>{displayPlayers(currentPlayers)}</h2>
-      <h2>自選曲:</h2>
-      <p>{displaySelectedSongs(currentPlayers)}</p>
+    <div className="app">
+      <header className="tournament-header">
+        <h1>{tournamentName}</h1>
+        <h2>{currentRoundName}</h2>
+      </header>
+
+      <main className="match-area">
+        <section className="player-area">
+          <h2>{teamA.name}</h2>
+
+          <p>{currentPlayerA.name}</p>
+
+          <p>自選曲:</p>
+
+          <p>{currentPlayerA.selectedSong.title}</p>
+
+          <p>{currentPlayerA.selectedSong.difficulty}</p>
+
+          <p>Lv. {currentPlayerA.selectedSong.level}</p>
+        </section>
+
+        <div className="vs">VS</div>
+
+        <section className="player-area">
+          <h2>{teamB.name}</h2>
+
+          <p>{currentPlayerB.name}</p>
+
+          <p>自選曲:</p>
+
+          <p>{currentPlayerB.selectedSong.title}</p>
+
+          <p>{currentPlayerB.selectedSong.difficulty}</p>
+
+          <p>Lv. {currentPlayerB.selectedSong.level}</p>
+        </section>
+      </main>
+
       <h2>課題曲:</h2>
 
       <button
@@ -393,7 +400,7 @@ function App() {
         選曲！
       </button>
 
-      {displayByState}
+      <p>{displaySongByState}</p>
 
       <button
         onClick={previousRound}
