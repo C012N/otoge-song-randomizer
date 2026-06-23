@@ -27,13 +27,19 @@ type Round = {
   songs: Song[];
 };
 
+// 部門の型
+type Division = {
+  gameTitle: string;
+  rounds: Round[];
+}
+
 // 大会全体の型
 type Tournament = {
   name: string;
   teamA: Team;
   teamB: Team;
   // バナーやロゴが入るかも
-  rounds: Round[];
+  divisions: Division[];
 };
 
 // 抽選状態の型
@@ -50,7 +56,10 @@ function App() {
   // 画像データ: ファイル名->URLのmap
   const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
 
-  // 進行状況: 整数値で管理
+  // 部門進行状況: 整数値で管理
+  const [numCurrentDivision, setNumCurrentDivision] = useState(0);
+
+  // 試合進行状況: 整数値で管理
   const [numCurrentRound, setNumCurrentRound] = useState(0);
 
   // 表示中の楽曲
@@ -145,6 +154,7 @@ function App() {
       const data: Tournament = JSON.parse(text);
       setTournament(data);
       setImageMap(images);
+      setNumCurrentDivision(0);
       setNumCurrentRound(0);
       setSong(null);
       setSelectedSongs([]);
@@ -178,8 +188,10 @@ function App() {
   const tournamentName = tournament.name;
   const teamA = tournament.teamA;
   const teamB = tournament.teamB;
-  const allRounds = tournament.rounds;
-  const currentRound = allRounds[numCurrentRound];
+  const allDivisions = tournament.divisions;
+  const currentDivision = allDivisions[numCurrentDivision];
+  const currentDivisionTitle = currentDivision.gameTitle;
+  const currentRound = currentDivision.rounds[numCurrentRound];
   const currentRoundName = currentRound.name;
   const currentPlayerA = teamA.members[numCurrentRound];
   const currentPlayerB = teamB.members[numCurrentRound];
@@ -324,8 +336,7 @@ function App() {
     setSelectState("not_started");
   }
   const nextRound = () => {
-    if (numCurrentRound >= allRounds.length - 1) {
-      setSelectState("finished");
+    if (numCurrentRound >= currentDivision.rounds.length - 1) {
       return;
     }
     setNumCurrentRound(prev => prev + 1);
@@ -343,8 +354,34 @@ function App() {
     setSelectState("not_started");
   }
 
+  // 部門の進行
+  const previousDivision = () => {
+    if (numCurrentDivision === 0) {
+      return;
+    }
+    setNumCurrentDivision(prev => prev - 1);
+    setNumCurrentRound(0);
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  };
+
+  const nextDivision = () => {
+    if (numCurrentDivision >= allDivisions.length) {
+      return;
+    }
+    setNumCurrentDivision(prev => prev + 1);
+    setNumCurrentRound(0);
+    setSong(null);
+    setSelectedSongs([]);
+    previousSong.current = null;
+    setSelectState("not_started");
+  };
+
   // 大会全体のリセット
   const resetTournament = () => {
+    setNumCurrentDivision(0);
     setNumCurrentRound(0);
     setSong(null);
     setSelectedSongs([]);
@@ -356,6 +393,7 @@ function App() {
     <div className="app">
       <header className="tournament-header">
         <h1>{tournamentName}</h1>
+        <h2>{currentDivisionTitle}部門</h2>
         <h2>{currentRoundName}</h2>
       </header>
 
@@ -404,14 +442,16 @@ function App() {
 
       <button
         onClick={previousRound}
-        disabled={numCurrentRound === 0 || selectState === "spinning"}
+        disabled={numCurrentRound === 0
+          || selectState === "spinning"}
       >
         前の試合へ
       </button>
 
       <button
         onClick={nextRound}
-        disabled={numCurrentRound === allRounds.length - 1 || selectState === "spinning"}>
+        disabled={numCurrentRound === currentDivision.rounds.length - 1
+        || selectState === "spinning"}>
         次の試合へ
       </button>
 
@@ -421,14 +461,36 @@ function App() {
         disabled={selectState === "spinning"}>
         この試合をリセット
       </button>
+
       <p></p>
+
+      <button
+        onClick={previousDivision}
+        disabled={numCurrentDivision === 0
+          || selectState === "spinning"}
+      >
+        前の部門へ
+      </button>
+
+      <button
+        onClick={nextDivision}
+        disabled={numCurrentDivision === allDivisions.length - 1
+          || selectState === "spinning"}
+      >
+        次の部門へ
+      </button>
+
+      <p></p>
+
       <button
         onClick={resetTournament}
         disabled={selectState === "spinning"}
       >
         大会全体をリセット
       </button>
+
       <p></p>
+
       <label>
         <input
           type="checkbox"
