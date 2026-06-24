@@ -2,74 +2,49 @@ import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import "./App.css"
 
-// 楽曲の型
-type Song = {
-  title: string;
-  difficulty: string;
-  level: string;
-};
-
-// プレイヤーの型
-type Player = {
-  name: string;
-  selectedSong: Song;
-}
-
-// チームの型
-type Team = {
-  name: string;
-  // アイコンが入るかも
-  members: Player[];
-}
-
-// 試合の型
-type Round = {
-  name: string;
-  songs: Song[];
-};
-
-// 部門の型
-type Division = {
-  gameTitle: string;
-  rounds: Round[];
-}
-
-// 大会全体の型
-type Tournament = {
-  name: string;
-  teamA: Team;
-  teamB: Team;
-  // バナーやロゴが入るかも
-  divisions: Division[];
-};
-
+// 楽曲データ
 const SongSchema = z.object({
   title: z.string(),
   difficulty: z.string(),
   level: z.string(),
 });
 
+// 選手データ
 const PlayerSchema = z.object({
   name: z.string(),
-  selectedSong: SongSchema,
+  song: SongSchema,
 });
 
+// 団体データ
+const TeamSchema = z.object({
+  name: z.string(),
+});
+
+// 試合データ
 const RoundSchema = z.object({
   name: z.string(),
+  playerA: PlayerSchema,
+  playerB: PlayerSchema,
   songs: z.array(SongSchema),
 });
 
+// 部門データ
 const DivisionSchema = z.object({
   gameTitle: z.string(),
   rounds: z.array(RoundSchema),
 });
 
+// 大会データ
 const TournamentSchema = z.object({
   name: z.string(),
-  teamA: z.object({ name: z.string(), members: z.array(PlayerSchema) }),
-  teamB: z.object({ name: z.string(), members: z.array(PlayerSchema) }),
+  teamA: TeamSchema,
+  teamB: TeamSchema,
   divisions: z.array(DivisionSchema),
 });
+
+// 型定義の自動生成
+type Song = z.infer<typeof SongSchema>;
+type Tournament = z.infer<typeof TournamentSchema>;
 
 // 抽選状態の型
 type SelectState =
@@ -91,6 +66,13 @@ function App() {
   // 試合進行状況: 整数値で管理
   const [numCurrentRound, setNumCurrentRound] = useState(0);
 
+  // 選手の得点
+  const [scorePlayerA, setScorePlayerA] = useState(0);
+  const [scorePlayerB, setScorePlayerB] = useState(0);
+
+  // チームの勝敗
+  const [winner, setWinner] = useState(0);
+
   // 表示中の楽曲
   const [song, setSong] = useState<Song | null>(null);
 
@@ -98,7 +80,7 @@ function App() {
   const [selectState, setSelectState] = useState<SelectState>("not_started");
 
   // 重複防止用: 抽選済み楽曲リスト
-  const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
+  const [songs, setsongs] = useState<Song[]>([]);
 
   // 重複防止用: オプション
   const [canSelectTwice, setCanSelectTwice] = useState(false);
@@ -163,11 +145,12 @@ function App() {
     let jsonFile: File | null = null;
     const images = new Map<string, string>();
     for (const file of Array.from(files)) {
-      // 今は1つのjsonを仮定
       if (file.name.endsWith(".json")) {
+        // 複数のjsonを含むならアラート
         if (jsonFile) {
           alert("JSONファイルはただ一つ含めてください")
         }
+
         jsonFile = file;
       }
       if (file.type.startsWith("image/")) {
@@ -185,17 +168,25 @@ function App() {
       const text = await jsonFile.text();
       const rawData = JSON.parse(text);
 
-      // ここでバリデーション実行
+      // ここでバリデーションチェック
       const result = TournamentSchema.safeParse(rawData);
 
+      // 型の異なるJSONにアラート
       if (!result.success) {
         console.error(result.error);
         alert("JSONのフォーマットが正しくありません。\nエラー詳細: " + result.error.message);
         return;
       }
 
-      setTournament(result.data); // 型安全なデータが格納される
-      // ...
+      // tournamentにデータを入れる
+      setTournament(result.data);
+
+      // 各値の初期化
+      setNumCurrentDivision(0);
+      setNumCurrentRound(0);
+      setSong(null);
+      setSelectState("not_started");
+      setsongs([]);
     } catch (e) {
       alert("JSONのパースに失敗しました。ファイル形式を確認してください。");
     }
@@ -229,13 +220,13 @@ function App() {
   const currentDivisionTitle = currentDivision.gameTitle;
   const currentRound = currentDivision.rounds[numCurrentRound];
   const currentRoundName = currentRound.name;
-  const currentPlayerA = teamA.members[numCurrentRound];
-  const currentPlayerB = teamB.members[numCurrentRound];
+  const currentPlayerA = currentRound.playerA;
+  const currentPlayerB = currentRound.playerB;
   const currentSongs = currentRound.songs;
 
   // 重複不可時: 抽選可能楽曲
   const availableSongs = canSelectTwice ? currentSongs
-    : currentSongs.filter(song => !selectedSongs.some(
+    : currentSongs.filter(song => !songs.some(
       selected => selected.title === song.title));
 
   // 抽選
@@ -252,7 +243,7 @@ function App() {
 
     // 演出前に抽選
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
-    const selectedSong = availableSongs[randomIndex];
+    const song = availableSongs[randomIndex];
 
     setSelectState("spinning");
 
@@ -311,8 +302,8 @@ function App() {
     // もともと選んであった曲を演出後に表示
     const totalDelay = delays.reduce((sum, delay) => sum + delay, 0);
     setTimeout(() => {
-      setSong(selectedSong);
-      setSelectedSongs(prev => [...prev, selectedSong]);
+      setSong(song);
+      setsongs(prev => [...prev, song]);
       setSelectState("displaying");
       // 終了時の効果音
       if (finishSound.current) {
@@ -367,7 +358,7 @@ function App() {
     }
     setNumCurrentRound(prev => prev - 1);
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   }
@@ -377,7 +368,7 @@ function App() {
     }
     setNumCurrentRound(prev => prev + 1);
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   };
@@ -385,7 +376,7 @@ function App() {
   // 試合のリセット
   const resetCurrentRound = () => {
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   }
@@ -398,7 +389,7 @@ function App() {
     setNumCurrentDivision(prev => prev - 1);
     setNumCurrentRound(0);
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   };
@@ -410,7 +401,7 @@ function App() {
     setNumCurrentDivision(prev => prev + 1);
     setNumCurrentRound(0);
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   };
@@ -420,7 +411,7 @@ function App() {
     setNumCurrentDivision(0);
     setNumCurrentRound(0);
     setSong(null);
-    setSelectedSongs([]);
+    setsongs([]);
     previousSong.current = null;
     setSelectState("not_started");
   };
@@ -441,11 +432,11 @@ function App() {
 
           <p>自選曲:</p>
 
-          <p>{currentPlayerA.selectedSong.title}</p>
+          <p>{currentPlayerA.song.title}</p>
 
-          <p>{currentPlayerA.selectedSong.difficulty}</p>
+          <p>{currentPlayerA.song.difficulty}</p>
 
-          <p>Lv. {currentPlayerA.selectedSong.level}</p>
+          <p>Lv. {currentPlayerA.song.level}</p>
         </section>
 
         <div className="vs">VS</div>
@@ -457,11 +448,11 @@ function App() {
 
           <p>自選曲:</p>
 
-          <p>{currentPlayerB.selectedSong.title}</p>
+          <p>{currentPlayerB.song.title}</p>
 
-          <p>{currentPlayerB.selectedSong.difficulty}</p>
+          <p>{currentPlayerB.song.difficulty}</p>
 
-          <p>Lv. {currentPlayerB.selectedSong.level}</p>
+          <p>Lv. {currentPlayerB.song.level}</p>
         </section>
       </main>
 

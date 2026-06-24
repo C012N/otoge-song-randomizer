@@ -1,62 +1,10 @@
 {
     "name": "Tournament Example",
     "teamA": {
-        "name": "teamA",
-        "members": [
-            {
-                "name": "playerA",
-                "selectedSong": {
-                    "title": "songA",
-                    "difficulty": "MASTER",
-                    "level": "13+"
-                }
-            },
-            {
-                "name": "playerC",
-                "selectedSong": {
-                    "title": "songC",
-                    "difficulty": "MASTER",
-                    "level": "14"
-                }
-            },
-            {
-                "name": "playerE",
-                "selectedSong": {
-                    "title": "songE",
-                    "difficulty": "MASTER",
-                    "level": "14+"
-                }
-            }
-        ]
+        "name": "teamA"
     },
     "teamB": {
-        "name": "teamB",
-        "members": [
-            {
-                "name": "playerB",
-                "selectedSong": {
-                    "title": "songB",
-                    "difficulty": "MASTER",
-                    "level": "13+"
-                }
-            },
-            {
-                "name": "playerD",
-                "selectedSong": {
-                    "title": "songD",
-                    "difficulty": "MASTER",
-                    "level": "14"
-                }
-            },
-            {
-                "name": "playerF",
-                "selectedSong": {
-                    "title": "songF",
-                    "difficulty": "MASTER",
-                    "level": "14+"
-                }
-            }
-        ]
+        "name": "teamB"
     },
     "divisions": [
         {
@@ -64,6 +12,22 @@
             "rounds": [
                 {
                     "name": "先鋒戦",
+                    "playerA": {
+                        "name": "playerA1",
+                        "song": {
+                            "title": "songA1",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerB1",
+                        "song": {
+                            "title": "songB1",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
@@ -84,6 +48,22 @@
                 },
                 {
                     "name": "中堅戦",
+                    "playerA": {
+                        "name": "playerA2",
+                        "song": {
+                            "title": "songA2",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerB2",
+                        "song": {
+                            "title": "songB2",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
@@ -104,21 +84,37 @@
                 },
                 {
                     "name": "大将戦",
+                    "playerA": {
+                        "name": "playerA3",
+                        "song": {
+                            "title": "songA3",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerB3",
+                        "song": {
+                            "title": "songB3",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         },
                         {
                             "title": "setSongB",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         },
                         {
                             "title": "setSongC",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         }
                     ]
                 }
@@ -129,6 +125,22 @@
             "rounds": [
                 {
                     "name": "先鋒戦",
+                    "playerA": {
+                        "name": "playerC1",
+                        "song": {
+                            "title": "songC1",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerD1",
+                        "song": {
+                            "title": "songD1",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
@@ -149,6 +161,22 @@
                 },
                 {
                     "name": "中堅戦",
+                    "playerA": {
+                        "name": "playerC2",
+                        "song": {
+                            "title": "songC2",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerD2",
+                        "song": {
+                            "title": "songD2",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
@@ -169,21 +197,37 @@
                 },
                 {
                     "name": "大将戦",
+                    "playerA": {
+                        "name": "playerC3",
+                        "song": {
+                            "title": "songC3",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
+                    "playerB": {
+                        "name": "playerD3",
+                        "song": {
+                            "title": "songD3",
+                            "difficulty": "MASTER",
+                            "level": "13+"
+                        }
+                    },
                     "songs": [
                         {
                             "title": "setSongA",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         },
                         {
                             "title": "setSongB",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         },
                         {
                             "title": "setSongC",
                             "difficulty": "MASTER",
-                            "level": "15"
+                            "level": "14+"
                         }
                     ]
                 }
