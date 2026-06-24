@@ -165,6 +165,9 @@ function App() {
     for (const file of Array.from(files)) {
       // 今は1つのjsonを仮定
       if (file.name.endsWith(".json")) {
+        if (jsonFile) {
+          alert("JSONファイルはただ一つ含めてください")
+        }
         jsonFile = file;
       }
       if (file.type.startsWith("image/")) {
