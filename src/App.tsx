@@ -7,6 +7,7 @@ import {
   type TournamentState
 } from "./components/types";
 import "./App.css"
+import { PlayerCard } from "./components/PlayerCard";
 
 function App() {
   // 大会データ
@@ -453,77 +454,23 @@ function App() {
       </header>
 
       <main className="match-area">
-        <section className="player-area">
-          <h2>{teamA.name}</h2>
 
-          <p>{currentPlayerA.name}</p>
-
-          <p>自選曲:</p>
-
-          <p>{currentPlayerA.song.title}</p>
-
-          <p>{currentPlayerA.song.difficulty}</p>
-
-          <p>Lv. {currentPlayerA.song.level}</p>
-
-          <label>
-            Score:
-            <input
-              type="number"
-              value={scoresPlayerA[0]}
-              onChange={e => setScoresPlayerA([e.target.valueAsNumber, scoresPlayerA[1], scoresPlayerA[2]])}
-            />
-            <input
-              type="number"
-              value={scoresPlayerA[1]}
-              onChange={e => setScoresPlayerA([scoresPlayerA[0], e.target.valueAsNumber, scoresPlayerA[2]])}
-            />
-            <input
-              type="number"
-              value={scoresPlayerA[2]}
-              onChange={e => setScoresPlayerA([scoresPlayerA[0], scoresPlayerA[1], e.target.valueAsNumber])}
-            />
-            合計:
-            <p>{scoresPlayerA.reduce((acc, e) => acc + e, 0)}</p>
-          </label>
-        </section>
+        <PlayerCard
+          teamName={teamA.name}
+          playerName={currentPlayerA.name}
+          selectedSong={currentPlayerA.song}
+          scores={scoresPlayerA}
+        />
 
         <div className="vs">VS</div>
 
-        <section className="player-area">
-          <h2>{teamB.name}</h2>
+        <PlayerCard
+          teamName={teamB.name}
+          playerName={currentPlayerB.name}
+          selectedSong={currentPlayerB.song}
+          scores={scoresPlayerB}
+        />
 
-          <p>{currentPlayerB.name}</p>
-
-          <p>自選曲:</p>
-
-          <p>{currentPlayerB.song.title}</p>
-
-          <p>{currentPlayerB.song.difficulty}</p>
-
-          <p>Lv. {currentPlayerB.song.level}</p>
-
-          <label>
-            Score:
-            <input
-              type="number"
-              value={scoresPlayerB[0]}
-              onChange={e => setScoresPlayerB([e.target.valueAsNumber, scoresPlayerB[1], scoresPlayerB[2]])}
-            />
-            <input
-              type="number"
-              value={scoresPlayerB[1]}
-              onChange={e => setScoresPlayerB([scoresPlayerB[0], e.target.valueAsNumber, scoresPlayerB[2]])}
-            />
-            <input
-              type="number"
-              value={scoresPlayerB[2]}
-              onChange={e => setScoresPlayerB([scoresPlayerB[0], scoresPlayerB[1], e.target.valueAsNumber])}
-            />
-            合計:
-            <p>{scoresPlayerB.reduce((acc, e) => acc + e, 0)}</p>
-          </label>
-        </section>
       </main>
 
       <h2>課題曲:</h2>
