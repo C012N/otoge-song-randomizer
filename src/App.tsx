@@ -67,8 +67,8 @@ function App() {
   const [numCurrentRound, setNumCurrentRound] = useState(0);
 
   // 選手の得点
-  const [scorePlayerA, setScorePlayerA] = useState(0);
-  const [scorePlayerB, setScorePlayerB] = useState(0);
+  const [scoresPlayerA, setScoresPlayerA] = useState<number[]>([0, 0, 0]);
+  const [scoresPlayerB, setScoresPlayerB] = useState<number[]>([0, 0, 0]);
 
   // チームの勝敗
   const [winner, setWinner] = useState(0);
@@ -437,6 +437,27 @@ function App() {
           <p>{currentPlayerA.song.difficulty}</p>
 
           <p>Lv. {currentPlayerA.song.level}</p>
+
+          <label>
+            Score:
+            <input
+              type="number"
+              value={scoresPlayerA[0]}
+              onChange={e => setScoresPlayerA([e.target.valueAsNumber, scoresPlayerA[1], scoresPlayerA[2]])}
+            />
+            <input
+              type="number"
+              value={scoresPlayerA[1]}
+              onChange={e => setScoresPlayerA([scoresPlayerA[0], e.target.valueAsNumber, scoresPlayerA[2]])}
+            />
+            <input
+              type="number"
+              value={scoresPlayerA[2]}
+              onChange={e => setScoresPlayerA([scoresPlayerA[0], scoresPlayerA[1], e.target.valueAsNumber])}
+            />
+            合計:
+            <p>{scoresPlayerA.reduce((acc, e) => acc + e, 0)}</p>
+          </label>
         </section>
 
         <div className="vs">VS</div>
@@ -453,6 +474,27 @@ function App() {
           <p>{currentPlayerB.song.difficulty}</p>
 
           <p>Lv. {currentPlayerB.song.level}</p>
+
+          <label>
+            Score:
+            <input
+              type="number"
+              value={scoresPlayerB[0]}
+              onChange={e => setScoresPlayerB([e.target.valueAsNumber, scoresPlayerB[1], scoresPlayerB[2]])}
+            />
+            <input
+              type="number"
+              value={scoresPlayerB[1]}
+              onChange={e => setScoresPlayerB([scoresPlayerB[0], e.target.valueAsNumber, scoresPlayerB[2]])}
+            />
+            <input
+              type="number"
+              value={scoresPlayerB[2]}
+              onChange={e => setScoresPlayerB([scoresPlayerB[0], scoresPlayerB[1], e.target.valueAsNumber])}
+            />
+            合計:
+            <p>{scoresPlayerB.reduce((acc, e) => acc + e, 0)}</p>
+          </label>
         </section>
       </main>
 
