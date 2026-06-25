@@ -87,6 +87,7 @@ function App() {
   // 試合進行状況: 整数値で管理
   const [numCurrentRound, setNumCurrentRound] = useState(0);
 
+  // 得点状況
   const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
 
   // 重複防止用: 抽選済み楽曲リスト
