@@ -9,6 +9,7 @@ import {
 import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
 import { ControlPanel } from "./components/ControlPanel";
+import { useTournamentState } from "./components/hooks/useTournamentState";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 
@@ -193,61 +194,24 @@ function App() {
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
   const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
 
-  // 補助関数
-  const setSong = (song: Song | null) => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].selectedSong = song;
-
-      return next;
-    }
-    )
-  }
-
-  const setSelectState = (state: SelectState) => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].selectState = state;
-
-      return next;
-    })
-  }
-
-  const setScoresPlayerA = (scores: number[]) => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].scoresPlayerA = scores;
-
-      return next;
-    })
-  }
-
-  const setScoresPlayerB = (scores: number[]) => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].scoresPlayerB = scores;
-
-      return next;
-    })
-  }
-
   // 状態からデータを取り出しておく
   const song = currentRoundState.selectedSong;
   const selectState = currentRoundState.selectState;
   const scoresPlayerA = currentRoundState.scoresPlayerA;
   const scoresPlayerB = currentRoundState.scoresPlayerB;
+
+  // セッター
+  const {
+    setSong,
+    setSelectState,
+    setScoresPlayerA,
+    setScoresPlayerB
+  } = useTournamentState({
+    tournamentState,
+    setTournamentState,
+    numCurrentDivision,
+    numCurrentRound
+  });
 
   // 演出
 
@@ -366,19 +330,19 @@ function App() {
         onSelect={selectSong}
       />
 
-    <ControlPanel
-      tournamentState={tournamentState}
-      numCurrentDivision={numCurrentDivision}
-      numCurrentRound={numCurrentRound}
-      onPrevRound={previousRound}
-      onNextRound={nextRound}
-      onResetRound={resetCurrentRound}
-      onPrevDivision={previousDivision}
-      onNextDivision={nextDivision}
-      onResetDivision={resetDivision}
-      onResetTournament={resetTournament}
-    />
-      
+      <ControlPanel
+        tournamentState={tournamentState}
+        numCurrentDivision={numCurrentDivision}
+        numCurrentRound={numCurrentRound}
+        onPrevRound={previousRound}
+        onNextRound={nextRound}
+        onResetRound={resetCurrentRound}
+        onPrevDivision={previousDivision}
+        onNextDivision={nextDivision}
+        onResetDivision={resetDivision}
+        onResetTournament={resetTournament}
+      />
+
     </div>
   );
 }
