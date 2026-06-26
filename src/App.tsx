@@ -10,6 +10,7 @@ import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
 import { ControlPanel } from "./components/ControlPanel";
 import { useTournamentState } from "./components/hooks/useTournamentState";
+import { ScoreInput } from "./components/ScoreInput";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 
@@ -334,6 +335,10 @@ function App() {
         tournamentState={tournamentState}
         numCurrentDivision={numCurrentDivision}
         numCurrentRound={numCurrentRound}
+        scoresPlayerA={scoresPlayerA}
+        scoresPlayerB={scoresPlayerB}
+        setScoresPlayerA={setScoresPlayerA}
+        setScoresPlayerB={setScoresPlayerB}
         onPrevRound={previousRound}
         onNextRound={nextRound}
         onResetRound={resetCurrentRound}

@@ -1,10 +1,15 @@
 import type { TournamentState } from "./types"
+import { ScoreInput } from "./ScoreInput";
 
 
 type ControlPanelProps = {
     tournamentState: TournamentState;
     numCurrentDivision: number;
     numCurrentRound: number;
+    scoresPlayerA: number[];
+    scoresPlayerB: number[];
+    setScoresPlayerA: (scores: number[]) => void;
+    setScoresPlayerB: (scores: number[]) => void;
     onPrevRound: () => void;
     onNextRound: () => void;
     onResetRound: () => void;
@@ -18,6 +23,10 @@ export function ControlPanel({
     tournamentState,
     numCurrentDivision,
     numCurrentRound,
+    scoresPlayerA,
+    scoresPlayerB,
+    setScoresPlayerA,
+    setScoresPlayerB,
     onPrevRound,
     onNextRound,
     onResetRound,
@@ -34,6 +43,20 @@ export function ControlPanel({
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
         <div>
+            <ScoreInput
+                label="Player A"
+                scores={scoresPlayerA}
+                onChange={setScoresPlayerA}
+            />
+
+            <ScoreInput
+                label="Player B"
+                scores={scoresPlayerB}
+                onChange={setScoresPlayerB}
+            />
+
+            <h3>試合進行</h3>
+
             <button
                 onClick={onPrevRound}
                 disabled={numCurrentRound === 0
@@ -56,7 +79,7 @@ export function ControlPanel({
                 この試合をリセット
             </button>
 
-            <p></p>
+            <h3>部門進行</h3>
 
             <button
                 onClick={onPrevDivision}
@@ -83,7 +106,7 @@ export function ControlPanel({
                 部門をリセット
             </button>
 
-            <p></p>
+            <h3>大会進行</h3>
 
             <button
                 onClick={onResetTournament}
