@@ -8,6 +8,7 @@ import {
 } from "./components/types";
 import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
+import { ControlPanel } from "./components/ControlPanel";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 
@@ -365,63 +366,19 @@ function App() {
         onSelect={selectSong}
       />
 
-      <button
-        onClick={previousRound}
-        disabled={numCurrentRound === 0
-          || selectState === "spinning"}
-      >
-        前の試合へ
-      </button>
-
-      <button
-        onClick={nextRound}
-        disabled={numCurrentRound === currentDivision.rounds.length - 1
-          || selectState === "spinning"}>
-        次の試合へ
-      </button>
-
-      <p></p>
-
-      <button onClick={resetCurrentRound}
-        disabled={selectState === "spinning"}>
-        この試合をリセット
-      </button>
-
-      <p></p>
-
-      <button
-        onClick={previousDivision}
-        disabled={numCurrentDivision === 0
-          || selectState === "spinning"}
-      >
-        前の部門へ
-      </button>
-
-      <button
-        onClick={nextDivision}
-        disabled={numCurrentDivision === allDivisions.length - 1
-          || selectState === "spinning"}
-      >
-        次の部門へ
-      </button>
-
-      <p></p>
-
-      <button
-        onClick={resetDivision}
-        disabled={selectState === "spinning"}
-      >
-        部門をリセット
-      </button>
-
-      <p></p>
-
-      <button
-        onClick={resetTournament}
-        disabled={selectState === "spinning"}
-      >
-        大会全体をリセット
-      </button>
+    <ControlPanel
+      tournamentState={tournamentState}
+      numCurrentDivision={numCurrentDivision}
+      numCurrentRound={numCurrentRound}
+      onPrevRound={previousRound}
+      onNextRound={nextRound}
+      onResetRound={resetCurrentRound}
+      onPrevDivision={previousDivision}
+      onNextDivision={nextDivision}
+      onResetDivision={resetDivision}
+      onResetTournament={resetTournament}
+    />
+      
     </div>
   );
 }

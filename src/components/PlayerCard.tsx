@@ -26,6 +26,12 @@ export function PlayerCard({
           <p>{selectedSong?.difficulty}</p>
 
           <p>Lv. {selectedSong?.level}</p>
+
+          <p>1曲目: {scores[0]}</p>
+
+          <p>2曲目: {scores[1]}</p>
+
+          <p>3曲目: {scores[2]}</p>
         </div>
     )
 }
