@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   TournamentSchema,
-  type Song,
   type Tournament,
   type SelectState,
   type TournamentState
@@ -10,7 +9,6 @@ import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
 import { ControlPanel } from "./components/ControlPanel";
 import { useTournamentState } from "./components/hooks/useTournamentState";
-import { ScoreInput } from "./components/ScoreInput";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 
@@ -70,27 +68,6 @@ function App() {
     finishSound.current.currentTime = 0;
     finishSound.current.play();
   }
-
-  // 大会初期データ
-  const createInitialTournamentState =
-    (tournament: Tournament): TournamentState => {
-
-      return {
-        divisionStates: tournament.divisions.map(division => ({
-          roundStates: division.rounds.map(() => ({
-            selectedSong: null,
-            selectedSongs: [],
-            scoresPlayerA: [0, 0, 0],
-            scoresPlayerB: [0, 0, 0],
-            selectState: "not_started" as SelectState
-          })),
-          scoreTeamA: 0,
-          scoreTeamB: 0
-        })),
-        scoreTeamA: 0,
-        scoreTeamB: 0
-      };
-    };
 
   // 大会フォルダを受け取って処理
   // フォルダを受け取る
@@ -159,6 +136,27 @@ function App() {
     }
   };
 
+  // 大会初期データ
+  const createInitialTournamentState =
+    (tournament: Tournament): TournamentState => {
+
+      return {
+        divisionStates: tournament.divisions.map(division => ({
+          roundStates: division.rounds.map(() => ({
+            selectedSong: null,
+            selectedSongs: [],
+            scoresPlayerA: [0, 0, 0],
+            scoresPlayerB: [0, 0, 0],
+            selectState: "not_started" as SelectState
+          })),
+          scoreTeamA: 0,
+          scoreTeamB: 0
+        })),
+        scoreTeamA: 0,
+        scoreTeamB: 0
+      };
+    };
+
   // useEffect, useRef, useStateはここより前に書く
   // 読み込み前の画面
   if (!tournament || !tournamentState) {
@@ -206,12 +204,23 @@ function App() {
     setSong,
     setSelectState,
     setScoresPlayerA,
-    setScoresPlayerB
+    setScoresPlayerB,
+    previousRound,
+    nextRound,
+    resetCurrentRound,
+    previousDivision,
+    nextDivision,
+    resetDivision,
+    resetTournament,
   } = useTournamentState({
+    tournament,
     tournamentState,
     setTournamentState,
+    createInitialTournamentState,
     numCurrentDivision,
-    numCurrentRound
+    setNumCurrentDivision,
+    numCurrentRound,
+    setNumCurrentRound
   });
 
   // 演出
@@ -226,76 +235,7 @@ function App() {
   });
 
 
-  // 試合の進行
-  const previousRound = () => {
-    setNumCurrentRound(prev => prev - 1);
-  }
-  const nextRound = () => {
-    setNumCurrentRound(prev => prev + 1);
-  };
 
-  // 試合のリセット
-  const resetCurrentRound = () => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision].roundStates[numCurrentRound] = {
-        selectedSong: null,
-        selectedSongs: [],
-        scoresPlayerA: [0, 0, 0],
-        scoresPlayerB: [0, 0, 0],
-        selectState: "not_started"
-      }
-
-      return next;
-    }
-
-    )
-  }
-
-  // 部門の進行
-  const previousDivision = () => {
-    setNumCurrentDivision(prev => prev - 1);
-    setNumCurrentRound(0);
-  };
-
-  const nextDivision = () => {
-    setNumCurrentDivision(prev => prev + 1);
-    setNumCurrentRound(0);
-  };
-
-  const resetDivision = () => {
-    setTournamentState(prev => {
-      if (!prev) return prev;
-
-      const next = structuredClone(prev);
-
-      next.divisionStates[numCurrentDivision] = ({
-        roundStates: next.divisionStates[numCurrentDivision].roundStates.map(() => ({
-          selectedSong: null,
-          selectedSongs: [],
-          scoresPlayerA: [0, 0, 0],
-          scoresPlayerB: [0, 0, 0],
-          selectState: "not_started" as SelectState
-        })),
-        scoreTeamA: 0,
-        scoreTeamB: 0
-      })
-
-      return next;
-    })
-
-    setNumCurrentRound(0);
-  }
-
-  // 大会全体のリセット
-  const resetTournament = () => {
-    setTournamentState(createInitialTournamentState(tournament));
-    setNumCurrentDivision(0);
-    setNumCurrentRound(0);
-  };
 
   return (
     <div className="app">
