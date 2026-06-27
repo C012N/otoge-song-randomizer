@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  TournamentSchema,
   type Tournament,
   type SelectState,
   type TournamentState
@@ -19,6 +18,7 @@ function App() {
 
   // 画像データ: ファイル名->URLのmap
   const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
+  console.log(imageMap);
 
   // 部門進行状況: 整数値で管理
   const [numCurrentDivision, setNumCurrentDivision] = useState(0);

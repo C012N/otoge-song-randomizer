@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import { type Song, type SelectState } from "../types";
 
 let previousSong: Song | null;
