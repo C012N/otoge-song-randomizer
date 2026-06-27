@@ -199,6 +199,35 @@
   margin-bottom: 3rem;
 }
 
+.view-toggle {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.view-toggle__button {
+  border: 1px solid #333;
+  border-radius: 999px;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.view-toggle__button.is-active {
+  background: #333;
+  color: white;
+}
+
+.view-toggle__button:hover {
+  background: #f0f0f0;
+}
+
+.view-toggle__button.is-active:hover {
+  background: #222;
+}
+
 .match-area {
   display: grid;
 
