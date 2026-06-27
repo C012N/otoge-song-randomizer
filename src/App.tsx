@@ -11,13 +11,14 @@ import { ControlPanel } from "./components/ControlPanel";
 import { useTournamentState } from "./components/hooks/useTournamentState";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
+import { loadTournament } from "./components/loadTournament";
 
 function App() {
   // 大会データ
   const [tournament, setTournament] = useState<Tournament | null>(null);
 
   // 画像データ: ファイル名->URLのmap
-  // const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
+  const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
 
   // 部門進行状況: 整数値で管理
   const [numCurrentDivision, setNumCurrentDivision] = useState(0);
@@ -83,68 +84,32 @@ function App() {
   }, []);
 
   // フォルダを読み込む
-  const loadTournament = async (
+  const onFolderSelected = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = event.target.files;
-    if (!files) return;
-    let jsonFile: File | null = null;
-    const images = new Map<string, string>();
-    for (const file of Array.from(files)) {
-      if (file.name.endsWith(".json")) {
-        // 複数のjsonを含むならアラート
-        if (jsonFile) {
-          alert("JSONファイルはただ一つ含めてください")
-        }
-
-        jsonFile = file;
-      }
-      if (file.type.startsWith("image/")) {
-        images.set(
-          file.name,
-          URL.createObjectURL(file)
-        );
-      }
-    }
-    if (!jsonFile) {
-      alert("tournament.json が見つかりません");
+    if (!files) {
+      alert("no files found.");
       return;
     }
     try {
-      const text = await jsonFile.text();
-      const rawData = JSON.parse(text);
-
-      // ここでバリデーションチェック
-      const result = TournamentSchema.safeParse(rawData);
-
-      // 型の異なるJSONにアラート
-      if (!result.success) {
-        console.error(result.error);
-        alert("JSONのフォーマットが正しくありません。\nエラー詳細: " + result.error.message);
-        return;
-      }
-
-      // tournamentにデータを入れる
-      setTournament(result.data);
-      setTournamentState(createInitialTournamentState(result.data));
-
-      // 各値の初期化
-      setNumCurrentDivision(0);
-      setNumCurrentRound(0);
-    } catch (e) {
-      alert("JSONのパースに失敗しました。ファイル形式を確認してください。");
+      const { tournament, imageMap } = await loadTournament(files);
+      setTournament(tournament);
+      setImageMap(imageMap);
+      setTournamentState(createInitialTournamentState(tournament));
+    } catch (err) {
+      if (err instanceof Error) alert(err.message);
     }
-  };
+  }
 
-  // 大会初期データ
+  // 大会初期状態
   const createInitialTournamentState =
     (tournament: Tournament): TournamentState => {
-
       return {
         divisionStates: tournament.divisions.map(division => ({
           roundStates: division.rounds.map(() => ({
             selectedSong: null,
-            selectedSongs: [],
+            setSongs: [],
             scoresPlayerA: [0, 0, 0],
             scoresPlayerB: [0, 0, 0],
             selectState: "not_started" as SelectState
@@ -154,8 +119,11 @@ function App() {
         })),
         scoreTeamA: 0,
         scoreTeamB: 0
-      };
-    };
+      }
+    }
+
+  console.log(tournament);
+  console.log(tournamentState);
 
   // useEffect, useRef, useStateはここより前に書く
   // 読み込み前の画面
@@ -170,7 +138,7 @@ function App() {
           type="file"
           multiple
           ref={folderInputRef}
-          onChange={loadTournament}
+          onChange={onFolderSelected}
         />
       </div>
     );
@@ -224,7 +192,6 @@ function App() {
   });
 
   // 演出
-
   const availableSongs = currentSongs;
   const selectSong = useSongSelector({
     availableSongs,

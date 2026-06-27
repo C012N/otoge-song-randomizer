@@ -1,5 +1,5 @@
 import type React from "react";
-import { type Song, type SelectState, type TournamentState, type Tournament } from "../types";
+import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState, type DivisionState } from "../types";
 
 type UseTournamentStateProps = {
     tournament: Tournament;
@@ -21,57 +21,54 @@ export function useTournamentState({
     numCurrentRound,
     setNumCurrentRound,
 }: UseTournamentStateProps) {
-    // 補助関数
+    // 補助: 試合状態更新
+    const updateRoundState = (
+        updater: (roundState: RoundState) => void,
+    ) => {
+        setTournamentState(prev => {
+            if (!prev) return prev;
+            const next = structuredClone(prev);
+            updater(next.divisionStates[numCurrentDivision].roundStates[numCurrentRound]);
+            return next;
+        })
+    }
+
+    // 補助: 部門状態更新
+    const updateDivisionState = (
+        updater: (divisionState: DivisionState) => void,
+    ) => {
+        setTournamentState(prev => {
+            if (!prev) return prev;
+            const next = structuredClone(prev);
+            updater(next.divisionStates[numCurrentDivision]);
+            return next;
+        })
+    }
+
+    // 各初期状態
+    const initialTournamentState = createInitialTournamentState(tournament);
+    const initialDivisionState = initialTournamentState.divisionStates[numCurrentDivision];
+    const initialRoundState = initialDivisionState.roundStates[numCurrentRound];
+
+    // 楽曲更新
     const setSong = (song: Song | null) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].selectedSong = song;
-
-            return next;
-        }
-        )
+        updateRoundState(roundState => roundState.selectedSong = song);
     }
 
+    // 選曲状態更新
     const setSelectState = (state: SelectState) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].selectState = state;
-
-            return next;
-        })
+        updateRoundState(roundState => roundState.selectState = state);
     }
 
+    // スコア更新
     const setScoresPlayerA = (scores: number[]) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].scoresPlayerA = scores;
-
-            return next;
-        })
+        updateRoundState(roundState => roundState.scoresPlayerA = scores);
     }
-
     const setScoresPlayerB = (scores: number[]) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision].roundStates[numCurrentRound].scoresPlayerB = scores;
-
-            return next;
-        })
+        updateRoundState(roundState => roundState.scoresPlayerB = scores);
     }
 
-    // 試合の進行
+    // 試合進行
     const previousRound = () => {
         setNumCurrentRound(prev => prev - 1);
     }
@@ -79,68 +76,34 @@ export function useTournamentState({
         setNumCurrentRound(prev => prev + 1);
     };
 
-    // 試合のリセット
+    // 試合リセット
     const resetCurrentRound = () => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision].roundStates[numCurrentRound] = {
-                selectedSong: null,
-                selectedSongs: [],
-                scoresPlayerA: [0, 0, 0],
-                scoresPlayerB: [0, 0, 0],
-                selectState: "not_started"
-            }
-
-            return next;
-        }
-
-        )
+        updateRoundState(() => initialRoundState);
     }
 
-    // 部門の進行
+    // 部門進行
     const previousDivision = () => {
         setNumCurrentDivision(prev => prev - 1);
         setNumCurrentRound(0);
     };
-
     const nextDivision = () => {
         setNumCurrentDivision(prev => prev + 1);
         setNumCurrentRound(0);
     };
 
+    // 部門リセット
     const resetDivision = () => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-
-            const next = structuredClone(prev);
-
-            next.divisionStates[numCurrentDivision] = ({
-                roundStates: next.divisionStates[numCurrentDivision].roundStates.map(() => ({
-                    selectedSong: null,
-                    selectedSongs: [],
-                    scoresPlayerA: [0, 0, 0],
-                    scoresPlayerB: [0, 0, 0],
-                    selectState: "not_started" as SelectState
-                })),
-                scoreTeamA: 0,
-                scoreTeamB: 0
-            })
-
-            return next;
-        })
-
+        updateDivisionState(() => initialDivisionState);
         setNumCurrentRound(0);
     }
 
-    // 大会全体のリセット
+    // 大会リセット
     const resetTournament = () => {
-        setTournamentState(createInitialTournamentState(tournament));
+        setTournamentState(initialTournamentState);
         setNumCurrentDivision(0);
         setNumCurrentRound(0);
     };
+    
     return {
         setSong,
         setSelectState,

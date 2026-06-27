@@ -48,6 +48,12 @@ type Round = z.infer<typeof RoundSchema>;
 type Division = z.infer<typeof DivisionSchema>;
 type Tournament = z.infer<typeof TournamentSchema>;
 
+// ファイルローダーが返す型
+type LoadTournamentResult = {
+    tournament: Tournament;
+    imageMap: Map<string, string>;
+}
+
 // 抽選状態
 type SelectState =
     | "not_started"
@@ -59,7 +65,7 @@ type SelectState =
 // useStateで管理するものはここ
 type RoundState = {
     selectedSong: Song | null;
-    selectedSongs: Song[];
+    setSongs: Song[];
     scoresPlayerA: number[];
     scoresPlayerB: number[];
     selectState: SelectState;
@@ -85,6 +91,7 @@ export {
     type Round,
     type Division,
     type Tournament,
+    type LoadTournamentResult,
     type SelectState,
     type RoundState,
     type DivisionState,
