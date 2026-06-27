@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   type Tournament,
   type SelectState,
@@ -11,20 +12,6 @@ import { useTournamentState } from "./components/hooks/useTournamentState";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 import { loadTournament } from "./components/loadTournament";
-
-type ViewMode = "operator" | "stream";
-
-type SharedTournamentState = {
-  tournament: Tournament | null;
-  imageMap: Array<[string, string]>;
-  numCurrentDivision: number;
-  numCurrentRound: number;
-  tournamentState: TournamentState | null;
-  updatedAt: number;
-};
-
-const STORAGE_KEY = "otoge-song-randomizer-shared-state";
-const CHANNEL_NAME = "otoge-song-randomizer-sync";
 
 function App() {
   // 大会データ
@@ -43,18 +30,10 @@ function App() {
   // 得点状況
   const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
 
-  // 表示モード
-  const [viewMode, setViewMode] = useState<ViewMode>(() => {
-    if (typeof window === "undefined") return "operator";
-    const params = new URLSearchParams(window.location.search);
-    return params.get("view") === "stream" ? "stream" : "operator";
-  });
-  const [hydrated, setHydrated] = useState(false);
-
-  const channelRef = useRef<BroadcastChannel | null>(null);
-  const remoteApplyRef = useRef(false);
-  const lastSerializedRef = useRef<string | null>(null);
-  const lastSyncedAtRef = useRef<number | null>(null);
+  // 画面切り替え用
+  const [searchParams] = useSearchParams();
+  const viewMode = searchParams.get("viewMode");
+  const isStreaming = viewMode === "stream";
 
   // 抽選演出用: 効果音
   const audioContext = useRef<AudioContext | null>(null);
@@ -96,122 +75,6 @@ function App() {
     finishSound.current.currentTime = 0;
     finishSound.current.play();
   }
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const params = new URLSearchParams(window.location.search);
-    params.set("view", viewMode);
-    const nextUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState({}, "", nextUrl);
-  }, [viewMode]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    try {
-      const storedState = window.localStorage.getItem(STORAGE_KEY);
-      if (!storedState) {
-        setHydrated(true);
-        return;
-      }
-
-      const parsedState = JSON.parse(storedState) as SharedTournamentState;
-      setTournament(parsedState.tournament);
-      setTournamentState(parsedState.tournamentState);
-      setImageMap(new Map(parsedState.imageMap));
-      setNumCurrentDivision(parsedState.numCurrentDivision ?? 0);
-      setNumCurrentRound(parsedState.numCurrentRound ?? 0);
-      lastSyncedAtRef.current = parsedState.updatedAt ?? null;
-      lastSerializedRef.current = storedState;
-    } catch {
-      // 破損した保存データは無視する
-    } finally {
-      setHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated || typeof window === "undefined") return;
-
-    const channel = new BroadcastChannel(CHANNEL_NAME);
-    channelRef.current = channel;
-
-    const handleMessage = (event: MessageEvent<SharedTournamentState>) => {
-      const payload = event.data;
-      if (!payload) return;
-
-      if (lastSyncedAtRef.current && payload.updatedAt <= lastSyncedAtRef.current) {
-        return;
-      }
-
-      lastSyncedAtRef.current = payload.updatedAt;
-      remoteApplyRef.current = true;
-      setTournament(payload.tournament);
-      setTournamentState(payload.tournamentState);
-      setImageMap(new Map(payload.imageMap));
-      setNumCurrentDivision(payload.numCurrentDivision ?? 0);
-      setNumCurrentRound(payload.numCurrentRound ?? 0);
-      lastSerializedRef.current = JSON.stringify(payload);
-    };
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key !== STORAGE_KEY || !event.newValue) return;
-
-      try {
-        const parsedState = JSON.parse(event.newValue) as SharedTournamentState;
-        if (lastSyncedAtRef.current && parsedState.updatedAt <= lastSyncedAtRef.current) {
-          return;
-        }
-
-        lastSyncedAtRef.current = parsedState.updatedAt;
-        remoteApplyRef.current = true;
-        setTournament(parsedState.tournament);
-        setTournamentState(parsedState.tournamentState);
-        setImageMap(new Map(parsedState.imageMap));
-        setNumCurrentDivision(parsedState.numCurrentDivision ?? 0);
-        setNumCurrentRound(parsedState.numCurrentRound ?? 0);
-        lastSerializedRef.current = event.newValue;
-      } catch {
-        // ignore malformed shared state
-      }
-    };
-
-    channel.addEventListener("message", handleMessage);
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      channel.removeEventListener("message", handleMessage);
-      channel.close();
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, [hydrated]);
-
-  useEffect(() => {
-    if (!hydrated || typeof window === "undefined") return;
-
-    if (remoteApplyRef.current) {
-      remoteApplyRef.current = false;
-      return;
-    }
-
-    const payload: SharedTournamentState = {
-      tournament,
-      imageMap: Array.from(imageMap.entries()),
-      numCurrentDivision,
-      numCurrentRound,
-      tournamentState,
-      updatedAt: Date.now(),
-    };
-
-    const serialized = JSON.stringify(payload);
-    if (lastSerializedRef.current === serialized) return;
-
-    lastSerializedRef.current = serialized;
-    lastSyncedAtRef.current = payload.updatedAt;
-    window.localStorage.setItem(STORAGE_KEY, serialized);
-    channelRef.current?.postMessage(payload);
-  }, [hydrated, tournament, imageMap, numCurrentDivision, numCurrentRound, tournamentState]);
 
   // 大会フォルダを受け取って処理
   // フォルダを受け取る
@@ -265,9 +128,6 @@ function App() {
       }
     }
 
-  console.log(tournament);
-  console.log(tournamentState);
-
   // useEffect, useRef, useStateはここより前に書く
   // 読み込み前の画面
   if (!tournament || !tournamentState) {
@@ -277,12 +137,12 @@ function App() {
 
         <p>大会データを選択してください</p>
 
-        <input
+        {!isStreaming && (<input
           type="file"
           multiple
           ref={folderInputRef}
           onChange={onFolderSelected}
-        />
+        />)}
       </div>
     );
   }
@@ -318,13 +178,12 @@ function App() {
     setScoresPlayerB,
     previousRound,
     nextRound,
-    resetCurrentRound,
     previousDivision,
     nextDivision,
-    resetDivision,
     resetTournament,
   } = useTournamentState({
     tournament,
+    setTournament,
     tournamentState,
     setTournamentState,
     createInitialTournamentState,
@@ -350,23 +209,6 @@ function App() {
   return (
     <div className="app">
       <header className="tournament-header">
-        <div className="view-toggle" role="tablist" aria-label="表示モード">
-          <button
-            type="button"
-            className={`view-toggle__button ${viewMode === "operator" ? "is-active" : ""}`}
-            onClick={() => setViewMode("operator")}
-          >
-            運営向け
-          </button>
-          <button
-            type="button"
-            className={`view-toggle__button ${viewMode === "stream" ? "is-active" : ""}`}
-            onClick={() => setViewMode("stream")}
-          >
-            配信向け
-          </button>
-        </div>
-
         <h1>{tournamentName}</h1>
         <h2>{currentDivisionTitle}部門</h2>
         <h2>{currentRoundName}</h2>
@@ -398,24 +240,20 @@ function App() {
         onSelect={selectSong}
       />
 
-      {viewMode === "operator" && (
-        <ControlPanel
-          tournamentState={tournamentState}
-          numCurrentDivision={numCurrentDivision}
-          numCurrentRound={numCurrentRound}
-          scoresPlayerA={scoresPlayerA}
-          scoresPlayerB={scoresPlayerB}
-          setScoresPlayerA={setScoresPlayerA}
-          setScoresPlayerB={setScoresPlayerB}
-          onPrevRound={previousRound}
-          onNextRound={nextRound}
-          onResetRound={resetCurrentRound}
-          onPrevDivision={previousDivision}
-          onNextDivision={nextDivision}
-          onResetDivision={resetDivision}
-          onResetTournament={resetTournament}
-        />
-      )}
+      {!isStreaming && (<ControlPanel
+        tournamentState={tournamentState}
+        numCurrentDivision={numCurrentDivision}
+        numCurrentRound={numCurrentRound}
+        scoresPlayerA={scoresPlayerA}
+        scoresPlayerB={scoresPlayerB}
+        setScoresPlayerA={setScoresPlayerA}
+        setScoresPlayerB={setScoresPlayerB}
+        onPrevRound={previousRound}
+        onNextRound={nextRound}
+        onPrevDivision={previousDivision}
+        onNextDivision={nextDivision}
+        onResetTournament={resetTournament}
+      />)}
 
     </div>
   );

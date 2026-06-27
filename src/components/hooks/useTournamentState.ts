@@ -1,8 +1,9 @@
 import type React from "react";
-import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState, type DivisionState } from "../types";
+import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState } from "../types";
 
 type UseTournamentStateProps = {
     tournament: Tournament;
+    setTournament: React.Dispatch<React.SetStateAction<Tournament | null>>;
     tournamentState: TournamentState
     setTournamentState: React.Dispatch<React.SetStateAction<TournamentState | null>>;
     createInitialTournamentState: (tournament: Tournament) => TournamentState;
@@ -13,9 +14,8 @@ type UseTournamentStateProps = {
 }
 
 export function useTournamentState({
-    tournament,
+    setTournament,
     setTournamentState,
-    createInitialTournamentState,
     numCurrentDivision,
     setNumCurrentDivision,
     numCurrentRound,
@@ -32,23 +32,6 @@ export function useTournamentState({
             return next;
         })
     }
-
-    // 補助: 部門状態更新
-    const updateDivisionState = (
-        updater: (divisionState: DivisionState) => void,
-    ) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-            const next = structuredClone(prev);
-            updater(next.divisionStates[numCurrentDivision]);
-            return next;
-        })
-    }
-
-    // 各初期状態
-    const initialTournamentState = createInitialTournamentState(tournament);
-    const initialDivisionState = initialTournamentState.divisionStates[numCurrentDivision];
-    const initialRoundState = initialDivisionState.roundStates[numCurrentRound];
 
     // 楽曲更新
     const setSong = (song: Song | null) => {
@@ -76,11 +59,6 @@ export function useTournamentState({
         setNumCurrentRound(prev => prev + 1);
     };
 
-    // 試合リセット
-    const resetCurrentRound = () => {
-        updateRoundState(() => initialRoundState);
-    }
-
     // 部門進行
     const previousDivision = () => {
         setNumCurrentDivision(prev => prev - 1);
@@ -91,15 +69,10 @@ export function useTournamentState({
         setNumCurrentRound(0);
     };
 
-    // 部門リセット
-    const resetDivision = () => {
-        updateDivisionState(() => initialDivisionState);
-        setNumCurrentRound(0);
-    }
-
     // 大会リセット
     const resetTournament = () => {
-        setTournamentState(initialTournamentState);
+        setTournament(null);
+        setTournamentState(null);
         setNumCurrentDivision(0);
         setNumCurrentRound(0);
     };
@@ -111,10 +84,8 @@ export function useTournamentState({
         setScoresPlayerB,
         previousRound,
         nextRound,
-        resetCurrentRound,
         previousDivision,
         nextDivision,
-        resetDivision,
         resetTournament
     }
 }

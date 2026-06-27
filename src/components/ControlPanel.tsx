@@ -12,10 +12,8 @@ type ControlPanelProps = {
     setScoresPlayerB: (scores: number[]) => void;
     onPrevRound: () => void;
     onNextRound: () => void;
-    onResetRound: () => void;
     onPrevDivision: () => void;
     onNextDivision: () => void;
-    onResetDivision: () => void;
     onResetTournament: () => void;
 }
 
@@ -29,10 +27,8 @@ export function ControlPanel({
     setScoresPlayerB,
     onPrevRound,
     onNextRound,
-    onResetRound,
     onPrevDivision,
     onNextDivision,
-    onResetDivision,
     onResetTournament
 }: ControlPanelProps) {
     const selectState = tournamentState
@@ -72,13 +68,6 @@ export function ControlPanel({
                 次の試合へ
             </button>
 
-            <p></p>
-
-            <button onClick={onResetRound}
-                disabled={selectState === "spinning"}>
-                この試合をリセット
-            </button>
-
             <h3>部門進行</h3>
 
             <button
@@ -95,15 +84,6 @@ export function ControlPanel({
                     || selectState === "spinning"}
             >
                 次の部門へ
-            </button>
-
-            <p></p>
-
-            <button
-                onClick={onResetDivision}
-                disabled={selectState === "spinning"}
-            >
-                部門をリセット
             </button>
 
             <h3>大会進行</h3>
