@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/otoge-song-randomizer">
       <App />
     </BrowserRouter>
   </StrictMode>,
