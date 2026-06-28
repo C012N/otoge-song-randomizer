@@ -1,8 +1,8 @@
 // webサイトのルートコンポーネント
-// 大会データの読み込み、状態管理、ルーティングを行う
+// 大会データの読み込み、状態管理、URLクエリ取得と分岐を行う
 
 import { useEffect, useRef, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   type Tournament,
   type SelectState,
@@ -23,6 +23,11 @@ import { PlayerCard } from "./components/PlayerCard";
 import { loadTournament } from "./components/loadTournament";
 
 function App() {
+  // URLクエリの取得
+  const [searchParams] = useSearchParams();
+  const queryViewMode = searchParams.get("viewmode");
+  const isControlMode = queryViewMode === "control";
+
   // 大会データ: JSONファイルから読み込んだ静的データ
   const [tournament, setTournament] = useSyncTournament(null);
 
@@ -141,12 +146,14 @@ function App() {
 
         <p>大会データを選択してください</p>
 
-        {(<input
-          type="file"
-          multiple
-          ref={folderInputRef}
-          onChange={onFolderSelected}
-        />)}
+        {isControlMode && (
+          <input
+            type="file"
+            multiple
+            ref={folderInputRef}
+            onChange={onFolderSelected}
+          />
+        )}
       </div>
     );
   }
@@ -205,62 +212,59 @@ function App() {
 
   return (
     <>
-      <Routes location={window.location} key={window.location.pathname}>
-        <Route path="/otoge-song-randomizer/" element={
-          <div className="app">
-            <header className="tournament-header">
-              <h1>{tournamentName}</h1>
-              <h2>{currentDivisionTitle}部門</h2>
-              <h2>{currentRoundName}</h2>
-            </header>
+      <div className="app">
+        <header className="tournament-header">
+          <h1>{tournamentName}</h1>
+          <h2>{currentDivisionTitle}部門</h2>
+          <h2>{currentRoundName}</h2>
+        </header>
 
-            <main className="match-area">
+        <main className="match-area">
 
-              <PlayerCard
-                teamName={teamA.name}
-                playerName={currentPlayerA.name}
-                selectedSong={currentPlayerA.song}
-                scores={scoresPlayerA}
-              />
-
-              <div className="vs">VS</div>
-
-              <PlayerCard
-                teamName={teamB.name}
-                playerName={currentPlayerB.name}
-                selectedSong={currentPlayerB.song}
-                scores={scoresPlayerB}
-              />
-
-            </main>
-
-            <SongSelector
-              song={song}
-              selectState={selectState}
-            />
-
-          </div>
-        } />
-
-        <Route path="/otoge-song-randomizer/control" element={
-          <ControlPanel
-            tournamentState={tournamentState}
-            numCurrentDivision={numCurrentDivision}
-            numCurrentRound={numCurrentRound}
-            onSelectSong={selectSong}
-            scoresPlayerA={scoresPlayerA}
-            scoresPlayerB={scoresPlayerB}
-            setScoresPlayerA={setScoresPlayerA}
-            setScoresPlayerB={setScoresPlayerB}
-            onPrevRound={previousRound}
-            onNextRound={nextRound}
-            onPrevDivision={previousDivision}
-            onNextDivision={nextDivision}
-            onResetTournament={resetTournament}
+          <PlayerCard
+            teamName={teamA.name}
+            playerName={currentPlayerA.name}
+            selectedSong={currentPlayerA.song}
+            scores={scoresPlayerA}
           />
-        } />
-      </Routes>
+
+          <div className="vs">VS</div>
+
+          <PlayerCard
+            teamName={teamB.name}
+            playerName={currentPlayerB.name}
+            selectedSong={currentPlayerB.song}
+            scores={scoresPlayerB}
+          />
+
+        </main>
+
+        <SongSelector
+          song={song}
+          selectState={selectState}
+        />
+
+      </div>
+
+      {isControlMode && (
+        <ControlPanel
+          tournamentState={tournamentState}
+          numCurrentDivision={numCurrentDivision}
+          numCurrentRound={numCurrentRound}
+          onSelectSong={selectSong}
+          scoresPlayerA={scoresPlayerA}
+          scoresPlayerB={scoresPlayerB}
+          setScoresPlayerA={setScoresPlayerA}
+          setScoresPlayerB={setScoresPlayerB}
+          onPrevRound={previousRound}
+          onNextRound={nextRound}
+          onPrevDivision={previousDivision}
+          onNextDivision={nextDivision}
+          onResetTournament={resetTournament}
+        />
+      )}
     </>
+
   );
 }
 
