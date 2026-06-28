@@ -1,3 +1,9 @@
+// 大会データの読み込み処理
+// ファイル選択ダイアログで選択されたファイル群から大会データを読み込む
+// 大会データは1つのJSONで、画像ファイルは同じフォルダに配置されていることを想定
+// 画像ファイルはURL.createObjectURLでURL化して返す
+// 返り値: { tournament: Tournament, imageMap: Map<string, string> }
+
 import { TournamentSchema, type LoadTournamentResult } from "./types";
 
 export async function loadTournament(files: FileList): Promise<LoadTournamentResult> {

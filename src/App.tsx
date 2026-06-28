@@ -1,5 +1,8 @@
+// webサイトのルートコンポーネント
+// 大会データの読み込み、状態管理、ルーティングを行う
+
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import {
   type Tournament,
   type SelectState,
@@ -9,31 +12,32 @@ import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
 import { ControlPanel } from "./components/ControlPanel";
 import { useTournamentState } from "./components/hooks/useTournamentState";
+import {
+  useSyncTournament,
+  useSyncTournamentState,
+  useSyncNumCurrentDivision,
+  useSyncNumCurrentRound
+} from "./components/hooks/useSyncTournamentState";
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 import { loadTournament } from "./components/loadTournament";
 
 function App() {
-  // 大会データ
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+  // 大会データ: JSONファイルから読み込んだ静的データ
+  const [tournament, setTournament] = useSyncTournament(null);
+
+  // 大会状態: 選曲状態やスコアなど運営の操作によるもの
+  const [tournamentState, setTournamentState] = useSyncTournamentState(null);
 
   // 画像データ: ファイル名->URLのmap
   const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
-  console.log(imageMap);
+  console.log("dummy", imageMap);
 
   // 部門進行状況: 整数値で管理
-  const [numCurrentDivision, setNumCurrentDivision] = useState(0);
+  const [numCurrentDivision, setNumCurrentDivision] = useSyncNumCurrentDivision(0);
 
   // 試合進行状況: 整数値で管理
-  const [numCurrentRound, setNumCurrentRound] = useState(0);
-
-  // 得点状況
-  const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
-
-  // 画面切り替え用
-  const [searchParams] = useSearchParams();
-  const viewMode = searchParams.get("viewMode");
-  const isStreaming = viewMode === "stream";
+  const [numCurrentRound, setNumCurrentRound] = useSyncNumCurrentRound(0);
 
   // 抽選演出用: 効果音
   const audioContext = useRef<AudioContext | null>(null);
@@ -137,7 +141,7 @@ function App() {
 
         <p>大会データを選択してください</p>
 
-        {!isStreaming && (<input
+        {(<input
           type="file"
           multiple
           ref={folderInputRef}
@@ -160,11 +164,8 @@ function App() {
   const currentPlayerB = currentRound.playerB;
   const currentSongs = currentRound.songs;
 
-  // 状態もセット
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
   const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
-
-  // 状態からデータを取り出しておく
   const song = currentRoundState.selectedSong;
   const selectState = currentRoundState.selectState;
   const scoresPlayerA = currentRoundState.scoresPlayerA;
@@ -180,13 +181,12 @@ function App() {
     nextRound,
     previousDivision,
     nextDivision,
-    resetTournament,
+    resetTournament
   } = useTournamentState({
     tournament,
     setTournament,
     tournamentState,
     setTournamentState,
-    createInitialTournamentState,
     numCurrentDivision,
     setNumCurrentDivision,
     numCurrentRound,
@@ -203,59 +203,64 @@ function App() {
     playFinishSound
   });
 
-
-
-
   return (
-    <div className="app">
-      <header className="tournament-header">
-        <h1>{tournamentName}</h1>
-        <h2>{currentDivisionTitle}部門</h2>
-        <h2>{currentRoundName}</h2>
-      </header>
+    <>
+      <Routes>
+        <Route path="/otoge-song-randomizer/" element={
+          <div className="app">
+            <header className="tournament-header">
+              <h1>{tournamentName}</h1>
+              <h2>{currentDivisionTitle}部門</h2>
+              <h2>{currentRoundName}</h2>
+            </header>
 
-      <main className="match-area">
+            <main className="match-area">
 
-        <PlayerCard
-          teamName={teamA.name}
-          playerName={currentPlayerA.name}
-          selectedSong={currentPlayerA.song}
-          scores={scoresPlayerA}
-        />
+              <PlayerCard
+                teamName={teamA.name}
+                playerName={currentPlayerA.name}
+                selectedSong={currentPlayerA.song}
+                scores={scoresPlayerA}
+              />
 
-        <div className="vs">VS</div>
+              <div className="vs">VS</div>
 
-        <PlayerCard
-          teamName={teamB.name}
-          playerName={currentPlayerB.name}
-          selectedSong={currentPlayerB.song}
-          scores={scoresPlayerB}
-        />
+              <PlayerCard
+                teamName={teamB.name}
+                playerName={currentPlayerB.name}
+                selectedSong={currentPlayerB.song}
+                scores={scoresPlayerB}
+              />
 
-      </main>
+            </main>
 
-      <SongSelector
-        song={song}
-        selectState={selectState}
-        onSelect={selectSong}
-      />
+            <SongSelector
+              song={song}
+              selectState={selectState}
+            />
 
-      {!isStreaming && (<ControlPanel
-        tournamentState={tournamentState}
-        numCurrentDivision={numCurrentDivision}
-        numCurrentRound={numCurrentRound}
-        scoresPlayerA={scoresPlayerA}
-        scoresPlayerB={scoresPlayerB}
-        setScoresPlayerA={setScoresPlayerA}
-        setScoresPlayerB={setScoresPlayerB}
-        onPrevRound={previousRound}
-        onNextRound={nextRound}
-        onPrevDivision={previousDivision}
-        onNextDivision={nextDivision}
-        onResetTournament={resetTournament}
-      />)}
+          </div>
+        } />
 
-    </div>
+        <Route path="/otoge-song-randomizer/control" element={
+          <ControlPanel
+            tournamentState={tournamentState}
+            numCurrentDivision={numCurrentDivision}
+            numCurrentRound={numCurrentRound}
+            onSelectSong={selectSong}
+            scoresPlayerA={scoresPlayerA}
+            scoresPlayerB={scoresPlayerB}
+            setScoresPlayerA={setScoresPlayerA}
+            setScoresPlayerB={setScoresPlayerB}
+            onPrevRound={previousRound}
+            onNextRound={nextRound}
+            onPrevDivision={previousDivision}
+            onNextDivision={nextDivision}
+            onResetTournament={resetTournament}
+          />
+        } />
+      </Routes>
+    </>
   );
 }
 

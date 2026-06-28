@@ -1,20 +1,24 @@
-import type React from "react";
+// 大会状態管理用のカスタムフック
+// useTournamentState: tournamentStateの状態を管理する
+// 以下同様
+
 import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState } from "../types";
 
 type UseTournamentStateProps = {
     tournament: Tournament;
-    setTournament: React.Dispatch<React.SetStateAction<Tournament | null>>;
+    setTournament: (tournament: Tournament | null) => void;
     tournamentState: TournamentState
-    setTournamentState: React.Dispatch<React.SetStateAction<TournamentState | null>>;
-    createInitialTournamentState: (tournament: Tournament) => TournamentState;
+    setTournamentState: (tournamentState: TournamentState | null) => void;
     numCurrentDivision: number;
-    setNumCurrentDivision: React.Dispatch<React.SetStateAction<number>>;
+    setNumCurrentDivision: (num: number) => void;
     numCurrentRound: number;
-    setNumCurrentRound: React.Dispatch<React.SetStateAction<number>>;
+    setNumCurrentRound: (num: number) => void;
 }
 
 export function useTournamentState({
+    tournament,
     setTournament,
+    tournamentState,
     setTournamentState,
     numCurrentDivision,
     setNumCurrentDivision,
@@ -25,12 +29,10 @@ export function useTournamentState({
     const updateRoundState = (
         updater: (roundState: RoundState) => void,
     ) => {
-        setTournamentState(prev => {
-            if (!prev) return prev;
-            const next = structuredClone(prev);
-            updater(next.divisionStates[numCurrentDivision].roundStates[numCurrentRound]);
-            return next;
-        })
+        if (!tournamentState) return;
+        const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound];
+        updater(currentRoundState);
+        setTournamentState({ ...tournamentState });
     }
 
     // 楽曲更新
@@ -53,19 +55,25 @@ export function useTournamentState({
 
     // 試合進行
     const previousRound = () => {
-        setNumCurrentRound(prev => prev - 1);
+        const numPreviousRound = Math.max(numCurrentRound - 1, 0);
+        setNumCurrentRound(numPreviousRound);
     }
     const nextRound = () => {
-        setNumCurrentRound(prev => prev + 1);
+        const numNextRound = Math.min(numCurrentRound + 1,
+            tournament.divisions[numCurrentDivision].rounds.length - 1);
+        setNumCurrentRound(numNextRound);
     };
 
     // 部門進行
     const previousDivision = () => {
-        setNumCurrentDivision(prev => prev - 1);
+        const numPreviousDivision = Math.max(numCurrentDivision - 1, 0);
+        setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
     };
     const nextDivision = () => {
-        setNumCurrentDivision(prev => prev + 1);
+        const numNextDivision = Math.min(numCurrentDivision + 1,
+            tournament.divisions.length - 1);
+        setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
     };
 

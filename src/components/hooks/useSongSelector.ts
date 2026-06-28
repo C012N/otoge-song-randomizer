@@ -1,3 +1,8 @@
+// 楽曲抽選用のカスタムフック
+// 演出用に、availableSongsからランダムで楽曲を選び、setSongで表示する
+// 演出中はsetSelectStateで状態を更新する
+// 演出終了後に、もともと選んであった楽曲を表示する
+
 import { type Song, type SelectState } from "../types";
 
 let previousSong: Song | null;

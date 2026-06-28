@@ -1,11 +1,15 @@
+// 大会進行パネルのコンポーネント
+// 大会進行状況の表示と操作を行う
+// /controlルートでのみ表示される
+
 import type { TournamentState } from "./types"
 import { ScoreInput } from "./ScoreInput";
-
 
 type ControlPanelProps = {
     tournamentState: TournamentState;
     numCurrentDivision: number;
     numCurrentRound: number;
+    onSelectSong: () => void;
     scoresPlayerA: number[];
     scoresPlayerB: number[];
     setScoresPlayerA: (scores: number[]) => void;
@@ -21,6 +25,7 @@ export function ControlPanel({
     tournamentState,
     numCurrentDivision,
     numCurrentRound,
+    onSelectSong,
     scoresPlayerA,
     scoresPlayerB,
     setScoresPlayerA,
@@ -39,6 +44,12 @@ export function ControlPanel({
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
         <div>
+            <button
+                onClick={onSelectSong}
+                disabled={selectState === "spinning"}
+            >
+                選曲！
+            </button>
             <ScoreInput
                 label="Player A"
                 scores={scoresPlayerA}

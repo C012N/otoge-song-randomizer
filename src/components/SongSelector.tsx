@@ -1,15 +1,16 @@
+// 選曲パネルのコンポーネント
+// 選曲中の楽曲情報を表示する
+
 import { type Song, type SelectState } from "./types"
 
 type SongSelectorProps = {
     song: Song | null;
     selectState: SelectState;
-    onSelect: () => void;
 }
 
 export function SongSelector({
     song,
     selectState,
-    onSelect
 }: SongSelectorProps) {
     // null値も自然に描画
     const displaySong = song ?? {
@@ -52,15 +53,7 @@ export function SongSelector({
         <div>
             <h2>課題曲:</h2>
 
-            <button
-                onClick={onSelect}
-                disabled={selectState === "spinning"}
-            >
-                選曲！
-            </button>
-
             {displaySongByState}
-
         </div>
     )
 }

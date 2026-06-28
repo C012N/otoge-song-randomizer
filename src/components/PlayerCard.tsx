@@ -1,3 +1,6 @@
+// プレイヤーカードのコンポーネント
+// チーム名、プレイヤー名、自選曲、スコアを表示する
+
 import {type Song} from "./types"
 
 type PlayerCardProps = {

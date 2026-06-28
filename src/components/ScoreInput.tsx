@@ -1,3 +1,6 @@
+// スコア入力コンポーネント
+// controlルートでのみ表示される
+
 type ScoreInputProps = {
     label: string;
     scores: number[];
@@ -14,6 +17,8 @@ export function ScoreInput({
             <h3>{label}</h3>
 
             {scores.map((score, i) => (
+                <>
+                <p>{i + 1}曲目:</p>
                 <input
                     key={i}
                     type="number"
@@ -25,6 +30,7 @@ export function ScoreInput({
                         onChange(next);
                     }}
                 />
+                </>
             ))}
         </>
     )
