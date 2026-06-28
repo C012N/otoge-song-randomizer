@@ -2,7 +2,7 @@
 // 大会データの読み込み、状態管理、URLクエリ取得と分岐を行う
 
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import {
   type Tournament,
   type SelectState,
@@ -25,7 +25,7 @@ import { loadTournament } from "./components/loadTournament";
 function App() {
   // URLクエリの取得
   const [searchParams] = useSearchParams();
-  const queryViewMode = searchParams.get("viewmode");
+  const queryViewMode = searchParams.get("viewmode") || '';
   const isControlMode = queryViewMode === "control";
 
   // 大会データ: JSONファイルから読み込んだ静的データ
