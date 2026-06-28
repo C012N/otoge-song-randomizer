@@ -205,7 +205,7 @@ function App() {
 
   return (
     <>
-      <Routes>
+      <Routes location={window.location} key={window.location.pathname}>
         <Route path="/otoge-song-randomizer/" element={
           <div className="app">
             <header className="tournament-header">
