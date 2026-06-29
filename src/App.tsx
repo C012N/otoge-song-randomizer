@@ -26,7 +26,7 @@ function App() {
   // URLクエリの取得
   const [searchParams] = useSearchParams();
   const queryViewMode = searchParams.get("viewmode") || '';
-  const isControlMode = queryViewMode === "control";
+  const isStreamingMode = queryViewMode === "streaming";
 
   // 大会データ: JSONファイルから読み込んだ静的データ
   const [tournament, setTournament] = useSyncTournament(null);
@@ -139,14 +139,31 @@ function App() {
 
   // useEffect, useRef, useStateはここより前に書く
   // 読み込み前の画面
+  const currentURL = window.location.href;
   if (!tournament || !tournamentState) {
     return (
       <div>
         <h1>Otoge Song Randomizer</h1>
 
-        <p>大会データを選択してください</p>
+        {isStreamingMode && (
+          <h2>now loading...</h2>
+        )}
 
-        {isControlMode && (
+        {!isStreamingMode && (
+          <h3>1. 配信ビューを開く</h3>
+        )}
+
+        {!isStreamingMode && (
+          <button onClick={() => window.open(`${currentURL}?viewmode=streaming`)}>
+            配信ビューを開く
+          </button>
+        )}
+
+        {!isStreamingMode && (
+          <h3>2. 大会データを選択</h3>
+        )}
+
+        {!isStreamingMode && (
           <input
             type="file"
             multiple
@@ -246,7 +263,7 @@ function App() {
 
       </div>
 
-      {isControlMode && (
+      {!isStreamingMode && (
         <ControlPanel
           tournamentState={tournamentState}
           numCurrentDivision={numCurrentDivision}
