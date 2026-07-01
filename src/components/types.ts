@@ -61,6 +61,7 @@ type SelectState =
     | "not_started"
     | "spinning"
     | "displaying"
+    | "showResult" // 試合結果表示画面　後で作る
     | "finished"
 
 // 試合、部門、大会のスコア付きデータ

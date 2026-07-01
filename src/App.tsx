@@ -241,8 +241,6 @@ function App() {
           <PlayerCard
             teamName={teamA.name}
             playerName={currentPlayerA.name}
-            selectedSong={currentPlayerA.song}
-            scores={scoresPlayerA}
           />
 
           <div className="vs">VS</div>
@@ -250,8 +248,6 @@ function App() {
           <PlayerCard
             teamName={teamB.name}
             playerName={currentPlayerB.name}
-            selectedSong={currentPlayerB.song}
-            scores={scoresPlayerB}
           />
 
         </main>
