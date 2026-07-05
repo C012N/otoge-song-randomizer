@@ -53,15 +53,22 @@ export function useTournamentState({
         updateRoundState(roundState => roundState.scoresPlayerB = scores);
     }
 
+    // 試合結果表示
+    const showRoundResult = () => {
+        updateRoundState(roundState => roundState.selectState = "showResult");
+    }
+
     // 試合進行
     const previousRound = () => {
         const numPreviousRound = Math.max(numCurrentRound - 1, 0);
         setNumCurrentRound(numPreviousRound);
+        updateRoundState(roundState => roundState.selectState = "not_started");
     }
     const nextRound = () => {
         const numNextRound = Math.min(numCurrentRound + 1,
             tournament.divisions[numCurrentDivision].rounds.length - 1);
         setNumCurrentRound(numNextRound);
+        updateRoundState(roundState => roundState.selectState = "not_started");
     };
 
     // 部門進行
@@ -69,12 +76,14 @@ export function useTournamentState({
         const numPreviousDivision = Math.max(numCurrentDivision - 1, 0);
         setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
+        updateRoundState(roundState => roundState.selectState = "not_started");
     };
     const nextDivision = () => {
         const numNextDivision = Math.min(numCurrentDivision + 1,
             tournament.divisions.length - 1);
         setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
+        updateRoundState(roundState => roundState.selectState = "not_started");
     };
 
     // 大会リセット
@@ -83,6 +92,7 @@ export function useTournamentState({
         setTournamentState(null);
         setNumCurrentDivision(0);
         setNumCurrentRound(0);
+        updateRoundState(roundState => roundState.selectState = "not_started");
     };
     
     return {
@@ -90,6 +100,7 @@ export function useTournamentState({
         setSelectState,
         setScoresPlayerA,
         setScoresPlayerB,
+        showRoundResult,
         previousRound,
         nextRound,
         previousDivision,

@@ -14,6 +14,7 @@ type ControlPanelProps = {
     scoresPlayerB: number[];
     setScoresPlayerA: (scores: number[]) => void;
     setScoresPlayerB: (scores: number[]) => void;
+    onShowRoundResult: () => void;
     onPrevRound: () => void;
     onNextRound: () => void;
     onPrevDivision: () => void;
@@ -30,6 +31,7 @@ export function ControlPanel({
     scoresPlayerB,
     setScoresPlayerA,
     setScoresPlayerB,
+    onShowRoundResult,
     onPrevRound,
     onNextRound,
     onPrevDivision,
@@ -61,6 +63,15 @@ export function ControlPanel({
                 scores={scoresPlayerB}
                 onChange={setScoresPlayerB}
             />
+
+            <h3>試合結果表示</h3>
+
+            <button
+                onClick={onShowRoundResult}
+                disabled={selectState === "spinning"}
+            >
+                試合の結果を表示
+            </button>
 
             <h3>試合進行</h3>
 
