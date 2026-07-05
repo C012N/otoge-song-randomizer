@@ -1,13 +1,12 @@
 // プレイヤーカードのコンポーネント
 // チーム名、プレイヤー名、自選曲、スコアを表示する
 
-import type { SelectState, Song } from "./types";
+import type { SelectState } from "./types";
 
 type PlayerCardProps = {
     selectState: SelectState;
     teamName: string;
     playerName: string;
-    playedSongs: Song[];
     scores: number[];
 }
 
@@ -15,7 +14,6 @@ export function PlayerCard({
     selectState,
     teamName,
     playerName,
-    playedSongs,
     scores,
 }: PlayerCardProps) {
     // 試合結果表示以外

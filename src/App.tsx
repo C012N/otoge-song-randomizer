@@ -186,8 +186,8 @@ function App() {
   const currentRoundName = currentRound.name;
   const currentPlayerA = currentRound.playerA;
   const currentPlayerB = currentRound.playerB;
-  const songPlayerA = currentPlayerA.song;
-  const songPlayerB = currentPlayerB.song
+  // const songPlayerA = currentPlayerA.song;
+  // const songPlayerB = currentPlayerB.song
   const currentSongs = currentRound.songs;
 
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
@@ -197,7 +197,7 @@ function App() {
   const scoresPlayerA = currentRoundState.scoresPlayerA;
   const scoresPlayerB = currentRoundState.scoresPlayerB;
 
-  const playedSongs = [songPlayerA, songPlayerB, song];
+  // const playedSongs = [songPlayerA, songPlayerB, song];
 
   // セッター
   const {
@@ -247,7 +247,6 @@ function App() {
             selectState={selectState}
             teamName={teamA.name}
             playerName={currentPlayerA.name}
-            playedSongs={playedSongs}
             scores={scoresPlayerA}          />
 
           <div className="vs">VS</div>
@@ -256,7 +255,6 @@ function App() {
             selectState={selectState}
             teamName={teamB.name}
             playerName={currentPlayerB.name}
-            playedSongs={playedSongs}
             scores={scoresPlayerB}
           />
 
