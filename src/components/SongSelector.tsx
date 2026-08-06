@@ -1,59 +1,40 @@
 // 選曲パネルのコンポーネント
 // 選曲中の楽曲情報を表示する
 
-import { type Song, type SelectState } from "./types"
+import { type Song } from "./types"
 
 type SongSelectorProps = {
-    song: Song | null;
-    selectState: SelectState;
+    song: Song
 }
 
 export function SongSelector({
-    song,
-    selectState,
+    song: song
 }: SongSelectorProps) {
-    // null値も自然に描画
-    const displaySong = song ?? {
-        title: "???",
-        difficulty: "???",
-        level: "???"
-    };
-
-    // 楽曲の描画を状態ごとに管理
-    let displaySongByState;
-
-    if (selectState === "not_started") {
-        displaySongByState = (
-            <>
-                <h3>{displaySong.title}</h3>
-                <p>選曲待機中...</p>
-            </>
-        );
-    }
-    else if (selectState === "finished") {
-        displaySongByState = (
-            <>
-                <h3>{displaySong.title}</h3>
-                <p>全曲選曲済み</p>
-            </>
-        );
-    }
-    else {
-        displaySongByState = (
-            <>
-                <h3>{displaySong.title}</h3>
-                <p>
-                    {displaySong.difficulty} {displaySong.level}
-                </p>
-            </>
-        );
+    // 選曲状態に応じて楽曲を表示
+    function displaySongByState() {
+        if (!song) {
+            return (
+                <div>
+                    <h3>???</h3>
+                    <p>選曲待機中...</p>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <h3>{song.title}</h3>
+                    <p>{song.difficulty} {song.level}</p>
+                </div>
+            )
+        }
     }
 
     return (
         <div>
             <h2>課題曲:</h2>
 
-            {displaySongByState}
+            {displaySongByState()}
         </div>
     )
 }

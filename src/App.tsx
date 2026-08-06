@@ -263,7 +263,6 @@ function App() {
         {(selectState !== "showResult") && (
           <SongSelector
             song={song}
-            selectState={selectState}
           />)}
 
       </div>
