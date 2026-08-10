@@ -1,6 +1,8 @@
 // スコア入力コンポーネント
 // controlルートでのみ表示される
 
+import { NumberInput } from "./TailwindCssDefaults";
+
 type ScoreInputProps = {
     label: string;
     scores: number[];
@@ -14,22 +16,21 @@ export function ScoreInput({
 }: ScoreInputProps) {
     return (
         <>
-            <h3>{label}</h3>
+            <h2>{label}</h2>
 
             {scores.map((score, i) => (
                 <>
-                <p>{i + 1}曲目:</p>
-                <input
-                    key={i}
-                    type="number"
-                    value={score}
-                    onChange={e => {
-                        const value = e.target.valueAsNumber;
-                        const next = structuredClone(scores);
-                        next[i] = Number.isNaN(value) ? 0 : value;
-                        onChange(next);
-                    }}
-                />
+                    <h3>{i + 1}曲目:</h3>
+                    <NumberInput
+                        key={i}
+                        value={score}
+                        onChange={e => {
+                            const value = e.target.valueAsNumber;
+                            const next = structuredClone(scores);
+                            next[i] = Number.isNaN(value) ? 0 : value;
+                            onChange(next);
+                        }}
+                    />
                 </>
             ))}
         </>

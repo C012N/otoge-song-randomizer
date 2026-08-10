@@ -4,6 +4,7 @@
 
 import type { TournamentState } from "./types"
 import { ScoreInput } from "./ScoreInput";
+import { Button } from "./TailwindCssDefaults";
 
 type ControlPanelProps = {
     tournamentState: TournamentState;
@@ -46,76 +47,76 @@ export function ControlPanel({
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
         <div>
-            <button
-                onClick={onSelectSong}
-                disabled={selectState === "spinning"}
-            >
-                選曲！
-            </button>
-            <ScoreInput
-                label="Player A"
-                scores={scoresPlayerA}
-                onChange={setScoresPlayerA}
-            />
+            <h2>コントロールパネル</h2>
 
-            <ScoreInput
-                label="Player B"
-                scores={scoresPlayerB}
-                onChange={setScoresPlayerB}
-            />
+            <div>
+                <Button
+                    children="選曲！"
+                    onClick={onSelectSong}
+                    disabled={selectState === "spinning"}
+                />
+                
+                <ScoreInput
+                    label="Player A"
+                    scores={scoresPlayerA}
+                    onChange={setScoresPlayerA}
+                />
 
-            <h3>試合結果表示</h3>
+                <ScoreInput
+                    label="Player B"
+                    scores={scoresPlayerB}
+                    onChange={setScoresPlayerB}
+                />
+            </div>
 
-            <button
-                onClick={onShowRoundResult}
-                disabled={selectState === "spinning"}
-            >
-                試合の結果を表示
-            </button>
+            <div>
+                <Button
+                    children="試合結果を表示"
+                    onClick={onShowRoundResult}
+                    disabled={selectState === "spinning"}
+                />
+            </div>
 
-            <h3>試合進行</h3>
+            <div>
+                <Button
+                    children="前の試合へ"
+                    onClick={onPrevRound}
+                    disabled={numCurrentRound === 0
+                        || selectState === "spinning"}
+                />
 
-            <button
-                onClick={onPrevRound}
-                disabled={numCurrentRound === 0
-                    || selectState === "spinning"}
-            >
-                前の試合へ
-            </button>
+                <Button
+                    children="次の試合へ"
+                    onClick={onNextRound}
+                    disabled={numCurrentRound === numRounds - 1
+                        || selectState === "spinning"}
+                />
+            </div>
 
-            <button
-                onClick={onNextRound}
-                disabled={numCurrentRound === numRounds - 1
-                    || selectState === "spinning"}>
-                次の試合へ
-            </button>
+            <div>
+                <Button
+                    children="前の部門へ"
+                    onClick={onPrevDivision}
+                    disabled={numCurrentDivision === 0
+                        || selectState === "spinning"}
+                />
 
-            <h3>部門進行</h3>
+                <Button
+                    children="次の部門へ"
+                    onClick={onNextDivision}
+                    disabled={numCurrentDivision === numDivisions - 1
+                        || selectState === "spinning"}
+                />
+            </div>
 
-            <button
-                onClick={onPrevDivision}
-                disabled={numCurrentDivision === 0
-                    || selectState === "spinning"}
-            >
-                前の部門へ
-            </button>
+            <div>
+                <Button
+                    children="大会全体をリセット"
+                    onClick={onResetTournament}
+                    disabled={selectState === "spinning"}
+                />
+            </div>
 
-            <button
-                onClick={onNextDivision}
-                disabled={numCurrentDivision === numDivisions - 1
-                    || selectState === "spinning"}
-            >
-                次の部門へ
-            </button>
-
-            <h3>大会進行</h3>
-
-            <button
-                onClick={onResetTournament}
-                disabled={selectState === "spinning"}
-            >
-                大会全体をリセット
-            </button>
         </div>
     )
 }

@@ -21,6 +21,8 @@ import {
 import "./App.css"
 import { PlayerCard } from "./components/PlayerCard";
 import { loadTournament } from "./components/loadTournament";
+import { ShowRoundResult } from "./components/ShowRoundResult";
+import { Button } from "./components/TailwindCssDefaults";
 
 function App() {
   // URLクエリの取得
@@ -154,9 +156,14 @@ function App() {
         )}
 
         {!isStreamingMode && (
-          <button onClick={() => window.open(`${currentURL}?viewmode=streaming`)}>
-            配信ビューを開く
-          </button>
+          Button({
+            children: "配信ビューを開く",
+            onClick: () => {
+              const streamingURL = currentURL + "?viewmode=streaming";
+              window.open(streamingURL, "_blank");
+            },
+            disabled: false
+          })
         )}
 
         {!isStreamingMode && (
@@ -164,7 +171,7 @@ function App() {
         )}
 
         {!isStreamingMode && (
-          <input
+          <input className="border border-gray-300 rounded py-2 px-4"
             type="file"
             multiple
             ref={folderInputRef}
@@ -241,24 +248,25 @@ function App() {
           <h2>{currentRoundName}</h2>
         </header>
 
-        <main className="match-area">
+        {(selectState !== "showResult") && (
+          <main className="match-area">
 
-          <PlayerCard
-            selectState={selectState}
-            teamName={teamA.name}
-            playerName={currentPlayerA.name}
-            scores={scoresPlayerA}          />
+            <PlayerCard
+              selectState={selectState}
+              teamName={teamA.name}
+              playerName={currentPlayerA.name}
+              scores={scoresPlayerA} />
 
-          <div className="vs">VS</div>
+            <div className="vs">VS</div>
 
-          <PlayerCard
-            selectState={selectState}
-            teamName={teamB.name}
-            playerName={currentPlayerB.name}
-            scores={scoresPlayerB}
-          />
+            <PlayerCard
+              selectState={selectState}
+              teamName={teamB.name}
+              playerName={currentPlayerB.name}
+              scores={scoresPlayerB}
+            />
 
-        </main>
+          </main>)}
 
         {(selectState !== "showResult") && (
           <SongSelector
@@ -266,6 +274,21 @@ function App() {
           />)}
 
       </div>
+
+      {selectState === "showResult" && (
+        <div className="match-result">
+          <h2>試合結果</h2>
+          <ShowRoundResult
+            divisionName={currentDivisionTitle}
+            roundName={currentRoundName}
+            roundState={currentRoundState}
+            playerA={currentPlayerA}
+            playerB={currentPlayerB}
+            scoresPlayerA={scoresPlayerA}
+            scoresPlayerB={scoresPlayerB}
+          />
+        </div>
+      )}
 
       {!isStreamingMode && (
         <ControlPanel
