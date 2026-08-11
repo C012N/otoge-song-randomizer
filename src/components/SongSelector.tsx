@@ -12,27 +12,29 @@ export function SongSelector({
 }: SongSelectorProps) {
     // 選曲状態に応じて楽曲を表示
     function displaySongByState() {
-        if (!song) {
-            return (
-                <div>
-                    <h3>???</h3>
-                    <p>選曲待機中...</p>
-                </div>
-            )
+        const songForDisplay = (song) ? song : {
+            title: "???",
+            difficulty: "",
+            level: ""
         }
-        else {
-            return (
-                <div>
-                    <h3>{song.title}</h3>
-                    <p>{song.difficulty} {song.level}</p>
-                </div>
-            )
-        }
+        return (
+            <div>
+                <p className="mt-2 text-3xl font-black tracking-tight md:text-5xl lg:text-6xl">
+                    {songForDisplay.title}
+                </p>
+                <br></br>
+                <p className="mt-3 text-2xl font-bold md:text-3xl lg:text-4xl">
+                    {songForDisplay.difficulty} {songForDisplay.level}
+                </p>
+            </div>
+        )
     }
 
     return (
-        <div>
-            <h2>課題曲:</h2>
+        <div className="mx-auto w-full max-w-6xl px-4 py-10 text-center md:py-14 lg:py-16">
+            <p className="text-lg font-bold text-gray-400 md:text-xl lg:text-2xl">
+                課題曲:
+            </p>
 
             {displaySongByState()}
         </div>

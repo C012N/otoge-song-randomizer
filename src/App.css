@@ -227,35 +227,3 @@
 .view-toggle__button.is-active:hover {
   background: #222;
 }
-
-.match-area {
-  display: grid;
-
-  grid-template-columns: 1fr auto 1fr;
-
-  align-items: center;
-
-  gap: 2rem;
-}
-
-.player-area {
-  border: 2px solid black;
-  border-radius: 12px;
-
-  padding: 2rem;
-
-  text-align: center;
-}
-
-.player-area h2 {
-  margin-bottom: 1rem;
-}
-
-.player-area p {
-  margin: 0.5rem 0;
-}
-
-.vs {
-  font-size: 3rem;
-  font-weight: bold;
-}

@@ -171,7 +171,7 @@ function App() {
         )}
 
         {!isStreamingMode && (
-          <input className="border border-gray-300 rounded py-2 px-4"
+          <input className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
             type="file"
             multiple
             ref={folderInputRef}
@@ -240,54 +240,48 @@ function App() {
   });
 
   return (
-    <>
-      <div className="app">
-        <header className="tournament-header">
+    <div className="min-h-screen w-full bg-[#15161b] text-white">
+      
+        <div className="w-full border-b border-gray-800 px-6 py-5 text-center md:px-10 md:py-7">
           <h1>{tournamentName}</h1>
           <h2>{currentDivisionTitle}部門</h2>
           <h2>{currentRoundName}</h2>
-        </header>
+        </div>
 
         {(selectState !== "showResult") && (
-          <main className="match-area">
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-5 px-4 py-8 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-10 lg:gap-16 lg:py-12">
 
             <PlayerCard
-              selectState={selectState}
               teamName={teamA.name}
               playerName={currentPlayerA.name}
-              scores={scoresPlayerA} />
-
-            <div className="vs">VS</div>
-
-            <PlayerCard
-              selectState={selectState}
-              teamName={teamB.name}
-              playerName={currentPlayerB.name}
-              scores={scoresPlayerB}
             />
 
-          </main>)}
+            <div className="text-center text-4xl font-black text-gray-400 md:text-5xl lg:text-6xl">
+              VS
+            </div>
+
+            <PlayerCard
+              teamName={teamB.name}
+              playerName={currentPlayerB.name}
+            />
+
+          </div>)}
 
         {(selectState !== "showResult") && (
           <SongSelector
             song={song}
           />)}
 
-      </div>
-
       {selectState === "showResult" && (
-        <div className="match-result">
-          <h2>試合結果</h2>
-          <ShowRoundResult
-            divisionName={currentDivisionTitle}
-            roundName={currentRoundName}
-            roundState={currentRoundState}
-            playerA={currentPlayerA}
-            playerB={currentPlayerB}
-            scoresPlayerA={scoresPlayerA}
-            scoresPlayerB={scoresPlayerB}
-          />
-        </div>
+        <ShowRoundResult
+          divisionName={currentDivisionTitle}
+          roundName={currentRoundName}
+          roundState={currentRoundState}
+          playerA={currentPlayerA}
+          playerB={currentPlayerB}
+          scoresPlayerA={scoresPlayerA}
+          scoresPlayerB={scoresPlayerB}
+        />
       )}
 
       {!isStreamingMode && (
@@ -308,7 +302,7 @@ function App() {
           onResetTournament={resetTournament}
         />
       )}
-    </>
+    </div>
 
   );
 }
