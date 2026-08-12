@@ -248,7 +248,7 @@ function App() {
         font-sans
         tracking-wider
         text-white
-        [text-shadow:_1px_1px_0_rgb(64_64_64),_-1px_1px_0_rgb(64_64_64),_1px_-1px_0_rgb(64_64_64),_-1px_-1px_0_rgb(64_64_64)]
+        [text-shadow:_2px_2px_0_rgb(64_64_64),_-2px_2px_0_rgb(64_64_64),_2px_-2px_0_rgb(64_64_64),_-2px_-2px_0_rgb(64_64_64)]
         md:px-10 md:py-7">
         <p className="text-8xl font-bold">
           {tournamentName}
@@ -256,9 +256,12 @@ function App() {
       </div>
 
       {(selectState !== "showResult") && (
-        <SongSelector
-          song={song}
-        />)}
+        <div className="[text-shadow:_2px_2px_0_rgb(64_64_64),_-2px_2px_0_rgb(64_64_64),_2px_-2px_0_rgb(64_64_64),_-2px_-2px_0_rgb(64_64_64)]">
+          <h1>{currentDivisionTitle}部門 {currentRoundName}</h1>
+          <SongSelector
+            song={song}
+          />
+        </div>)}
 
       {selectState === "showResult" && (
         <ShowRoundResult

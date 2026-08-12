@@ -34,7 +34,7 @@ export function ShowRoundResult({
 
     const formatRedCell = (data: any) => {
         return (
-            <td className="h-24 border border-white pl-4 pr-4 py-4 bg-orange-700/70">
+            <td className="h-24 border border-white font-bold pl-4 pr-4 py-4 bg-orange-700/70">
                 {data}
             </td>
         )
@@ -42,7 +42,7 @@ export function ShowRoundResult({
 
     const formatBlueCell = (data: any) => {
         return (
-            <td className="h-24 border border-white pl-4 pr-4 py-4 bg-sky-700/70">
+            <td className="h-24 border border-white font-bold pl-4 pr-4 py-4 bg-sky-700/70">
                 {data}
             </td>
         )
@@ -51,7 +51,7 @@ export function ShowRoundResult({
     const formatSongData = (player: Player | null) => {
         return (!player) ? (
             <>
-                <p className="text-3xl text-slate-300">
+                <p className="text-2xl text-slate-300">
                     課題曲
                 </p>
                 <p>
@@ -60,7 +60,7 @@ export function ShowRoundResult({
             </>
         ) : (
             <>
-                <p className="text-3xl text-slate-300">
+                <p className="text-2xl text-slate-300">
                     {player.name} 自選
                 </p>
                 <p>
@@ -84,7 +84,8 @@ export function ShowRoundResult({
 
     return (
         <div>
-            <h1 className="text-4xl font-bold">
+            <h1 className="text-4xl font-bold
+            [text-shadow:_2px_2px_0_rgb(64_64_64),_-2px_2px_0_rgb(64_64_64),_2px_-2px_0_rgb(64_64_64),_-2px_-2px_0_rgb(64_64_64)]">
                 試合結果 <br />
                 {divisionName}部門 {roundName}
             </h1>

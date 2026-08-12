@@ -32,7 +32,7 @@ export function SongSelector({
 
     return (
         <div className="mx-auto w-full max-w-6xl px-4 py-10 text-center md:py-14 lg:py-16">
-            <p className="text-lg font-bold text-gray-400 md:text-xl lg:text-2xl">
+            <p className="text-2xl font-bold">
                 課題曲:
             </p>
 
