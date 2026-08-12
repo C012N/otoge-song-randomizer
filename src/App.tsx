@@ -144,7 +144,7 @@ function App() {
   const currentURL = window.location.href;
   if (!tournament || !tournamentState) {
     return (
-      <div>
+      <div className="w-full min-h-screen bg-[url('/public/bg_b4utech.png')] bg-center bg-cover text-white items-center font-sans p-10">
         <h1>Otoge Song Randomizer</h1>
 
         {isStreamingMode && (
@@ -240,37 +240,25 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-[#15161b] text-white">
-      
-        <div className="w-full border-b border-gray-800 px-6 py-5 text-center md:px-10 md:py-7">
-          <h1>{tournamentName}</h1>
-          <h2>{currentDivisionTitle}部門</h2>
-          <h2>{currentRoundName}</h2>
-        </div>
+    <div className="min-h-screen w-full bg-[url('/public/bg_b4utech.png')] bg-center bg-cover text-slate-100 p-10">
 
-        {(selectState !== "showResult") && (
-          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-5 px-4 py-8 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-10 lg:gap-16 lg:py-12">
+      <div className="
+        px-6 py-5
+        text-center
+        font-sans
+        tracking-wider
+        text-white
+        [text-shadow:_1px_1px_0_rgb(64_64_64),_-1px_1px_0_rgb(64_64_64),_1px_-1px_0_rgb(64_64_64),_-1px_-1px_0_rgb(64_64_64)]
+        md:px-10 md:py-7">
+        <p className="text-8xl font-bold">
+          {tournamentName}
+        </p>
+      </div>
 
-            <PlayerCard
-              teamName={teamA.name}
-              playerName={currentPlayerA.name}
-            />
-
-            <div className="text-center text-4xl font-black text-gray-400 md:text-5xl lg:text-6xl">
-              VS
-            </div>
-
-            <PlayerCard
-              teamName={teamB.name}
-              playerName={currentPlayerB.name}
-            />
-
-          </div>)}
-
-        {(selectState !== "showResult") && (
-          <SongSelector
-            song={song}
-          />)}
+      {(selectState !== "showResult") && (
+        <SongSelector
+          song={song}
+        />)}
 
       {selectState === "showResult" && (
         <ShowRoundResult

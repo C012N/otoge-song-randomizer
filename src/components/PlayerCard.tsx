@@ -11,7 +11,7 @@ export function PlayerCard({
     playerName,
 }: PlayerCardProps) {
     return (
-        <div className="w-full rounded-xl border border-gray-700 bg-[#18191f] px-6 py-8 text-center shadow-lg md:px-10 md:py-10">
+        <div className="w-full rounded-xl border border-gray-700 bg-slate-800/50 px-6 py-8 text-center shadow-lg md:px-10 md:py-10">
             <p className="mt-2 text-base text-gray-400 md:text-lg lg:text-xl">
                 {teamName}
             </p>

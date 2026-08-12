@@ -25,46 +25,122 @@ export function ShowRoundResult({
 
     if (!roundState.selectedSong) {
         return (
-            <div className="w-screen h-screen bg-[#0f172a] text-white flex flex-col justify-center items-center select-none font-sans p-10">
-                <h1 className="text-3xl font-black tracking-wider">
-                    {divisionName} - {roundName}
-                </h1>
-                <p className="mt-4 text-lg text-gray-300">選択された楽曲がありません。</p>
+            <div className="text-white font-sans p-10">
+                <h1>課題曲を選択してください</h1>
             </div>
         );
     }
-
     const formatScore = (score: number) => score.toLocaleString();
 
-    const showPlayerResult = (player: Player, scores: number[], winner: boolean) => {
-        const totalScore = scores.reduce((acc, score) => acc + score, 0);
+    const formatRedCell = (data: any) => {
         return (
-            <div className={`w-full rounded-3xl border-3 ${winner ? 'border-green-500' : 'border-gray-600'} bg-slate-800 grid grid-cols-3 items-center text-white text-center mt-6 p-4`}>
-                <div className="text-2xl">
-                    {player.name}
-                </div>
-                <div className="font-bold text-3xl">
-                    {formatScore(totalScore)}
-                </div>
-                <div>
-                    ①{formatScore(scores[0])} <br />
-                    ②{formatScore(scores[1])} <br />
-                    ③{formatScore(scores[2])}
-                </div>
-            </div>
-        );
+            <td className="h-24 border border-white pl-4 pr-4 py-4 bg-orange-700/70">
+                {data}
+            </td>
+        )
+    }
+
+    const formatBlueCell = (data: any) => {
+        return (
+            <td className="h-24 border border-white pl-4 pr-4 py-4 bg-sky-700/70">
+                {data}
+            </td>
+        )
+    }
+
+    const formatSongData = (player: Player | null) => {
+        return (!player) ? (
+            <>
+                <p className="text-3xl text-slate-300">
+                    課題曲
+                </p>
+                <p>
+                    {roundState.selectedSong?.title} ({roundState.selectedSong?.difficulty} {roundState.selectedSong?.level})
+                </p>
+            </>
+        ) : (
+            <>
+                <p className="text-3xl text-slate-300">
+                    {player.name} 自選
+                </p>
+                <p>
+                    {player.song.title} ({player.song.difficulty} {player.song.level})
+                </p>
+            </>
+        )
+    }
+
+    const formatRow = (data1: any, data2: any, data3: any, bgOption: string = "") => {
+        return (
+            <tr>
+                {formatRedCell(data1)}
+                <td colSpan={3} className={`h-24 border border-white pl-4 pr-4 py-4 ${bgOption}`}>
+                    {data2}
+                </td>
+                {formatBlueCell(data3)}
+            </tr>
+        )
     }
 
     return (
-        <div className="mx-auto max-w-4xl px-4 py-4 text-center md:px-10 md:py-6">
-            <h2>試合結果</h2>
-            <p className="py-2 text-xl text-gray-300 text-left">
-                ①{playerA.song.title} / ②{playerB.song.title} / ③{roundState.selectedSong.title}
-            </p>
-
-            {showPlayerResult(playerA, scoresPlayerA, totalScoreA > totalScoreB)}
-
-            {showPlayerResult(playerB, scoresPlayerB, totalScoreB > totalScoreA)}
+        <div>
+            <h1 className="text-4xl font-bold">
+                試合結果 <br />
+                {divisionName}部門 {roundName}
+            </h1>
+            <table className="
+                w-full
+                max-w-8xl
+                mx-auto
+                table-auto
+                border-collapse
+                text-center
+                text-white
+                text-4xl">
+                <thead>
+                    <tr>
+                        <th className="h-24 border border-white pl-4 pr-4 py-4 bg-orange-700/70">
+                            {playerA.name}
+                        </th>
+                        <th className="w-24 h-24 border border-white bg-orange-700/70">
+                            {(totalScoreA < totalScoreB) ? "" : "★"}
+                        </th>
+                        <th></th>
+                        <th className="w-24 h-24 border border-white bg-sky-700/70">
+                            {(totalScoreA > totalScoreB) ? "" : "★"}
+                        </th>
+                        <th className="h-24 border border-white pl-4 pr-4 py-4 bg-sky-700/70">
+                            {playerB.name}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {formatRow(
+                        formatScore(scoresPlayerA[0]),
+                        formatSongData(playerA),
+                        formatScore(scoresPlayerB[0]),
+                        "bg-orange-700/70"
+                    )}
+                    {formatRow(
+                        formatScore(scoresPlayerA[1]),
+                        formatSongData(playerB),
+                        formatScore(scoresPlayerB[1]),
+                        "bg-sky-700/70"
+                    )}
+                    {formatRow(
+                        formatScore(scoresPlayerA[2]),
+                        formatSongData(null),
+                        formatScore(scoresPlayerB[2]),
+                        "bg-slate-700/70"
+                    )}
+                    {formatRow(
+                        formatScore(totalScoreA),
+                        "合計",
+                        formatScore(totalScoreB),
+                        "bg-slate-700/70"
+                    )}
+                </tbody>
+            </table>
         </div>
     )
 }
