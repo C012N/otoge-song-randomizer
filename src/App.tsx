@@ -19,7 +19,6 @@ import {
   useSyncNumCurrentRound
 } from "./components/hooks/useSyncTournamentState";
 import "./App.css"
-import { PlayerCard } from "./components/PlayerCard";
 import { loadTournament } from "./components/loadTournament";
 import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
@@ -184,8 +183,8 @@ function App() {
 
   // 各データの取得
   const tournamentName = tournament.name;
-  const teamA = tournament.teamA;
-  const teamB = tournament.teamB;
+  // const teamA = tournament.teamA;
+  // const teamB = tournament.teamB;
   const allDivisions = tournament.divisions;
   const currentDivision = allDivisions[numCurrentDivision];
   const currentDivisionTitle = currentDivision.gameTitle;
