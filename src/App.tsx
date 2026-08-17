@@ -183,8 +183,8 @@ function App() {
 
   // 各データの取得
   const tournamentName = tournament.name;
-  // const teamA = tournament.teamA;
-  // const teamB = tournament.teamB;
+  const teamNameA = tournament.teamA.name;
+  const teamNameB = tournament.teamB.name;
   const allDivisions = tournament.divisions;
   const currentDivision = allDivisions[numCurrentDivision];
   const currentDivisionTitle = currentDivision.gameTitle;
@@ -192,8 +192,6 @@ function App() {
   const currentRoundName = currentRound.name;
   const currentPlayerA = currentRound.playerA;
   const currentPlayerB = currentRound.playerB;
-  // const songPlayerA = currentPlayerA.song;
-  // const songPlayerB = currentPlayerB.song
   const currentSongs = currentRound.songs;
 
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
@@ -267,6 +265,9 @@ function App() {
           divisionName={currentDivisionTitle}
           roundName={currentRoundName}
           roundState={currentRoundState}
+          teamNameA={teamNameA}
+          teamNameB={teamNameB}
+          imageMap={imageMap}
           playerA={currentPlayerA}
           playerB={currentPlayerB}
           scoresPlayerA={scoresPlayerA}
