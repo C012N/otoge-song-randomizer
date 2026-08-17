@@ -19,11 +19,13 @@ export function SongSelector({
         }
         return (
             <div>
-                <p className="mt-2 text-3xl font-black tracking-tight md:text-5xl lg:text-6xl">
+                <br/>
+                <br/>
+                <p className="text-6xl font-bold">
                     {songForDisplay.title}
                 </p>
-                <br></br>
-                <p className="mt-3 text-2xl font-bold md:text-3xl lg:text-4xl">
+                <br/>
+                <p className="text-4xl">
                     {songForDisplay.difficulty} {songForDisplay.level}
                 </p>
             </div>
@@ -31,11 +33,7 @@ export function SongSelector({
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 text-center md:py-14 lg:py-16">
-            <p className="text-2xl font-bold">
-                課題曲:
-            </p>
-
+        <div className="font-sans text-balance">
             {displaySongByState()}
         </div>
     )
