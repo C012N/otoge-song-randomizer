@@ -33,7 +33,7 @@ export function SongSelector({
     }
 
     return (
-        <div className="font-sans text-balance">
+        <div className="max-w-6xl font-sans text-balance">
             {displaySongByState()}
         </div>
     )

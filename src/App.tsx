@@ -182,7 +182,7 @@ function App() {
   }
 
   // 各データの取得
-  const tournamentName = tournament.name;
+  // const tournamentName = tournament.name;
   const teamNameA = tournament.teamA.name;
   const teamNameB = tournament.teamB.name;
   const allDivisions = tournament.divisions;
@@ -240,19 +240,20 @@ function App() {
     <div className="
     min-h-screen w-full
     bg-[url('/public/bg_b4utech.png')] bg-center bg-cover
-    text-white">
+    text-white font-sans">
 
       {(selectState !== "showResult") && (
         <div className="
         w-screen h-screen
         bg-[url('/bg_roulette.png')] bg-no-repeat bg-center bg-cover
-        flex flex-col items-center justify-center select-none">
+        flex flex-col items-center justify-center select-none
+        [text-shadow:_0_0_10px_purple] font-serif">
 
           <div className="
           bg-[url('/bg_division.png')] bg-no-repeat bg-center bg-contain
           w-[1394px] h-[236px] flex items-center justify-center">
-            <p className="[text-shadow:_0_0_10px_purple]
-            italic font-thin font-serif text-8xl text-white">
+            <p className="
+            italic font-thin text-8xl">
               {currentDivisionTitle} 部門
             </p>
           </div>
@@ -260,8 +261,8 @@ function App() {
           <div className="
           bg-[url('/bg_round.png')] bg-no-repeat bg-center bg-contain
           w-[1188px] h-[161px] flex items-center justify-center">
-            <p className="[text-shadow:_0_0_10px_purple]
-            italic font-thin font-serif text-5xl text-white">
+            <p className="
+            italic font-thin text-5xl">
               {currentRoundName}
             </p>
           </div>
@@ -269,7 +270,7 @@ function App() {
           <div className="
           bg-[url('/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
           w-[1398px] h-[600px] flex flex-col items-center justify-center
-          [text-shadow:_0_0_10px_purple]">
+          tracking-widest">
             <SongSelector
               song={song}
             />
