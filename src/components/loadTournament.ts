@@ -45,7 +45,12 @@ export async function loadTournament(files: FileList): Promise<LoadTournamentRes
             imageMap: images
         }
     } catch (e) {
-        alert("JSONのパースに失敗しました。ファイル形式を確認してください。");
+        console.error(e);
+        // キャッチしたエラー（JSON.parseの文法エラーや、上のバリデーションエラー）をそのまま上位へ投げる
+        if (e instanceof Error) {
+            throw e;
+        }
+        throw new Error("JSONの読み込み中に予期せぬエラーが発生しました。");
     }
     return loadTournament(files);
 }

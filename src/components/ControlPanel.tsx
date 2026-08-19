@@ -2,12 +2,13 @@
 // 大会進行状況の表示と操作を行う
 // /controlルートでのみ表示される
 
-import type { TournamentState } from "./types"
+import type { Round, TournamentState } from "./types"
 import { ScoreInput } from "./ScoreInput";
 import { Button } from "./TailwindCssDefaults";
 
 type ControlPanelProps = {
     tournamentState: TournamentState;
+    currentRound: Round;
     numCurrentDivision: number;
     numCurrentRound: number;
     onSelectSong: () => void;
@@ -25,6 +26,7 @@ type ControlPanelProps = {
 
 export function ControlPanel({
     tournamentState,
+    currentRound,
     numCurrentDivision,
     numCurrentRound,
     onSelectSong,
@@ -53,7 +55,10 @@ export function ControlPanel({
                 <Button
                     children="選曲！"
                     onClick={onSelectSong}
-                    disabled={selectState === "spinning"}
+                    disabled={
+                        selectState === "spinning" ||
+                        currentRound.songs.length === 0
+                    }
                 />
                 
                 <ScoreInput
@@ -81,8 +86,10 @@ export function ControlPanel({
                 <Button
                     children="前の試合へ"
                     onClick={onPrevRound}
-                    disabled={numCurrentRound === 0
-                        || selectState === "spinning"}
+                    disabled={
+                        numCurrentRound === 0
+                        || selectState === "spinning"
+                    }
                 />
 
                 <Button
@@ -97,14 +104,16 @@ export function ControlPanel({
                 <Button
                     children="前の部門へ"
                     onClick={onPrevDivision}
-                    disabled={numCurrentDivision === 0
+                    disabled={
+                        numCurrentDivision === 0
                         || selectState === "spinning"}
                 />
 
                 <Button
                     children="次の部門へ"
                     onClick={onNextDivision}
-                    disabled={numCurrentDivision === numDivisions - 1
+                    disabled={
+                        numCurrentDivision === numDivisions - 1
                         || selectState === "spinning"}
                 />
             </div>

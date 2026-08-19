@@ -1,45 +1,65 @@
 // 試合結果を表形式で表示するコンポーネント
-import type { Player, RoundState } from "./types";
+import type { Player, Round, RoundState } from "./types";
 
 interface ShowRoundResultProps {
     divisionName: string;
-    roundName: string;
+    round: Round;
     roundState: RoundState;
     teamNameA: string;
     teamNameB: string;
     imageMap: Map<string, string>;
-    playerA: Player;
-    playerB: Player;
     scoresPlayerA: number[];
     scoresPlayerB: number[];
 }
 
 export function ShowRoundResult({
     divisionName,
-    roundName,
+    round,
     roundState,
     teamNameA,
     teamNameB,
-    playerA,
-    playerB,
     scoresPlayerA,
     scoresPlayerB,
 }: ShowRoundResultProps) {
+    const roundName = round.name;
+    const roundjudge = round.judge;
+    const playerA = round.playerA;
+    const playerB = round.playerB;
     const totalScoreA = scoresPlayerA.reduce((acc, score) => acc + score, 0);
     const totalScoreB = scoresPlayerB.reduce((acc, score) => acc + score, 0);
-
-    if (!roundState.selectedSong) {
-        return (
-            <div className="text-white font-sans p-10">
-                <h1>課題曲を選択してください</h1>
-            </div>
-        );
-    }
     
     const formatScore = (score: number) => score.toLocaleString();
 
+    const calcPoint = (scoresA: number[], scoresB: number[]) => {
+        let pointA = 0;
+        let pointB = 0;
+
+        for (let i = 0; i < scoresA.length; i++) {
+            if (scoresA[i] >= scoresB[i]) pointA += 1;
+            if (scoresB[i] >= scoresA[i]) pointB += 1;
+        }
+
+        return {pointA, pointB};
+    }
+
+    const judge = (player: Player) => {
+        switch (roundjudge) {
+            case "合計点制": 
+                return (player === playerA)
+                ? (totalScoreA >= totalScoreB)
+                : (totalScoreB >= totalScoreA);
+            case "勝ち点制": 
+                const {pointA, pointB} = calcPoint(scoresPlayerA, scoresPlayerB);
+                return (player === playerA)
+                ? (pointA >= pointB)
+                : (pointB >= pointA);
+            default:
+                return true;
+        }
+    }
+
     const showPlayerResult = (teamName: string, player: Player, scores: number[], winner: boolean) => {
-        const teamColor = (teamName === teamNameA) ? 'red-500' : 'blue-500';
+        const teamColor = (teamName === teamNameA) ? 'bg-red-500' : 'bg-blue-500';
         const totalScore = scores.reduce((acc, score) => acc + score, 0);
         return (
             <div className={`
@@ -49,7 +69,7 @@ export function ShowRoundResult({
                 text-white text-center py-6`}>
                 
                 <div className="flex gap-4 items-center font-bold">
-                    <p className={`rounded-full bg-${teamColor} text-black text-2xl px-3 py-1`}>
+                    <p className={`rounded-full ${teamColor} text-black text-2xl px-3 py-1`}>
                         {teamName}
                     </p>
                     <p className="text-4xl">
@@ -63,7 +83,9 @@ export function ShowRoundResult({
                 <p className="text-2xl">
                     ①{formatScore(scores[0])} <br />
                     ②{formatScore(scores[1])} <br />
-                    ③{formatScore(scores[2])}
+                    {(roundState.selectedSong)
+                    ? `③${formatScore(scores[2])}`
+                    : ('')}
                 </p>
             </div>
         );
@@ -85,14 +107,16 @@ export function ShowRoundResult({
                 <div className="text-left">
                     <p>① {playerA.song.title}</p>
                     <p>② {playerB.song.title}</p>
-                    <p>③ {roundState.selectedSong.title}</p>
+                    {(roundState.selectedSong)
+                    ? (<p>③ {roundState.selectedSong.title}</p>)
+                : ('')}
                 </div>
                 
             </div>
 
-            {showPlayerResult(teamNameA, playerA, scoresPlayerA, totalScoreA >= totalScoreB)}
+            {showPlayerResult(teamNameA, playerA, scoresPlayerA, judge(playerA))}
 
-            {showPlayerResult(teamNameB, playerB, scoresPlayerB, totalScoreB >= totalScoreA)}
+            {showPlayerResult(teamNameB, playerB, scoresPlayerB, judge(playerB))}
         </div>
     )
 }
