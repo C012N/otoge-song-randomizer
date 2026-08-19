@@ -23,6 +23,7 @@ const TeamSchema = z.object({
 // 試合データ
 const RoundSchema = z.object({
     name: z.string(),
+    judge: z.string(),
     playerA: PlayerSchema,
     playerB: PlayerSchema,
     songs: z.array(SongSchema),

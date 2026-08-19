@@ -190,8 +190,9 @@ function App() {
   const currentDivisionTitle = currentDivision.gameTitle;
   const currentRound = currentDivision.rounds[numCurrentRound];
   const currentRoundName = currentRound.name;
-  const currentPlayerA = currentRound.playerA;
-  const currentPlayerB = currentRound.playerB;
+  // const currentRoundJudge = currentRound.judge;
+  // const currentPlayerA = currentRound.playerA;
+  // const currentPlayerB = currentRound.playerB;
   const currentSongs = currentRound.songs;
 
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
@@ -281,13 +282,11 @@ function App() {
       {selectState === "showResult" && (
         <ShowRoundResult
           divisionName={currentDivisionTitle}
-          roundName={currentRoundName}
+          round={currentRound}
           roundState={currentRoundState}
           teamNameA={teamNameA}
           teamNameB={teamNameB}
           imageMap={imageMap}
-          playerA={currentPlayerA}
-          playerB={currentPlayerB}
           scoresPlayerA={scoresPlayerA}
           scoresPlayerB={scoresPlayerB}
         />
@@ -296,6 +295,7 @@ function App() {
       {!isStreamingMode && (
         <ControlPanel
           tournamentState={tournamentState}
+          currentRound={currentRound}
           numCurrentDivision={numCurrentDivision}
           numCurrentRound={numCurrentRound}
           onSelectSong={selectSong}
