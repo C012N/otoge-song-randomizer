@@ -11,6 +11,7 @@ type UseSongSelecterProps = {
   availableSongs: Song[];
   setSong: (song: Song | null) => void;
   setSelectState: (selectState: SelectState) => void;
+  playStartSound: () => void;
   playClickSound: () => void;
   playFinishSound: () => void;
 }
@@ -19,6 +20,7 @@ export function useSongSelector({
   availableSongs,
   setSong,
   setSelectState,
+  playStartSound,
   playClickSound,
   playFinishSound,
 }: UseSongSelecterProps) {
@@ -71,7 +73,8 @@ export function useSongSelector({
         tempRandomSong = availableSongs[tempRandomIndex];
       } while (
         availableSongs.length > 1 &&
-        previousSong?.title === tempRandomSong.title
+        (tempRandomSong.title === previousSong?.title ||
+          tempRandomSong.title === song.title)
       );
 
       // "直前の曲"を更新
@@ -89,6 +92,7 @@ export function useSongSelector({
       }, delays[step]);
     };
 
+    playStartSound();
     // 0ステップ目からスタート
     spin(0);
 

@@ -46,45 +46,75 @@ function App() {
   const [numCurrentRound, setNumCurrentRound] = useSyncNumCurrentRound(0);
 
   // 抽選演出用: 効果音
-  const audioContext = useRef<AudioContext | null>(null);
+  const audioContextClick = useRef<AudioContext | null>(null);
+  const audioContextStart = useRef<AudioContext | null>(null);
+  const audioContextFinish = useRef<AudioContext | null>(null);
+  const startSoundBuffer = useRef<AudioBuffer | null>(null);
   const clickSoundBuffer = useRef<AudioBuffer | null>(null);
-  const finishSound = useRef<HTMLAudioElement | null>(null);
+  const finishSoundBuffer = useRef<AudioBuffer | null>(null);
 
   // バッファ生成: クリック音
   useEffect(() => {
     const initAudio = async () => {
-      audioContext.current = new AudioContext();
+      audioContextClick.current = new AudioContext();
       const response = await fetch("click.mp3");
       const arrayBuffer = await response.arrayBuffer();
       clickSoundBuffer.current =
-        await audioContext.current.decodeAudioData(arrayBuffer);
+        await audioContextClick.current.decodeAudioData(arrayBuffer);
+    };
+    initAudio();
+  }, []);
+
+  // バッファ生成: 開始音
+  useEffect(() => {
+    const initAudio = async () => {
+      audioContextStart.current = new AudioContext();
+      const response = await fetch("start.mp3");
+      const arrayBuffer = await response.arrayBuffer();
+      startSoundBuffer.current =
+        await audioContextStart.current.decodeAudioData(arrayBuffer);
     };
     initAudio();
   }, []);
 
   // 生成: 終了音
-  useEffect(() => {
-    finishSound.current = new Audio("finish.mp3");
-    return () => {
-      finishSound.current = null;
+ useEffect(() => {
+    const initAudio = async () => {
+      audioContextFinish.current = new AudioContext();
+      const response = await fetch("finish.mp3");
+      const arrayBuffer = await response.arrayBuffer();
+      finishSoundBuffer.current =
+        await audioContextFinish.current.decodeAudioData(arrayBuffer);
     };
+    initAudio();
   }, []);
+
+  // 再生: 開始音
+  const playStartSound = () => {
+    if (!audioContextStart.current || !startSoundBuffer.current) return;
+    const source = audioContextStart.current.createBufferSource();
+    source.buffer = startSoundBuffer.current;
+    source.connect(audioContextStart.current.destination);
+    source.start();
+  };
 
   // 再生: クリック音
   const playClickSound = () => {
-    if (!audioContext.current || !clickSoundBuffer.current) return;
-    const source = audioContext.current.createBufferSource();
+    if (!audioContextClick.current || !clickSoundBuffer.current) return;
+    const source = audioContextClick.current.createBufferSource();
     source.buffer = clickSoundBuffer.current;
-    source.connect(audioContext.current.destination);
+    source.connect(audioContextClick.current.destination);
     source.start();
   };
 
   // 再生: 終了音
   const playFinishSound = () => {
-    if (!finishSound.current) return;
-    finishSound.current.currentTime = 0;
-    finishSound.current.play();
-  }
+    if (!audioContextFinish.current || !finishSoundBuffer.current) return;
+    const source = audioContextFinish.current.createBufferSource();
+    source.buffer = finishSoundBuffer.current;
+    source.connect(audioContextFinish.current.destination);
+    source.start();
+  };
 
   // 大会フォルダを受け取って処理
   // フォルダを受け取る
@@ -233,6 +263,7 @@ function App() {
     availableSongs,
     setSong,
     setSelectState,
+    playStartSound,
     playClickSound,
     playFinishSound
   });
