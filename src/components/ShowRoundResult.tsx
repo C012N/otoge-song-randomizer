@@ -54,7 +54,7 @@ export function ShowRoundResult({
                 ? (pointA >= pointB)
                 : (pointB >= pointA);
             default:
-                return true;
+                return false;
         }
     }
 
