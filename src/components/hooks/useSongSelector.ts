@@ -11,6 +11,7 @@ type UseSongSelecterProps = {
   availableSongs: Song[];
   setSong: (song: Song | null) => void;
   setSelectState: (selectState: SelectState) => void;
+  playStartSound: () => void;
   playClickSound: () => void;
   playFinishSound: () => void;
 }
@@ -19,6 +20,7 @@ export function useSongSelector({
   availableSongs,
   setSong,
   setSelectState,
+  playStartSound,
   playClickSound,
   playFinishSound,
 }: UseSongSelecterProps) {
@@ -90,6 +92,7 @@ export function useSongSelector({
     };
 
     // 0ステップ目からスタート
+    playStartSound();
     spin(0);
 
     // もともと選んであった曲を演出後に表示
