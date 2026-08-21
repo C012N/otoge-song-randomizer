@@ -35,10 +35,6 @@ function App() {
   // 大会状態: 選曲状態やスコアなど運営の操作によるもの
   const [tournamentState, setTournamentState] = useSyncTournamentState(null);
 
-  // 画像データ: ファイル名->URLのmap
-  const [imageMap, setImageMap] = useState<Map<string, string>>(new Map());
-  console.log("dummy", imageMap);
-
   // 部門進行状況: 整数値で管理
   const [numCurrentDivision, setNumCurrentDivision] = useSyncNumCurrentDivision(0);
 
@@ -118,30 +114,20 @@ function App() {
 
   // 大会フォルダを受け取って処理
   // フォルダを受け取る
-  const folderInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (folderInputRef.current) {
-      folderInputRef.current.setAttribute(
-        "webkitdirectory",
-        ""
-      );
-    }
-  }, []);
-
-  // フォルダを読み込む
-  const onFolderSelected = async (
+  // ファイルを読み込む
+  const onFileSelected = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
-    if (!files) {
+    const file = event.target.files?.[0];
+    if (!file) {
       alert("no files found.");
       return;
     }
     try {
-      const { tournament, imageMap } = await loadTournament(files);
+      const { tournament } = await loadTournament(file);
       setTournament(tournament);
-      setImageMap(imageMap);
       setTournamentState(createInitialTournamentState(tournament));
     } catch (err) {
       if (err instanceof Error) alert(err.message);
@@ -155,6 +141,7 @@ function App() {
         divisionStates: tournament.divisions.map(division => ({
           roundStates: division.rounds.map(() => ({
             selectedSong: null,
+            selectedSongs: [],
             setSongs: [],
             scoresPlayerA: [0, 0, 0],
             scoresPlayerB: [0, 0, 0],
@@ -202,9 +189,8 @@ function App() {
         {!isStreamingMode && (
           <input className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
             type="file"
-            multiple
-            ref={folderInputRef}
-            onChange={onFolderSelected}
+            accept=".json,application/json"
+            onChange={onFileSelected}
           />
         )}
       </div>
@@ -212,7 +198,6 @@ function App() {
   }
 
   // 各データの取得
-  // const tournamentName = tournament.name;
   const teamNameA = tournament.teamA.name;
   const teamNameB = tournament.teamB.name;
   const allDivisions = tournament.divisions;
@@ -220,23 +205,20 @@ function App() {
   const currentDivisionTitle = currentDivision.gameTitle;
   const currentRound = currentDivision.rounds[numCurrentRound];
   const currentRoundName = currentRound.name;
-  // const currentRoundJudge = currentRound.judge;
-  // const currentPlayerA = currentRound.playerA;
-  // const currentPlayerB = currentRound.playerB;
   const currentSongs = currentRound.songs;
 
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
   const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
   const song = currentRoundState.selectedSong;
+  const selectedSongs = currentRoundState.selectedSongs;
   const selectState = currentRoundState.selectState;
   const scoresPlayerA = currentRoundState.scoresPlayerA;
   const scoresPlayerB = currentRoundState.scoresPlayerB;
 
-  // const playedSongs = [songPlayerA, songPlayerB, song];
-
   // セッター
   const {
     setSong,
+    setSelectedSongs,
     setSelectState,
     setScoresPlayerA,
     setScoresPlayerB,
@@ -245,7 +227,6 @@ function App() {
     nextRound,
     previousDivision,
     nextDivision,
-    resetTournament
   } = useTournamentState({
     tournament,
     setTournament,
@@ -262,6 +243,7 @@ function App() {
   const selectSong = useSongSelector({
     availableSongs,
     setSong,
+    setSelectedSongs,
     setSelectState,
     playStartSound,
     playClickSound,
@@ -317,7 +299,6 @@ function App() {
           roundState={currentRoundState}
           teamNameA={teamNameA}
           teamNameB={teamNameB}
-          imageMap={imageMap}
           scoresPlayerA={scoresPlayerA}
           scoresPlayerB={scoresPlayerB}
         />
@@ -339,7 +320,6 @@ function App() {
           onNextRound={nextRound}
           onPrevDivision={previousDivision}
           onNextDivision={nextDivision}
-          onResetTournament={resetTournament}
         />
       )}
     </div>

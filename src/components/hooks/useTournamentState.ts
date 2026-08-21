@@ -40,6 +40,16 @@ export function useTournamentState({
         updateRoundState(roundState => roundState.selectedSong = song);
     }
 
+    // 抽選履歴更新
+    const setSelectedSongs = (song: Song) => {
+        updateRoundState(roundState => roundState.selectedSongs.push(song));
+    }
+
+    // 抽選履歴リセット
+    const resetSelectedSongs= () => {
+        updateRoundState(roundState => roundState.selectedSongs = []);
+    }
+
     // 選曲状態更新
     const setSelectState = (state: SelectState) => {
         updateRoundState(roundState => roundState.selectState = state);
@@ -63,12 +73,14 @@ export function useTournamentState({
         const numPreviousRound = Math.max(numCurrentRound - 1, 0);
         setNumCurrentRound(numPreviousRound);
         updateRoundState(roundState => roundState.selectState = "not_started");
+        resetSelectedSongs();
     }
     const nextRound = () => {
         const numNextRound = Math.min(numCurrentRound + 1,
             tournament.divisions[numCurrentDivision].rounds.length - 1);
         setNumCurrentRound(numNextRound);
         updateRoundState(roundState => roundState.selectState = "not_started");
+        resetSelectedSongs();
     };
 
     // 部門進行
@@ -77,6 +89,7 @@ export function useTournamentState({
         setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
         updateRoundState(roundState => roundState.selectState = "not_started");
+        resetSelectedSongs();
     };
     const nextDivision = () => {
         const numNextDivision = Math.min(numCurrentDivision + 1,
@@ -84,19 +97,13 @@ export function useTournamentState({
         setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
         updateRoundState(roundState => roundState.selectState = "not_started");
+        resetSelectedSongs();
     };
 
-    // 大会リセット
-    const resetTournament = () => {
-        setTournament(null);
-        setTournamentState(null);
-        setNumCurrentDivision(0);
-        setNumCurrentRound(0);
-        updateRoundState(roundState => roundState.selectState = "not_started");
-    };
-    
     return {
         setSong,
+        setSelectedSongs,
+        resetSelectedSongs,
         setSelectState,
         setScoresPlayerA,
         setScoresPlayerB,
@@ -105,6 +112,5 @@ export function useTournamentState({
         nextRound,
         previousDivision,
         nextDivision,
-        resetTournament
     }
 }

@@ -11,10 +11,9 @@ export function Button({children, onClick, disabled}: {children: React.ReactNode
     );
 }
 
-export function NumberInput({key, value, onChange}: {key: number, value: number, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void}) {
+export function NumberInput({value, onChange}: {value: number, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void}) {
     return (
         <input
-            key={key}
             type="number"
             value={value}
             onChange={onChange}

@@ -1,35 +1,14 @@
 // 大会データの読み込み処理
-// ファイル選択ダイアログで選択されたファイル群から大会データを読み込む
-// 大会データは1つのJSONで、画像ファイルは同じフォルダに配置されていることを想定
-// 画像ファイルはURL.createObjectURLでURL化して返す
-// 返り値: { tournament: Tournament, imageMap: Map<string, string> }
+// 与えられたJSONをtournament型にパースして返す
 
 import { TournamentSchema, type LoadTournamentResult } from "./types";
 
-export async function loadTournament(files: FileList): Promise<LoadTournamentResult> {
-    let jsonFile: File | null = null;
-    const images = new Map<string, string>();
-    for (const file of Array.from(files)) {
-        if (file.name.endsWith(".json")) {
-            // 複数のjsonを含むならアラート
-            if (jsonFile) {
-                throw new Error("JSONファイルはただ一つ含めてください")
-            }
-
-            jsonFile = file;
-        }
-        if (file.type.startsWith("image/")) {
-            images.set(
-                file.name,
-                URL.createObjectURL(file)
-            );
-        }
-    }
-    if (!jsonFile) {
-        throw new Error("tournament.json が見つかりません");
+export async function loadTournament(file: File): Promise<LoadTournamentResult> {
+    if (!file.name.toLowerCase().endsWith(".json")) {
+        throw new Error("JSONファイルを選択してください");
     }
     try {
-        const text = await jsonFile.text();
+        const text = await file.text();
         const rawData = JSON.parse(text);
 
         // ここでバリデーションチェック
@@ -42,7 +21,6 @@ export async function loadTournament(files: FileList): Promise<LoadTournamentRes
 
         return {
             tournament: result.data,
-            imageMap: images
         }
     } catch (e) {
         console.error(e);
@@ -52,5 +30,4 @@ export async function loadTournament(files: FileList): Promise<LoadTournamentRes
         }
         throw new Error("JSONの読み込み中に予期せぬエラーが発生しました。");
     }
-    return loadTournament(files);
 }

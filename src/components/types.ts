@@ -54,7 +54,6 @@ type Tournament = z.infer<typeof TournamentSchema>;
 // ファイルローダーが返す型
 type LoadTournamentResult = {
     tournament: Tournament;
-    imageMap: Map<string, string>;
 }
 
 // 抽選状態
@@ -69,6 +68,7 @@ type SelectState =
 // useStateで管理するものはここ
 type RoundState = {
     selectedSong: Song | null;
+    selectedSongs: Song[];
     setSongs: Song[];
     scoresPlayerA: number[];
     scoresPlayerB: number[];

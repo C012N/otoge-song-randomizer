@@ -1,6 +1,7 @@
 // スコア入力コンポーネント
 // controlルートでのみ表示される
 
+import { Fragment } from "react/jsx-runtime";
 import { NumberInput } from "./TailwindCssDefaults";
 
 type ScoreInputProps = {
@@ -19,10 +20,9 @@ export function ScoreInput({
             <h2>{label}</h2>
 
             {scores.map((score, i) => (
-                <>
+                <Fragment key={i}>
                     <h3>{i + 1}曲目:</h3>
                     <NumberInput
-                        key={i}
                         value={score}
                         onChange={e => {
                             const value = e.target.valueAsNumber;
@@ -31,7 +31,7 @@ export function ScoreInput({
                             onChange(next);
                         }}
                     />
-                </>
+                </Fragment>
             ))}
         </>
     )

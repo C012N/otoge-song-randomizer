@@ -21,7 +21,6 @@ type ControlPanelProps = {
     onNextRound: () => void;
     onPrevDivision: () => void;
     onNextDivision: () => void;
-    onResetTournament: () => void;
 }
 
 export function ControlPanel({
@@ -39,7 +38,6 @@ export function ControlPanel({
     onNextRound,
     onPrevDivision,
     onNextDivision,
-    onResetTournament
 }: ControlPanelProps) {
     const selectState = tournamentState
         .divisionStates[numCurrentDivision]
@@ -115,14 +113,6 @@ export function ControlPanel({
                     disabled={
                         numCurrentDivision === numDivisions - 1
                         || selectState === "spinning"}
-                />
-            </div>
-
-            <div>
-                <Button
-                    children="大会全体をリセット"
-                    onClick={onResetTournament}
-                    disabled={selectState === "spinning"}
                 />
             </div>
 

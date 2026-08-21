@@ -10,6 +10,7 @@ let previousSong: Song | null;
 type UseSongSelecterProps = {
   availableSongs: Song[];
   setSong: (song: Song | null) => void;
+  setSelectedSongs: (song: Song) => void;
   setSelectState: (selectState: SelectState) => void;
   playStartSound: () => void;
   playClickSound: () => void;
@@ -19,6 +20,7 @@ type UseSongSelecterProps = {
 export function useSongSelector({
   availableSongs,
   setSong,
+  setSelectedSongs,
   setSelectState,
   playStartSound,
   playClickSound,
@@ -99,6 +101,7 @@ export function useSongSelector({
     const totalDelay = delays.reduce((sum, delay) => sum + delay, 0);
     setTimeout(() => {
       setSong(song);
+      setSelectedSongs(song);
       setSelectState("displaying");
       playFinishSound();
     }, totalDelay);

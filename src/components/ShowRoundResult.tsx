@@ -7,7 +7,6 @@ interface ShowRoundResultProps {
     roundState: RoundState;
     teamNameA: string;
     teamNameB: string;
-    imageMap: Map<string, string>;
     scoresPlayerA: number[];
     scoresPlayerB: number[];
 }
