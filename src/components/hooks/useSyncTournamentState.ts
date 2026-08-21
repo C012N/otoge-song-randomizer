@@ -3,7 +3,7 @@
 // 以下同様
 
 import { useEffect, useState, useRef } from 'react'
-import { type Song, type Tournament } from '../types';
+import { type Tournament } from '../types';
 
 // tournamentの状態を同期させるカスタムフック
 export function useSyncTournament(initialTournament: Tournament | null) {

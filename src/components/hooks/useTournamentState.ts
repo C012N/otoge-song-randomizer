@@ -6,7 +6,6 @@ import { type Song, type SelectState, type TournamentState, type Tournament, typ
 
 type UseTournamentStateProps = {
     tournament: Tournament;
-    setTournament: (tournament: Tournament | null) => void;
     tournamentState: TournamentState
     setTournamentState: (tournamentState: TournamentState | null) => void;
     numCurrentDivision: number;
@@ -17,7 +16,6 @@ type UseTournamentStateProps = {
 
 export function useTournamentState({
     tournament,
-    setTournament,
     tournamentState,
     setTournamentState,
     numCurrentDivision,

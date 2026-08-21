@@ -1,7 +1,7 @@
 // webサイトのルートコンポーネント
 // 大会データの読み込み、状態管理、URLクエリ取得と分岐を行う
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import {
   type Tournament,
@@ -112,10 +112,6 @@ function App() {
     source.start();
   };
 
-  // 大会フォルダを受け取って処理
-  // フォルダを受け取る
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   // ファイルを読み込む
   const onFileSelected = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -210,7 +206,6 @@ function App() {
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
   const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
   const song = currentRoundState.selectedSong;
-  const selectedSongs = currentRoundState.selectedSongs;
   const selectState = currentRoundState.selectState;
   const scoresPlayerA = currentRoundState.scoresPlayerA;
   const scoresPlayerB = currentRoundState.scoresPlayerB;
@@ -229,7 +224,6 @@ function App() {
     nextDivision,
   } = useTournamentState({
     tournament,
-    setTournament,
     tournamentState,
     setTournamentState,
     numCurrentDivision,
