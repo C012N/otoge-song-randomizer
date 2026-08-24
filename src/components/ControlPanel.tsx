@@ -14,6 +14,9 @@ type ControlPanelProps = {
     numCurrentRound: number;
     onSelectSong: () => void;
     onSetSong: (song: Song | null) => void;
+    onSelectSong1: () => void;
+    onSelectSong2: () => void;
+    onSelectSong3: () => void;
     scoresPlayerA: number[];
     scoresPlayerB: number[];
     setScoresPlayerA: (scores: number[]) => void;
@@ -34,6 +37,9 @@ export function ControlPanel({
     numCurrentRound,
     onSelectSong,
     onSetSong,
+    onSelectSong1,
+    onSelectSong2,
+    onSelectSong3,
     scoresPlayerA,
     scoresPlayerB,
     setScoresPlayerA,
@@ -66,7 +72,7 @@ export function ControlPanel({
                 <div>
                     <Button
                         children="課題曲1を選択"
-                        onClick={() => onSetSong(currentRoundState.selectedSongs[0])}
+                        onClick={onSelectSong1}
                         disabled={
                             selectState === "spinning" ||
                             currentRoundState.selectedSongs.length < 1
@@ -75,7 +81,7 @@ export function ControlPanel({
 
                     <Button
                         children="課題曲2を選択"
-                        onClick={() => onSetSong(currentRoundState.selectedSongs[1])}
+                        onClick={onSelectSong2}
                         disabled={
                             selectState === "spinning" ||
                             currentRoundState.selectedSongs.length < 2
@@ -84,7 +90,7 @@ export function ControlPanel({
 
                     <Button
                         children="課題曲3を選択"
-                        onClick={() => onSetSong(currentRoundState.selectedSongs[2])}
+                        onClick={onSelectSong3}
                         disabled={
                             selectState === "spinning" ||
                             currentRoundState.selectedSongs.length < 3

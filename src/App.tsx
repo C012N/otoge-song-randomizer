@@ -220,6 +220,9 @@ function App() {
     setScoresPlayerA,
     setScoresPlayerB,
     showSelectedSongs,
+    selectSong1,
+    selectSong2,
+    selectSong3,
     showRoundResult,
     previousRound,
     nextRound,
@@ -319,6 +322,9 @@ function App() {
           numCurrentRound={numCurrentRound}
           onSelectSong={selectSong}
           onSetSong={setSong}
+          onSelectSong1={selectSong1}
+          onSelectSong2={selectSong2}
+          onSelectSong3={selectSong3}
           scoresPlayerA={scoresPlayerA}
           scoresPlayerB={scoresPlayerB}
           setScoresPlayerA={setScoresPlayerA}

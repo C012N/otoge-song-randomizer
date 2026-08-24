@@ -23,12 +23,12 @@ export function useTournamentState({
     numCurrentRound,
     setNumCurrentRound,
 }: UseTournamentStateProps) {
+    const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound];
     // 補助: 試合状態更新
     const updateRoundState = (
         updater: (roundState: RoundState) => void,
     ) => {
         if (!tournamentState) return;
-        const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound];
         updater(currentRoundState);
         setTournamentState({ ...tournamentState });
     }
@@ -60,17 +60,34 @@ export function useTournamentState({
     const showSelectedSongs = () => {
         updateRoundState(roundState =>
             (roundState.selectState !== "banning")
-            ? (roundState.selectState = "banning")
-            : (roundState.selectState = "not_started")
+            ? setSelectState("banning")
+            : setSelectState("not_started")
         );
+    }
+
+    // 課題曲選択
+    const selectSong1 = () => {
+        setSong(currentRoundState.selectedSongs[0])
+        setSelectState("displaying")
+    }
+
+    const selectSong2 = () => {
+        setSong(currentRoundState.selectedSongs[1])
+        setSelectState("displaying")
+    }
+
+    const selectSong3 = () => {
+        setSong(currentRoundState.selectedSongs[2])
+        setSelectState("displaying")
     }
 
     // 試合結果表示
     const showRoundResult = () => {
         updateRoundState(roundState =>
             (roundState.selectState !== "showResult")
-            ? (roundState.selectState = "showResult")
-            : (roundState.selectState = "not_started"));
+            ? setSelectState("showResult")
+            : setSelectState("not_started")
+        );
     }
 
     // 試合進行
@@ -109,6 +126,9 @@ export function useTournamentState({
         setScoresPlayerA,
         setScoresPlayerB,
         showSelectedSongs,
+        selectSong1,
+        selectSong2,
+        selectSong3,
         showRoundResult,
         previousRound,
         nextRound,
