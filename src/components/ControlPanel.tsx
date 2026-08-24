@@ -2,16 +2,18 @@
 // 大会進行状況の表示と操作を行う
 // /controlルートでのみ表示される
 
-import type { Round, TournamentState } from "./types"
+import type { Round, RoundState, Song, TournamentState } from "./types"
 import { ScoreInput } from "./ScoreInput";
 import { Button } from "./TailwindCssDefaults";
 
 type ControlPanelProps = {
     tournamentState: TournamentState;
     currentRound: Round;
+    currentRoundState: RoundState;
     numCurrentDivision: number;
     numCurrentRound: number;
     onSelectSong: () => void;
+    onSetSong: (song: Song | null) => void;
     scoresPlayerA: number[];
     scoresPlayerB: number[];
     setScoresPlayerA: (scores: number[]) => void;
@@ -27,9 +29,11 @@ type ControlPanelProps = {
 export function ControlPanel({
     tournamentState,
     currentRound,
+    currentRoundState,
     numCurrentDivision,
     numCurrentRound,
     onSelectSong,
+    onSetSong,
     scoresPlayerA,
     scoresPlayerB,
     setScoresPlayerA,
@@ -49,8 +53,6 @@ export function ControlPanel({
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
         <div>
-            <h2>コントロールパネル</h2>
-
             <div>
                 <Button
                     children="選曲！"
@@ -60,6 +62,35 @@ export function ControlPanel({
                         currentRound.songs.length === 0
                     }
                 />
+
+                <div>
+                    <Button
+                        children="課題曲1を選択"
+                        onClick={() => onSetSong(currentRoundState.selectedSongs[0])}
+                        disabled={
+                            selectState === "spinning" ||
+                            currentRoundState.selectedSongs.length < 1
+                        }
+                    />
+
+                    <Button
+                        children="課題曲2を選択"
+                        onClick={() => onSetSong(currentRoundState.selectedSongs[1])}
+                        disabled={
+                            selectState === "spinning" ||
+                            currentRoundState.selectedSongs.length < 2
+                        }
+                    />
+
+                    <Button
+                        children="課題曲3を選択"
+                        onClick={() => onSetSong(currentRoundState.selectedSongs[2])}
+                        disabled={
+                            selectState === "spinning" ||
+                            currentRoundState.selectedSongs.length < 3
+                        }
+                    />
+                </div>
                 
                 <ScoreInput
                     label="Player A"
