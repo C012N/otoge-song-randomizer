@@ -314,9 +314,11 @@ function App() {
         <ControlPanel
           tournamentState={tournamentState}
           currentRound={currentRound}
+          currentRoundState={currentRoundState}
           numCurrentDivision={numCurrentDivision}
           numCurrentRound={numCurrentRound}
           onSelectSong={selectSong}
+          onSetSong={setSong}
           scoresPlayerA={scoresPlayerA}
           scoresPlayerB={scoresPlayerB}
           setScoresPlayerA={setScoresPlayerA}
