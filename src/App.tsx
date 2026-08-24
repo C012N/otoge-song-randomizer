@@ -236,9 +236,9 @@ function App() {
   });
 
   // 演出
-  const availableSongs = currentSongs;
   const selectSong = useSongSelector({
-    availableSongs,
+    currentSongs,
+    selectedSongs,
     setSong,
     setSelectedSongs,
     setSelectState,

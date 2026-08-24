@@ -8,7 +8,8 @@ import { type Song, type SelectState } from "../types";
 let previousSong: Song | null;
 
 type UseSongSelecterProps = {
-  availableSongs: Song[];
+  currentSongs: Song[];
+  selectedSongs: Song[];
   setSong: (song: Song | null) => void;
   setSelectedSongs: (song: Song) => void;
   setSelectState: (selectState: SelectState) => void;
@@ -18,7 +19,8 @@ type UseSongSelecterProps = {
 }
 
 export function useSongSelector({
-  availableSongs,
+  currentSongs,
+  selectedSongs,
   setSong,
   setSelectedSongs,
   setSelectState,
@@ -33,7 +35,11 @@ export function useSongSelector({
     // 演出用: 直前の選曲を初期化
     previousSong = null;
 
-    // 重複不可時: 抽選可能楽曲が無くなったら終了
+    // 抽選可能楽曲
+    const selectedSongsSet = new Set(selectedSongs);
+    const availableSongs = currentSongs.filter(song => !selectedSongsSet.has(song));
+
+    // 抽選可能楽曲が無くなったら終了
     if (availableSongs.length === 0) {
       return;
     }
@@ -41,7 +47,6 @@ export function useSongSelector({
     // 演出前に抽選
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const song = availableSongs[randomIndex];
-    availableSongs.splice(randomIndex, 1);
 
     setSelectState("spinning");
 
