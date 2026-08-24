@@ -61,7 +61,8 @@ type SelectState =
     | "not_started"
     | "spinning"
     | "displaying"
-    | "showResult" // 試合結果表示画面　後で作る
+    | "banning" // 課題曲を並べ、BANを決定する時の画面
+    | "showResult" // 試合結果表示画面
     | "finished"
 
 // 試合、部門、大会のスコア付きデータ

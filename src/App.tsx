@@ -20,6 +20,7 @@ import {
 } from "./components/hooks/useSyncTournamentState";
 import "./App.css"
 import { loadTournament } from "./components/loadTournament";
+import { ShowSelectedSongs } from "./components/ShowSelectedSongs"
 import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
 
@@ -206,6 +207,7 @@ function App() {
   const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
   const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
   const song = currentRoundState.selectedSong;
+  const selectedSongs = currentRoundState.selectedSongs;
   const selectState = currentRoundState.selectState;
   const scoresPlayerA = currentRoundState.scoresPlayerA;
   const scoresPlayerB = currentRoundState.scoresPlayerB;
@@ -217,6 +219,7 @@ function App() {
     setSelectState,
     setScoresPlayerA,
     setScoresPlayerB,
+    showSelectedSongs,
     showRoundResult,
     previousRound,
     nextRound,
@@ -250,7 +253,10 @@ function App() {
     bg-[url('/public/bg_b4utech.png')] bg-center bg-cover
     text-white font-sans">
 
-      {(selectState !== "showResult") && (
+      {(selectState === "not_started" ||
+        selectState === "spinning" ||
+        selectState === "displaying" 
+      ) && (
         <div className="
         w-screen h-screen
         bg-[url('/bg_roulette.png')] bg-no-repeat bg-center bg-cover
@@ -286,6 +292,12 @@ function App() {
 
         </div>)}
 
+      {selectState === "banning" && (
+        <ShowSelectedSongs
+          selectedSongs={selectedSongs}
+        />
+      )}
+
       {selectState === "showResult" && (
         <ShowRoundResult
           divisionName={currentDivisionTitle}
@@ -309,6 +321,7 @@ function App() {
           scoresPlayerB={scoresPlayerB}
           setScoresPlayerA={setScoresPlayerA}
           setScoresPlayerB={setScoresPlayerB}
+          onShowSelectedSongs={showSelectedSongs}
           onShowRoundResult={showRoundResult}
           onPrevRound={previousRound}
           onNextRound={nextRound}

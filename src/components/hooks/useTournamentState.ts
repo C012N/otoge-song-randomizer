@@ -56,9 +56,21 @@ export function useTournamentState({
         updateRoundState(roundState => roundState.scoresPlayerB = scores);
     }
 
+    // 抽選楽曲表示
+    const showSelectedSongs = () => {
+        updateRoundState(roundState =>
+            (roundState.selectState !== "banning")
+            ? (roundState.selectState = "banning")
+            : (roundState.selectState = "not_started")
+        );
+    }
+
     // 試合結果表示
     const showRoundResult = () => {
-        updateRoundState(roundState => roundState.selectState = "showResult");
+        updateRoundState(roundState =>
+            (roundState.selectState !== "showResult")
+            ? (roundState.selectState = "showResult")
+            : (roundState.selectState = "not_started"));
     }
 
     // 試合進行
@@ -96,6 +108,7 @@ export function useTournamentState({
         setSelectState,
         setScoresPlayerA,
         setScoresPlayerB,
+        showSelectedSongs,
         showRoundResult,
         previousRound,
         nextRound,

@@ -16,6 +16,7 @@ type ControlPanelProps = {
     scoresPlayerB: number[];
     setScoresPlayerA: (scores: number[]) => void;
     setScoresPlayerB: (scores: number[]) => void;
+    onShowSelectedSongs: () => void;
     onShowRoundResult: () => void;
     onPrevRound: () => void;
     onNextRound: () => void;
@@ -33,6 +34,7 @@ export function ControlPanel({
     scoresPlayerB,
     setScoresPlayerA,
     setScoresPlayerB,
+    onShowSelectedSongs,
     onShowRoundResult,
     onPrevRound,
     onNextRound,
@@ -69,6 +71,14 @@ export function ControlPanel({
                     label="Player B"
                     scores={scoresPlayerB}
                     onChange={setScoresPlayerB}
+                />
+            </div>
+
+            <div>
+                <Button
+                    children="抽選楽曲一覧を表示"
+                    onClick={onShowSelectedSongs}
+                    disabled={selectState === "spinning"}
                 />
             </div>
 
