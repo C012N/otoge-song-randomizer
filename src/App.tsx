@@ -296,9 +296,11 @@ function App() {
         </div>)}
 
       {selectState === "banning" && (
-        <ShowSelectedSongs
-          selectedSongs={selectedSongs}
-        />
+        <div className="pt-12">
+          <ShowSelectedSongs
+            selectedSongs={selectedSongs}
+          />
+        </div>
       )}
 
       {selectState === "showResult" && (
