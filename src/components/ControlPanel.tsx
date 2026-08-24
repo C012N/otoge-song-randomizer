@@ -36,7 +36,6 @@ export function ControlPanel({
     numCurrentDivision,
     numCurrentRound,
     onSelectSong,
-    onSetSong,
     onSelectSong1,
     onSelectSong2,
     onSelectSong3,
