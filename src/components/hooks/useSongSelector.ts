@@ -41,6 +41,7 @@ export function useSongSelector({
     // 演出前に抽選
     const randomIndex = Math.floor(Math.random() * availableSongs.length);
     const song = availableSongs[randomIndex];
+    availableSongs.splice(randomIndex, 1);
 
     setSelectState("spinning");
 
@@ -55,7 +56,7 @@ export function useSongSelector({
       80, 80, 80, 80, 80, 80,
       160, 160, 160, 160, 160, 160,
       320, 320, 320,
-      640
+      800
     ];
 
     // 演出本体
