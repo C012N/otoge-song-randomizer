@@ -157,7 +157,7 @@ function App() {
   const currentURL = window.location.href;
   if (!tournament || !tournamentState) {
     return (
-      <div className="w-full min-h-screen bg-[url('/public/bg_b4utech.png')] bg-center bg-cover text-white items-center font-sans p-10">
+      <div className="w-full min-h-screen bg-[url('/images/bg_b4utech.png')] bg-center bg-cover text-white items-center font-sans p-10">
         <h1>Otoge Song Randomizer</h1>
 
         {isStreamingMode && (
@@ -253,7 +253,7 @@ function App() {
   return (
     <div className="
     min-h-screen w-full
-    bg-[url('/public/bg_b4utech.png')] bg-center bg-cover
+    bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
     text-white font-sans">
 
       {(selectState === "not_started" ||
@@ -262,12 +262,12 @@ function App() {
       ) && (
         <div className="
         w-screen h-screen
-        bg-[url('/bg_roulette.png')] bg-no-repeat bg-center bg-cover
+        bg-[url('/images/bg_roulette.png')] bg-no-repeat bg-center bg-cover
         flex flex-col items-center justify-center select-none
         [text-shadow:_0_0_10px_purple] font-serif">
 
           <div className="
-          bg-[url('/bg_division.png')] bg-no-repeat bg-center bg-contain
+          bg-[url('/images/bg_division.png')] bg-no-repeat bg-center bg-contain
           w-[1394px] h-[236px] flex items-center justify-center">
             <p className="
             italic font-thin text-8xl">
@@ -276,7 +276,7 @@ function App() {
           </div>
 
           <div className="
-          bg-[url('/bg_round.png')] bg-no-repeat bg-center bg-contain
+          bg-[url('images/bg_round.png')] bg-no-repeat bg-center bg-contain
           w-[1188px] h-[161px] flex items-center justify-center">
             <p className="
             italic font-thin text-5xl">
@@ -285,7 +285,7 @@ function App() {
           </div>
 
           <div className="
-          bg-[url('/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
+          bg-[url('images/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
           w-[1398px] h-[600px] flex flex-col items-center justify-center
           tracking-widest">
             <SongSelector

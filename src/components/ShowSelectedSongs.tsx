@@ -22,7 +22,7 @@ export function ShowSelectedSongs({
     }
     return (
         <div className="
-        bg-[url('/bg_selectedSong.png')] bg-no-repeat bg-center bg-cover
+        bg-[url('/images/bg_selectedSong.png')] bg-no-repeat bg-center bg-cover
         w-8xl h-[800px] mx-auto flex flex-col gap-6 items-center justify-top pt-60
         tracking-widest">
             {createSongCols()}
