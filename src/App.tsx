@@ -217,12 +217,15 @@ function App() {
     setSong,
     setSelectedSongs,
     setSelectState,
-    setScoresPlayerA,
-    setScoresPlayerB,
+    showDivisionCard,
+    showRoundCard,
+    showRoulette,
     showSelectedSongs,
     selectSong1,
     selectSong2,
     selectSong3,
+    setScoresPlayerA,
+    setScoresPlayerB,
     showRoundResult,
     previousRound,
     nextRound,
@@ -252,7 +255,7 @@ function App() {
 
   return (
     <div className="
-    min-h-screen w-full
+    w-full min-h-screen
     bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
     text-white font-sans">
 
@@ -260,8 +263,8 @@ function App() {
         <div className="pt-12">
           <div className="
           bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
-          w-5xl aspect-[6/1] mx-auto pt-14">
-            <p className="font-bold text-5xl text-balance">
+          w-5xl aspect-[6/1] mx-auto flex items-center justify-center">
+            <p className="font-bold text-5xl text-center text-balance">
               {tournament.name} {currentDivisionTitle}部門
             </p>
           </div>
@@ -310,7 +313,7 @@ function App() {
         selectState === "displaying" 
       ) && (
         <div className="
-        w-screen h-screen
+        w-full h-screen
         bg-[url('/images/bg_roulette.png')] bg-no-repeat bg-center bg-cover
         flex flex-col items-center justify-center select-none
         [text-shadow:_0_0_10px_purple] font-serif">
@@ -382,6 +385,9 @@ function App() {
           setScoresPlayerB={setScoresPlayerB}
           onShowSelectedSongs={showSelectedSongs}
           onShowRoundResult={showRoundResult}
+          onShowDivisionCard={showDivisionCard}
+          onShowRoundCard={showRoundCard}
+          onShowRoulette={showRoulette}
           onPrevRound={previousRound}
           onNextRound={nextRound}
           onPrevDivision={previousDivision}

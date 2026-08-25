@@ -23,6 +23,9 @@ type ControlPanelProps = {
     setScoresPlayerB: (scores: number[]) => void;
     onShowSelectedSongs: () => void;
     onShowRoundResult: () => void;
+    onShowDivisionCard: () => void;
+    onShowRoundCard: () => void;
+    onShowRoulette: () => void;
     onPrevRound: () => void;
     onNextRound: () => void;
     onPrevDivision: () => void;
@@ -45,6 +48,9 @@ export function ControlPanel({
     setScoresPlayerB,
     onShowSelectedSongs,
     onShowRoundResult,
+    onShowDivisionCard,
+    onShowRoundCard,
+    onShowRoulette,
     onPrevRound,
     onNextRound,
     onPrevDivision,
@@ -57,76 +63,88 @@ export function ControlPanel({
     const numDivisions = tournamentState.divisionStates.length;
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
-        <div>
-            <div>
+        <div className="flex flex-col items-center justify-center gap-4">
+            <Button
+                children="部門紹介画面"
+                onClick={onShowDivisionCard}
+                disabled={selectState === "spinning"}
+            />
+
+            <Button
+                children="試合紹介画面"
+                onClick={onShowRoundCard}
+                disabled={selectState === "spinning"}
+            />
+
+            <Button
+                children="課題曲抽選画面"
+                onClick={onShowRoulette}
+                disabled={selectState === "spinning"}
+            />
+
+            <Button
+                children="選曲！"
+                onClick={onSelectSong}
+                disabled={
+                    selectState === "spinning" ||
+                    currentRound.songs.length === 0
+                }
+            />
+
+            <Button
+                children="抽選楽曲一覧を表示"
+                onClick={onShowSelectedSongs}
+                disabled={selectState === "spinning"}
+            />
+
+            <div className="flex gap-4">
                 <Button
-                    children="選曲！"
-                    onClick={onSelectSong}
+                    children="課題曲1を選択"
+                    onClick={onSelectSong1}
                     disabled={
                         selectState === "spinning" ||
-                        currentRound.songs.length === 0
+                        currentRoundState.selectedSongs.length < 1
                     }
                 />
 
-                <div>
-                    <Button
-                        children="課題曲1を選択"
-                        onClick={onSelectSong1}
-                        disabled={
-                            selectState === "spinning" ||
-                            currentRoundState.selectedSongs.length < 1
-                        }
-                    />
-
-                    <Button
-                        children="課題曲2を選択"
-                        onClick={onSelectSong2}
-                        disabled={
-                            selectState === "spinning" ||
-                            currentRoundState.selectedSongs.length < 2
-                        }
-                    />
-
-                    <Button
-                        children="課題曲3を選択"
-                        onClick={onSelectSong3}
-                        disabled={
-                            selectState === "spinning" ||
-                            currentRoundState.selectedSongs.length < 3
-                        }
-                    />
-                </div>
-                
-                <ScoreInput
-                    label="Player A"
-                    scores={scoresPlayerA}
-                    onChange={setScoresPlayerA}
-                />
-
-                <ScoreInput
-                    label="Player B"
-                    scores={scoresPlayerB}
-                    onChange={setScoresPlayerB}
-                />
-            </div>
-
-            <div>
                 <Button
-                    children="抽選楽曲一覧を表示"
-                    onClick={onShowSelectedSongs}
-                    disabled={selectState === "spinning"}
+                    children="課題曲2を選択"
+                    onClick={onSelectSong2}
+                    disabled={
+                        selectState === "spinning" ||
+                        currentRoundState.selectedSongs.length < 2
+                    }
                 />
-            </div>
 
-            <div>
                 <Button
-                    children="試合結果を表示"
-                    onClick={onShowRoundResult}
-                    disabled={selectState === "spinning"}
+                    children="課題曲3を選択"
+                    onClick={onSelectSong3}
+                    disabled={
+                        selectState === "spinning" ||
+                        currentRoundState.selectedSongs.length < 3
+                    }
                 />
             </div>
 
-            <div>
+            <ScoreInput
+                label="Player A"
+                scores={scoresPlayerA}
+                onChange={setScoresPlayerA}
+            />
+
+            <ScoreInput
+                label="Player B"
+                scores={scoresPlayerB}
+                onChange={setScoresPlayerB}
+            />
+
+            <Button
+                children="試合結果を表示"
+                onClick={onShowRoundResult}
+                disabled={selectState === "spinning"}
+            />
+
+            <div className="flex gap-4">
                 <Button
                     children="前の試合へ"
                     onClick={onPrevRound}
@@ -144,7 +162,7 @@ export function ControlPanel({
                 />
             </div>
 
-            <div>
+            <div className="flex gap-4">
                 <Button
                     children="前の部門へ"
                     onClick={onPrevDivision}
@@ -161,7 +179,6 @@ export function ControlPanel({
                         || selectState === "spinning"}
                 />
             </div>
-
         </div>
     )
 }

@@ -48,12 +48,19 @@ export function useTournamentState({
         updateRoundState(roundState => roundState.selectState = state);
     }
 
-    // スコア更新
-    const setScoresPlayerA = (scores: number[]) => {
-        updateRoundState(roundState => roundState.scoresPlayerA = scores);
+    // 部門カード画面への遷移
+    const showDivisionCard = () => {
+        setSelectState("division_card");
     }
-    const setScoresPlayerB = (scores: number[]) => {
-        updateRoundState(roundState => roundState.scoresPlayerB = scores);
+
+    // 試合カード画面への遷移
+    const showRoundCard = () => {
+        setSelectState("round_card");
+    }
+
+    // 課題曲抽選画面への遷移
+    const showRoulette = () => {
+        setSelectState("not_started");
     }
 
     // 抽選楽曲表示
@@ -81,6 +88,14 @@ export function useTournamentState({
         setSelectState("displaying")
     }
 
+    // スコア更新
+    const setScoresPlayerA = (scores: number[]) => {
+        updateRoundState(roundState => roundState.scoresPlayerA = scores);
+    }
+    const setScoresPlayerB = (scores: number[]) => {
+        updateRoundState(roundState => roundState.scoresPlayerB = scores);
+    }
+
     // 試合結果表示
     const showRoundResult = () => {
         updateRoundState(roundState =>
@@ -94,13 +109,13 @@ export function useTournamentState({
     const previousRound = () => {
         const numPreviousRound = Math.max(numCurrentRound - 1, 0);
         setNumCurrentRound(numPreviousRound);
-        updateRoundState(roundState => roundState.selectState = "not_started");
+        updateRoundState(roundState => roundState.selectState = "round_card");
     }
     const nextRound = () => {
         const numNextRound = Math.min(numCurrentRound + 1,
             tournament.divisions[numCurrentDivision].rounds.length - 1);
         setNumCurrentRound(numNextRound);
-        updateRoundState(roundState => roundState.selectState = "not_started");
+        updateRoundState(roundState => roundState.selectState = "round_card");
     };
 
     // 部門進行
@@ -108,7 +123,7 @@ export function useTournamentState({
         const numPreviousDivision = Math.max(numCurrentDivision - 1, 0);
         setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
-        updateRoundState(roundState => roundState.selectState = "not_started");
+        updateRoundState(roundState => roundState.selectState = "division_card");
     };
 
     const nextDivision = () => {
@@ -116,19 +131,22 @@ export function useTournamentState({
             tournament.divisions.length - 1);
         setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
-        updateRoundState(roundState => roundState.selectState = "not_started");
+        updateRoundState(roundState => roundState.selectState = "division_card");
     };
 
     return {
         setSong,
         setSelectedSongs,
         setSelectState,
-        setScoresPlayerA,
-        setScoresPlayerB,
+        showDivisionCard,
+        showRoundCard,
+        showRoulette,
         showSelectedSongs,
         selectSong1,
         selectSong2,
         selectSong3,
+        setScoresPlayerA,
+        setScoresPlayerB,
         showRoundResult,
         previousRound,
         nextRound,
