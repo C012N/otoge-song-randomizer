@@ -1,29 +1,29 @@
 // 試合結果を表形式で表示するコンポーネント
-import type { Player, Round, RoundState } from "./types";
+import type { Player, RoundState, Tournament } from "./types";
 
 interface ShowRoundResultProps {
-    divisionName: string;
-    round: Round;
-    roundState: RoundState;
-    teamNameA: string;
-    teamNameB: string;
-    scoresPlayerA: number[];
-    scoresPlayerB: number[];
+    tournament: Tournament
+    numCurrentDivision: number
+    numCurrentRound: number
+    currentRoundState: RoundState
 }
 
 export function ShowRoundResult({
-    divisionName,
-    round,
-    roundState,
-    teamNameA,
-    teamNameB,
-    scoresPlayerA,
-    scoresPlayerB,
+    tournament,
+    numCurrentDivision,
+    numCurrentRound,
+    currentRoundState
 }: ShowRoundResultProps) {
-    const roundName = round.name;
+    const teamNameA = tournament.teamA.name
+    const teamNameB = tournament.teamB.name
+    const divisionName = tournament.divisions[numCurrentDivision].gameTitle
+    const round = tournament.divisions[numCurrentDivision].rounds[numCurrentRound]
+    const roundName = round.name
     const roundjudge = round.judge;
     const playerA = round.playerA;
     const playerB = round.playerB;
+    const scoresPlayerA = currentRoundState.scoresPlayerA
+    const scoresPlayerB = currentRoundState.scoresPlayerB
     const totalScoreA = scoresPlayerA.reduce((acc, score) => acc + score, 0);
     const totalScoreB = scoresPlayerB.reduce((acc, score) => acc + score, 0);
     
@@ -82,7 +82,7 @@ export function ShowRoundResult({
                 <p className="text-2xl">
                     ①{formatScore(scores[0])} <br />
                     ②{formatScore(scores[1])} <br />
-                    {(roundState.selectedSong)
+                    {(currentRoundState.selectedSong)
                     ? `③${formatScore(scores[2])}`
                     : ('')}
                 </p>
@@ -106,8 +106,8 @@ export function ShowRoundResult({
                 <div className="text-left">
                     <p>① {playerA.song.title}</p>
                     <p>② {playerB.song.title}</p>
-                    {(roundState.selectedSong)
-                    ? (<p>③ {roundState.selectedSong.title}</p>)
+                    {(currentRoundState.selectedSong)
+                    ? (<p>③ {currentRoundState.selectedSong.title}</p>)
                 : ('')}
                 </div>
                 

@@ -3,7 +3,7 @@
 // 以下同様
 
 import { useEffect, useState, useRef } from 'react'
-import { type Tournament } from '../types';
+import { type Tournament, type TournamentState } from '../types';
 
 // tournamentの状態を同期させるカスタムフック
 export function useSyncTournament(initialTournament: Tournament | null) {
@@ -37,8 +37,8 @@ export function useSyncTournament(initialTournament: Tournament | null) {
 }
 
 // tournamentStateの状態を同期させるカスタムフック
-export function useSyncTournamentState(initialTournamentState: any) {
-    const [tournamentState, setTournamentState] = useState<any>(initialTournamentState);
+export function useSyncTournamentState(initialTournamentState: TournamentState | null) {
+    const [tournamentState, setTournamentState] = useState<TournamentState | null>(initialTournamentState);
     const channelRef = useRef<BroadcastChannel | null>(null);
 
     useEffect(() => {

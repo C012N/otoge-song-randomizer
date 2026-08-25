@@ -23,6 +23,7 @@ import { loadTournament } from "./components/loadTournament";
 import { ShowSelectedSongs } from "./components/ShowSelectedSongs"
 import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
+import { DivisionCard } from "./DivisionCard";
 
 function App() {
   // URLクエリの取得
@@ -157,7 +158,10 @@ function App() {
   const currentURL = window.location.href;
   if (!tournament || !tournamentState) {
     return (
-      <div className="w-full min-h-screen bg-[url('/images/bg_b4utech.png')] bg-center bg-cover text-white items-center font-sans p-10">
+      <div className="
+      w-full min-h-screen
+      bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
+      text-white items-center font-sans p-10">
         <h1>Otoge Song Randomizer</h1>
 
         {isStreamingMode && (
@@ -195,42 +199,21 @@ function App() {
   }
 
   // 各データの取得
-  const teamNameA = tournament.teamA.name;
-  const teamNameB = tournament.teamB.name;
-  const allDivisions = tournament.divisions;
-  const currentDivision = allDivisions[numCurrentDivision];
-  const currentDivisionTitle = currentDivision.gameTitle;
+  const currentDivision = tournament.divisions[numCurrentDivision];
   const currentRound = currentDivision.rounds[numCurrentRound];
-  const currentRoundName = currentRound.name;
   const currentSongs = currentRound.songs;
 
-  const currentDivisionState = tournamentState?.divisionStates[numCurrentDivision];
-  const currentRoundState = currentDivisionState?.roundStates[numCurrentRound];
+  const currentDivisionState = tournamentState.divisionStates[numCurrentDivision];
+  const currentRoundState = currentDivisionState.roundStates[numCurrentRound];
   const song = currentRoundState.selectedSong;
   const selectedSongs = currentRoundState.selectedSongs;
   const selectState = currentRoundState.selectState;
-  const scoresPlayerA = currentRoundState.scoresPlayerA;
-  const scoresPlayerB = currentRoundState.scoresPlayerB;
 
   // セッター
   const {
     setSong,
     setSelectedSongs,
     setSelectState,
-    showDivisionCard,
-    showRoundCard,
-    showRoulette,
-    showSelectedSongs,
-    selectSong1,
-    selectSong2,
-    selectSong3,
-    setScoresPlayerA,
-    setScoresPlayerB,
-    showRoundResult,
-    previousRound,
-    nextRound,
-    previousDivision,
-    nextDivision,
   } = useTournamentState({
     tournament,
     tournamentState,
@@ -259,144 +242,56 @@ function App() {
     bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
     text-white font-sans">
 
-      {selectState === "division_card" && (
-        <div className="pt-12">
-          <div className="
-          bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
-          w-5xl aspect-[6/1] mx-auto flex items-center justify-center">
-            <p className="font-bold text-5xl text-center text-balance">
-              {tournament.name} {currentDivisionTitle}部門
-            </p>
-          </div>
-          <div className="flex items-center justify-center pt-8">
-            <div className="
-            bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
-            w-[750px] h-[750px]
-            [text-shadow:_0_0_4px_red]">
-              <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                {teamNameA}
-              </p>
-              <div className="
-              flex flex-col gap-[45px] pt-[38px] pl-23
-              font-bold text-5xl">
-                <p>{currentDivision.rounds[0].playerA.name}</p>
-                <p>{currentDivision.rounds[1].playerA.name}</p>
-                <p>{currentDivision.rounds[2].playerA.name}</p>
-                <p>{currentDivision.rounds[3].playerA.name}</p>
-                <p>{currentDivision.rounds[4].playerA.name}</p>
-              </div>
-            </div>
-            <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[300px] h-[300px]"></div>
-            <div className="
-            bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
-            w-[750px] h-[750px]
-            [text-shadow:_0_0_4px_blue]">
-              <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                {teamNameB}
-              </p>
-              <div className="
-              flex flex-col gap-[45px] pt-[38px] pl-23
-              font-bold text-5xl">
-                <p>{currentDivision.rounds[0].playerB.name}</p>
-                <p>{currentDivision.rounds[1].playerB.name}</p>
-                <p>{currentDivision.rounds[2].playerB.name}</p>
-                <p>{currentDivision.rounds[3].playerB.name}</p>
-                <p>{currentDivision.rounds[4].playerB.name}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {isStreamingMode
+        && selectState === "division_card"
+        && (DivisionCard({
+          tournament,
+          numCurrentDivision
+        }))
+      }
 
-      {(selectState === "not_started" ||
-        selectState === "spinning" ||
-        selectState === "displaying" 
-      ) && (
-        <div className="
-        w-full h-screen
-        bg-[url('/images/bg_roulette.png')] bg-no-repeat bg-center bg-cover
-        flex flex-col items-center justify-center select-none
-        [text-shadow:_0_0_10px_purple] font-serif">
+      {isStreamingMode
+        && (selectState === "not_started"
+          || selectState === "spinning"
+          || selectState === "displaying")
+        && (SongSelector({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          song
+        }))
+      }
 
-          <div className="
-          bg-[url('/images/bg_division.png')] bg-no-repeat bg-center bg-contain
-          w-[1394px] h-[236px] flex items-center justify-center">
-            <p className="
-            italic font-thin text-8xl">
-              {currentDivisionTitle} 部門
-            </p>
-          </div>
+      {isStreamingMode
+        && selectState === "banning"
+        && (ShowSelectedSongs({
+          selectedSongs
+        }))
+      }
 
-          <div className="
-          bg-[url('images/bg_round.png')] bg-no-repeat bg-center bg-contain
-          w-[1188px] h-[161px] flex items-center justify-center">
-            <p className="
-            italic font-thin text-5xl">
-              {currentRoundName}
-            </p>
-          </div>
-
-          <div className="
-          bg-[url('images/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
-          w-[1398px] h-[600px] flex flex-col items-center justify-center
-          tracking-widest">
-            <SongSelector
-              song={song}
-            />
-          </div>
-
-        </div>)}
-
-      {selectState === "banning" && (
-        <div className="pt-12">
-          <ShowSelectedSongs
-            selectedSongs={selectedSongs}
-          />
-        </div>
-      )}
-
-      {selectState === "showResult" && (
-        <ShowRoundResult
-          divisionName={currentDivisionTitle}
-          round={currentRound}
-          roundState={currentRoundState}
-          teamNameA={teamNameA}
-          teamNameB={teamNameB}
-          scoresPlayerA={scoresPlayerA}
-          scoresPlayerB={scoresPlayerB}
-        />
-      )}
+      {isStreamingMode
+        && selectState === "showResult"
+        && (ShowRoundResult({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          currentRoundState
+        }))
+      }
 
       {!isStreamingMode && (
-        <ControlPanel
-          tournamentState={tournamentState}
-          currentRound={currentRound}
-          currentRoundState={currentRoundState}
-          numCurrentDivision={numCurrentDivision}
-          numCurrentRound={numCurrentRound}
-          onSelectSong={selectSong}
-          onSetSong={setSong}
-          onSelectSong1={selectSong1}
-          onSelectSong2={selectSong2}
-          onSelectSong3={selectSong3}
-          scoresPlayerA={scoresPlayerA}
-          scoresPlayerB={scoresPlayerB}
-          setScoresPlayerA={setScoresPlayerA}
-          setScoresPlayerB={setScoresPlayerB}
-          onShowSelectedSongs={showSelectedSongs}
-          onShowRoundResult={showRoundResult}
-          onShowDivisionCard={showDivisionCard}
-          onShowRoundCard={showRoundCard}
-          onShowRoulette={showRoulette}
-          onPrevRound={previousRound}
-          onNextRound={nextRound}
-          onPrevDivision={previousDivision}
-          onNextDivision={nextDivision}
-        />
+        ControlPanel({
+          tournament,
+          tournamentState,
+          setTournamentState,
+          numCurrentDivision,
+          setNumCurrentDivision,
+          numCurrentRound,
+          setNumCurrentRound,
+          selectSong
+        })
       )}
-    </div>
-
-  );
+    </div>)
 }
 
 export default App;
