@@ -58,6 +58,8 @@ type LoadTournamentResult = {
 
 // 抽選状態
 type SelectState =
+    | "division_card"
+    | "round_card"
     | "not_started"
     | "spinning"
     | "displaying"
