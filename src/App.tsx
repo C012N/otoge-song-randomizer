@@ -240,67 +240,52 @@ function App() {
   const streamingView = () => {
     switch (selectState) {
       case "division_card":
-        return DivisionCard({
-          tournament, numCurrentDivision
-        })
+        return <DivisionCard
+          tournament={tournament}
+          numCurrentDivision={numCurrentDivision}
+        />
 
       case "round_card":
-        return RoundCard({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound
-        })
-
-      case "not_started":
-        return SongSelector({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          song
-        })
-
-      case "spinning":
-        return SongSelector({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          song
-        })
-
-      case "displaying":
-        return SongSelector({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          song
-        })
+        return <RoundCard
+          tournament={tournament}
+          numCurrentDivision={numCurrentDivision}
+          numCurrentRound={numCurrentRound}
+        />
 
       case "banning":
-        return ShowSelectedSongs({
-          selectedSongs
-        })
+        return <ShowSelectedSongs
+          selectedSongs={selectedSongs}
+        />
 
       case "showResult":
-        return ShowRoundResult({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          currentRoundState
-        })
+        return <ShowRoundResult
+          tournament={tournament}
+          numCurrentDivision={numCurrentDivision}
+          numCurrentRound={numCurrentRound}
+          currentRoundState={currentRoundState}
+        />
+
+      default:
+        return <SongSelector
+          tournament={tournament}
+          numCurrentDivision={numCurrentDivision}
+          numCurrentRound={numCurrentRound}
+          song={song}
+        />
     }
   }
 
   const ControlView = () => {
-    return ControlPanel({
-      tournament,
-      tournamentState,
-      setTournamentState,
-      numCurrentDivision,
-      setNumCurrentDivision,
-      numCurrentRound,
-      setNumCurrentRound,
-      selectSong
-    })
+    return <ControlPanel
+      tournament={tournament}
+      tournamentState={tournamentState}
+      setTournamentState={setTournamentState}
+      numCurrentDivision={numCurrentDivision}
+      setNumCurrentDivision={setNumCurrentDivision}
+      numCurrentRound={numCurrentRound}
+      setNumCurrentRound={setNumCurrentRound}
+      selectSong={selectSong}
+    />
   }
 
   return (

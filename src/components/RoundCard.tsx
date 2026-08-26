@@ -11,16 +11,8 @@ export function RoundCard({
     numCurrentDivision,
     numCurrentRound
 }: RoundCardProps) {
-    const tournamentName = tournament.name
-    const teamNameA = tournament.teamA.name
-    const teamNameB = tournament.teamB.name
-    const divisionTitle = tournament.divisions[numCurrentDivision].gameTitle
-    const currentRound = tournament.divisions[numCurrentDivision].rounds[numCurrentRound]
-    const roundName = currentRound.name
-    const namePlayerA = currentRound.playerA.name
-    const namePlayerB = currentRound.playerB.name
-    const songPlayerA = currentRound.playerA.song
-    const songPlayerB = currentRound.playerB.song
+    const division = tournament.divisions[numCurrentDivision]
+    const round = division.rounds[numCurrentRound]
 
     return (
         <div className="pt-12">
@@ -28,7 +20,7 @@ export function RoundCard({
                 bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
                 w-5xl aspect-[6/1] mx-auto flex items-center justify-center">
                 <p className="font-bold text-5xl text-center text-balance">
-                    {tournament.name} {divisionTitle}部門
+                    {tournament.name} {division.gameTitle}部門
                 </p>
             </div>
 
@@ -36,34 +28,42 @@ export function RoundCard({
                 bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
                 w-xl aspect-[6/1] mx-auto flex items-center justify-center">
                 <p className="font-bold text-5xl text-center text-balance">
-                    {roundName}
+                    {round.name}
                 </p>
             </div>
 
-            <div className="flex items-center justify-center pt-8">
+            <div className="flex items-center justify-center">
                 <div className="
                     bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
-                    w-[750px] h-[750px]
+                    w-[700px] h-[700px]
                     [text-shadow:_0_0_4px_red]">
-                    <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                        {teamNameA}
+                    <p className="italic font-mono font-bold text-7xl pt-18 pl-30">
+                        {tournament.teamA.name}
                     </p>
-                    <div className="
-                      flex flex-col gap-[45px] pt-[38px] pl-23
-                      font-bold text-5xl">
+                    <div className="flex flex-col gap-[180px] pt-[100px]">
+                        <p className="font-bold text-6xl">
+                            {round.playerA.name}
+                        </p>
+                        <p className="text-4xl">
+                            {round.playerA.song.title} [{round.playerA.song.difficulty}]
+                        </p>
                     </div>
                 </div>
                 <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[300px] h-[300px]"></div>
                 <div className="
                     bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
-                    w-[750px] h-[750px]
+                    w-[700px] h-[700px]
                     [text-shadow:_0_0_4px_blue]">
-                    <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                        {teamNameB}
+                    <p className="italic font-mono font-bold text-7xl pt-18 pl-30">
+                        {tournament.teamB.name}
                     </p>
-                    <div className="
-                      flex flex-col gap-[45px] pt-[38px] pl-23
-                      font-bold text-5xl">
+                    <div className="flex flex-col gap-[180px] pt-[100px]">
+                        <p className="font-bold text-6xl">
+                            {round.playerB.name}
+                        </p>
+                        <p className="text-4xl">
+                            {round.playerB.song.title} [{round.playerB.song.difficulty}]
+                        </p>
                     </div>
                 </div>
             </div>
