@@ -62,25 +62,38 @@ export function ControlPanel({
             <Button
                 children="部門紹介画面を表示"
                 onClick={showDivisionCard}
-                disabled={selectState === "spinning"}
+                disabled={
+                    selectState === "spinning" ||
+                    selectState === "division_card"
+                }
             />
 
             <Button
                 children="試合紹介画面を表示"
                 onClick={showRoundCard}
-                disabled={selectState === "spinning"}
+                disabled={
+                    selectState === "spinning" ||
+                    selectState === "round_card"
+                }
             />
 
             <Button
                 children="自選曲を公開"
                 onClick={openSong}
-                disabled={selectState === "spinning"}
+                disabled={
+                    selectState === "spinning" ||
+                    currentRoundState.isSongOpened
+                }
             />
 
             <Button
                 children="課題曲抽選画面"
                 onClick={showRoulette}
-                disabled={selectState === "spinning"}
+                disabled={
+                    selectState === "not_started" ||
+                    selectState === "spinning" ||
+                    selectState === "displaying"
+                }
             />
 
             <Button
@@ -95,7 +108,10 @@ export function ControlPanel({
             <Button
                 children="抽選楽曲一覧を表示"
                 onClick={showSelectedSongs}
-                disabled={selectState === "spinning"}
+                disabled={
+                    selectState === "spinning" ||
+                    selectState === "banning"
+                }
             />
 
             <div className="flex gap-4">

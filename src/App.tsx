@@ -44,6 +44,20 @@ function App() {
   // 試合進行状況: 整数値で管理
   const [numCurrentRound, setNumCurrentRound] = useSyncNumCurrentRound(0);
 
+  // リログに対するアラート
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+        event.preventDefault();
+        event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+}, []);
+
   // 抽選演出用: 効果音
   const audioContextClick = useRef<AudioContext | null>(null);
   const audioContextStart = useRef<AudioContext | null>(null);
