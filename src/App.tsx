@@ -270,6 +270,9 @@ function App() {
 
       case "banning":
         return <ShowSelectedSongs
+          tournament={tournament}
+          numCurrentDivision={numCurrentDivision}
+          numCurrentRound={numCurrentRound}
           selectedSongs={selectedSongs}
         />
 

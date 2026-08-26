@@ -51,7 +51,7 @@ export function SongSelector({
                   bg-[url('/images/bg_division.png')] bg-no-repeat bg-center bg-contain
                   w-[1394px] h-[236px] flex items-center justify-center">
                 <p className="
-                    italic font-thin text-8xl">
+                    font-thin text-8xl">
                     {currentDivisionTitle} 部門
                 </p>
             </div>
@@ -60,7 +60,7 @@ export function SongSelector({
                   bg-[url('images/bg_round.png')] bg-no-repeat bg-center bg-contain
                   w-[1188px] h-[161px] flex items-center justify-center">
                 <p className="
-                    italic font-thin text-5xl">
+                    font-thin text-5xl">
                     {currentRoundName}
                 </p>
             </div>
