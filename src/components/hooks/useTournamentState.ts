@@ -58,6 +58,11 @@ export function useTournamentState({
         setSelectState("round_card");
     }
 
+    // 自選曲の公開
+    const openSong = () => {
+        updateRoundState(roundState => roundState.isSongOpened = true)
+    }
+
     // 課題曲抽選画面への遷移
     const showRoulette = () => {
         setSelectState("not_started");
@@ -140,6 +145,7 @@ export function useTournamentState({
         setSelectState,
         showDivisionCard,
         showRoundCard,
+        openSong,
         showRoulette,
         showSelectedSongs,
         selectSong1,

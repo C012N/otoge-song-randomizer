@@ -144,7 +144,8 @@ function App() {
             setSongs: [],
             scoresPlayerA: [0, 0, 0],
             scoresPlayerB: [0, 0, 0],
-            selectState: "division_card" as SelectState
+            selectState: "division_card" as SelectState,
+            isSongOpened: false
           })),
           scoreTeamA: 0,
           scoreTeamB: 0
@@ -250,6 +251,7 @@ function App() {
           tournament={tournament}
           numCurrentDivision={numCurrentDivision}
           numCurrentRound={numCurrentRound}
+          isSongOpened={currentRoundState.isSongOpened}
         />
 
       case "banning":

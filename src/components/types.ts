@@ -76,6 +76,7 @@ type RoundState = {
     scoresPlayerA: number[];
     scoresPlayerB: number[];
     selectState: SelectState;
+    isSongOpened: boolean;
 }
 
 type DivisionState = {

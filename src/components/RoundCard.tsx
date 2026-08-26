@@ -1,18 +1,26 @@
-import type { Tournament } from "./types"
+import type { Song, Tournament } from "./types"
 
 type RoundCardProps = {
     tournament: Tournament
     numCurrentDivision: number
     numCurrentRound: number
+    isSongOpened: boolean
 }
 
 export function RoundCard({
     tournament,
     numCurrentDivision,
-    numCurrentRound
+    numCurrentRound,
+    isSongOpened
 }: RoundCardProps) {
     const division = tournament.divisions[numCurrentDivision]
     const round = division.rounds[numCurrentRound]
+
+    const displaySong = (song: Song) => isSongOpened ? song : {
+        title: "???",
+        difficulty: "???",
+        level: "???"
+    }
 
     return (
         <div className="pt-12">
@@ -45,7 +53,7 @@ export function RoundCard({
                             {round.playerA.name}
                         </p>
                         <p className="text-4xl">
-                            {round.playerA.song.title} [{round.playerA.song.difficulty}]
+                            {displaySong(round.playerA.song).title} [{displaySong(round.playerA.song).difficulty}]
                         </p>
                     </div>
                 </div>
@@ -62,7 +70,7 @@ export function RoundCard({
                             {round.playerB.name}
                         </p>
                         <p className="text-4xl">
-                            {round.playerB.song.title} [{round.playerB.song.difficulty}]
+                            {displaySong(round.playerB.song).title} [{displaySong(round.playerB.song).difficulty}]
                         </p>
                     </div>
                 </div>

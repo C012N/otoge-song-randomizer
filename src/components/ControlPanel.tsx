@@ -30,6 +30,7 @@ export function ControlPanel({
 }: ControlPanelProps) {
     const {showDivisionCard,
         showRoundCard,
+        openSong,
         showRoulette,
         showSelectedSongs,
         selectSong1,
@@ -59,14 +60,20 @@ export function ControlPanel({
     return (
         <div className="flex flex-col items-center justify-center gap-4">
             <Button
-                children="部門紹介画面"
+                children="部門紹介画面を表示"
                 onClick={showDivisionCard}
                 disabled={selectState === "spinning"}
             />
 
             <Button
-                children="試合紹介画面"
+                children="試合紹介画面を表示"
                 onClick={showRoundCard}
+                disabled={selectState === "spinning"}
+            />
+
+            <Button
+                children="自選曲を公開"
+                onClick={openSong}
                 disabled={selectState === "spinning"}
             />
 
