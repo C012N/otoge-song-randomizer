@@ -24,6 +24,7 @@ import { ShowSelectedSongs } from "./components/ShowSelectedSongs"
 import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
 import { DivisionCard } from "./components/DivisionCard";
+import { RoundCard } from "./components/RoundCard";
 
 function App() {
   // URLクエリの取得
@@ -244,7 +245,11 @@ function App() {
         })
 
       case "round_card":
-        return
+        return RoundCard({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound
+        })
 
       case "not_started":
         return SongSelector({
@@ -305,7 +310,7 @@ function App() {
     text-white font-sans">
 
       {isStreamingMode ? streamingView() : ControlView()}
-      
+
     </div>)
 }
 

@@ -1,4 +1,4 @@
-import type { Tournament } from "./components/types"
+import type { Tournament } from "./types"
 
 type DivisionCardProps = {
     tournament: Tournament
@@ -24,7 +24,7 @@ export function DivisionCard({
             </div>
             <div className="flex items-center justify-center pt-8">
                 <div className="
-                    bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
+                    bg-[url('/images/bg_division_card.png')] bg-contain bg-no-repeat
                     w-[750px] h-[750px]
                     [text-shadow:_0_0_4px_red]">
                     <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
