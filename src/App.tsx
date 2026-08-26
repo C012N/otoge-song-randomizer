@@ -23,7 +23,7 @@ import { loadTournament } from "./components/loadTournament";
 import { ShowSelectedSongs } from "./components/ShowSelectedSongs"
 import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
-import { DivisionCard } from "./DivisionCard";
+import { DivisionCard } from "./components/DivisionCard";
 
 function App() {
   // URLクエリの取得
@@ -236,61 +236,76 @@ function App() {
     playFinishSound
   });
 
+  const streamingView = () => {
+    switch (selectState) {
+      case "division_card":
+        return DivisionCard({
+          tournament, numCurrentDivision
+        })
+
+      case "round_card":
+        return
+
+      case "not_started":
+        return SongSelector({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          song
+        })
+
+      case "spinning":
+        return SongSelector({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          song
+        })
+
+      case "displaying":
+        return SongSelector({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          song
+        })
+
+      case "banning":
+        return ShowSelectedSongs({
+          selectedSongs
+        })
+
+      case "showResult":
+        return ShowRoundResult({
+          tournament,
+          numCurrentDivision,
+          numCurrentRound,
+          currentRoundState
+        })
+    }
+  }
+
+  const ControlView = () => {
+    return ControlPanel({
+      tournament,
+      tournamentState,
+      setTournamentState,
+      numCurrentDivision,
+      setNumCurrentDivision,
+      numCurrentRound,
+      setNumCurrentRound,
+      selectSong
+    })
+  }
+
   return (
     <div className="
     w-full min-h-screen
     bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
     text-white font-sans">
 
-      {isStreamingMode
-        && selectState === "division_card"
-        && (DivisionCard({
-          tournament,
-          numCurrentDivision
-        }))
-      }
-
-      {isStreamingMode
-        && (selectState === "not_started"
-          || selectState === "spinning"
-          || selectState === "displaying")
-        && (SongSelector({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          song
-        }))
-      }
-
-      {isStreamingMode
-        && selectState === "banning"
-        && (ShowSelectedSongs({
-          selectedSongs
-        }))
-      }
-
-      {isStreamingMode
-        && selectState === "showResult"
-        && (ShowRoundResult({
-          tournament,
-          numCurrentDivision,
-          numCurrentRound,
-          currentRoundState
-        }))
-      }
-
-      {!isStreamingMode && (
-        ControlPanel({
-          tournament,
-          tournamentState,
-          setTournamentState,
-          numCurrentDivision,
-          setNumCurrentDivision,
-          numCurrentRound,
-          setNumCurrentRound,
-          selectSong
-        })
-      )}
+      {isStreamingMode ? streamingView() : ControlView()}
+      
     </div>)
 }
 
