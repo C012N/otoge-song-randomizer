@@ -2,7 +2,7 @@
 // useTournamentState: tournamentStateの状態を管理する
 // 以下同様
 
-import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState } from "../types";
+import { type Song, type SelectState, type TournamentState, type Tournament, type RoundState, type DivisionState } from "../types";
 
 type UseTournamentStateProps = {
     tournament: Tournament;
@@ -23,7 +23,16 @@ export function useTournamentState({
     numCurrentRound,
     setNumCurrentRound,
 }: UseTournamentStateProps) {
-    const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound];
+    const currentDivisionState = tournamentState.divisionStates[numCurrentDivision];
+    const currentRoundState = currentDivisionState.roundStates[numCurrentRound];
+    // 補助: 部門状態更新
+    const updateDivisionState = (
+        updater: (divisionState: DivisionState) => void,
+    ) => {
+        if (!tournamentState) return;
+        updater(currentDivisionState);
+        setTournamentState({ ...tournamentState });
+    }
     // 補助: 試合状態更新
     const updateRoundState = (
         updater: (roundState: RoundState) => void,
@@ -114,13 +123,21 @@ export function useTournamentState({
     const previousRound = () => {
         const numPreviousRound = Math.max(numCurrentRound - 1, 0);
         setNumCurrentRound(numPreviousRound);
-        updateRoundState(roundState => roundState.selectState = "round_card");
+        const prevRoundState = tournamentState
+            .divisionStates[numCurrentDivision]
+            .roundStates[numPreviousRound];
+        prevRoundState.selectState = "round_card";
+        updateRoundState(() => prevRoundState)
     }
     const nextRound = () => {
         const numNextRound = Math.min(numCurrentRound + 1,
             tournament.divisions[numCurrentDivision].rounds.length - 1);
         setNumCurrentRound(numNextRound);
-        updateRoundState(roundState => roundState.selectState = "round_card");
+        const nextRoundState = tournamentState
+            .divisionStates[numCurrentDivision]
+            .roundStates[numNextRound];
+        nextRoundState.selectState = "round_card";
+        updateRoundState(() => nextRoundState)
     };
 
     // 部門進行
@@ -128,7 +145,9 @@ export function useTournamentState({
         const numPreviousDivision = Math.max(numCurrentDivision - 1, 0);
         setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
-        updateRoundState(roundState => roundState.selectState = "division_card");
+        const prevDivisionState = tournamentState
+            .divisionStates[numPreviousDivision];
+        updateDivisionState(() => prevDivisionState);        
     };
 
     const nextDivision = () => {
@@ -136,7 +155,9 @@ export function useTournamentState({
             tournament.divisions.length - 1);
         setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
-        updateRoundState(roundState => roundState.selectState = "division_card");
+        const nextDivisionState = tournamentState
+            .divisionStates[numCurrentDivision];
+        updateDivisionState(() => nextDivisionState);
     };
 
     return {
