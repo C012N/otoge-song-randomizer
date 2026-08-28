@@ -65,7 +65,7 @@ export function ShowRoundResult({
                 w-full rounded-3xl border-3
                 ${winner ? 'border-green-500' : 'border-gray-600'}
                 bg-slate-900/70 grid grid-cols-3 items-center justify-items-start
-                text-white text-center px-8 py-6`}>
+                text-white text-center pl-24 py-6`}>
                 
                 <div className="flex gap-4 items-center font-bold">
                     <p className={`rounded-full ${teamColor} text-black text-2xl px-3 py-1`}>
