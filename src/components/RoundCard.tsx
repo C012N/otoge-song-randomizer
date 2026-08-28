@@ -45,10 +45,15 @@ export function RoundCard({
                     bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
                     w-[700px] h-[700px]
                     [text-shadow:_0_0_4px_red]">
-                    <p className="italic font-mono font-bold text-7xl pt-18 pl-30">
-                        {tournament.teamA.name}
-                    </p>
-                    <div className="flex flex-col gap-[180px] pt-[100px]">
+                        <div className="flex items-center pl-[62px] pt-[54px]">
+                            <div className="
+                                  bg-[url('/images/logo_teamA.png')] bg-contain bg-no-repeat
+                                  w-[130px] aspect-[1/1]"></div>
+                            <p className="italic font-mono font-bold text-7xl pl-30">
+                                {tournament.teamA.name}
+                            </p>
+                        </div>
+                    <div className="flex flex-col gap-[160px] pt-[100px]">
                         <p className="font-bold text-6xl">
                             {round.playerA.name}
                         </p>
@@ -62,10 +67,15 @@ export function RoundCard({
                     bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
                     w-[700px] h-[700px]
                     [text-shadow:_0_0_4px_blue]">
-                    <p className="italic font-mono font-bold text-7xl pt-18 pl-30">
-                        {tournament.teamB.name}
-                    </p>
-                    <div className="flex flex-col gap-[180px] pt-[100px]">
+                    <div className="flex items-center pl-[62px] pt-[54px]">
+                            <div className="
+                                  bg-[url('/images/logo_teamB.png')] bg-contain bg-no-repeat
+                                  w-[130px] aspect-[1/1]"></div>
+                            <p className="italic font-mono font-bold text-7xl pl-16">
+                                {tournament.teamB.name}
+                            </p>
+                        </div>
+                    <div className="flex flex-col gap-[160px] pt-[100px]">
                         <p className="font-bold text-6xl">
                             {round.playerB.name}
                         </p>

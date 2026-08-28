@@ -27,9 +27,14 @@ export function DivisionCard({
                     bg-[url('/images/bg_division_card.png')] bg-contain bg-no-repeat
                     w-[750px] h-[750px]
                     [text-shadow:_0_0_4px_red]">
-                    <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                        {teamNameA}
-                    </p>
+                    <div className="flex pl-[60px] pt-[45px] items-center">
+                        <div className="
+                          bg-[url('/images/logo_teamA.png')] bg-contain bg-no-repeat
+                          w-[120px] aspect-[1/1]"></div>
+                        <p className="flex italic font-mono font-bold text-8xl pl-30">
+                            {teamNameA}
+                        </p>
+                    </div>
                     <div className="
                       flex flex-col gap-[45px] pt-[38px] pl-23
                       font-bold text-5xl">
@@ -45,9 +50,14 @@ export function DivisionCard({
                     bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
                     w-[750px] h-[750px]
                     [text-shadow:_0_0_4px_blue]">
-                    <p className="italic font-mono font-bold text-8xl pt-12 pl-30">
-                        {teamNameB}
-                    </p>
+                    <div className="flex pl-[60px] pt-[45px] items-center">
+                        <div className="
+                          bg-[url('/images/logo_teamB.png')] bg-contain bg-no-repeat
+                          w-[120px] aspect-[1/1]"></div>
+                        <p className="italic font-mono font-bold text-8xl pl-14">
+                            {teamNameB}
+                        </p>
+                    </div>
                     <div className="
                       flex flex-col gap-[45px] pt-[38px] pl-23
                       font-bold text-5xl">
