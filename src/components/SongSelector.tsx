@@ -57,7 +57,7 @@ export function SongSelector({
             </div>
 
             <div className="
-                  bg-[url('images/bg_round.png')] bg-no-repeat bg-center bg-contain
+                  bg-[url('/images/bg_round.png')] bg-no-repeat bg-center bg-contain
                   w-[1188px] h-[161px] flex items-center justify-center">
                 <p className="
                     font-thin text-5xl">
@@ -66,7 +66,7 @@ export function SongSelector({
             </div>
 
             <div className="
-                  bg-[url('images/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
+                  bg-[url('/images/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
                   w-[1398px] h-[600px] flex flex-col items-center justify-center
                   tracking-widest">
                 <div className="max-w-6xl font-sans text-balance">
