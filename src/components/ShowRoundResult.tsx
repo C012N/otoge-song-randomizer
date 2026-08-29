@@ -90,7 +90,7 @@ export function ShowRoundResult({
     }
 
     return (
-        <div className="max-w-7xl mx-auto
+        <div className="w-7xl h-screen mx-auto
         flex flex-col gap-12">
             <p className="
             text-6xl font-serif pt-15
@@ -107,7 +107,7 @@ export function ShowRoundResult({
                     <p>② {playerB.song.title}</p>
                     {(currentRoundState.selectedSong)
                     ? (<p>③ {currentRoundState.selectedSong.title}</p>)
-                : ('')}
+                : (<br/>)}
                 </div>
                 
             </div>

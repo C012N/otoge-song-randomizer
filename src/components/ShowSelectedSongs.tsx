@@ -31,14 +31,14 @@ export function ShowSelectedSongs({
     }
     return (
         <div className="
-                w-full h-screen
-                bg-[url('/images/bg_roulette.png')] bg-no-repeat bg-center bg-cover
                 flex flex-col items-center justify-center select-none
-                [text-shadow:_0_0_10px_purple] font-serif">
+                [text-shadow:_0_0_10px_purple] font-serif pt-12">
 
             <div className="
-                  bg-[url('/images/bg_division.png')] bg-no-repeat bg-center bg-contain
-                  w-[1394px] h-[236px] flex items-center justify-center">
+                  bg-[url('/images/bg_division.png')]
+                  bg-no-repeat bg-center bg-contain
+                  w-[1394px] h-[236px]
+                  flex items-center justify-center">
                 <p className="
                     font-thin text-8xl">
                     {division.gameTitle} 部門

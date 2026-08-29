@@ -43,7 +43,6 @@ export function SongSelector({
     return (
         <div className="
                 w-full h-screen
-                bg-[url('/images/bg_roulette.png')] bg-no-repeat bg-center bg-cover
                 flex flex-col items-center justify-center select-none
                 [text-shadow:_0_0_10px_purple] font-serif">
 

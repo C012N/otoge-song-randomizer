@@ -310,10 +310,15 @@ function App() {
   return (
     <div className="
     w-full min-h-screen
-    bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
+    bg-[url('/images/bg_b4utech.png')]
+    bg-no-repeat bg-center bg-cover
     text-white font-sans">
 
-      {isStreamingMode ? streamingView() : ControlView()}
+      <div className="
+      bg-[url('/images/bg_tournament.png')]
+      bg-no-repeat bg-center bg-cover">
+        {isStreamingMode ? streamingView() : ControlView()}
+      </div>
 
     </div>)
 }
