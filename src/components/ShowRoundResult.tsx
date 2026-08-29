@@ -58,19 +58,18 @@ export function ShowRoundResult({
     }
 
     const showPlayerResult = (teamName: string, player: Player, scores: number[], winner: boolean) => {
-        const teamColor = (teamName === teamNameA) ? 'bg-red-500' : 'bg-blue-500';
+        const teamLogo = (teamName === teamNameA) ? "bg-[url('/images/logo_teamA.png')]" : "bg-[url('/images/logo_teamB.png')]";
+        const teamColor = (teamName === teamNameA) ? "[text-shadow:_0_0_4px_red]" : "[text-shadow:_0_0_4px_blue]";
         const totalScore = scores.reduce((acc, score) => acc + score, 0);
         return (
             <div className={`
                 w-full rounded-3xl border-3
-                ${winner ? 'border-green-500' : 'border-gray-600'}
-                bg-slate-900/70 grid grid-cols-3 items-center justify-items-start
-                text-white text-center pl-24 py-6`}>
+                ${winner ? 'border-pink-500' : 'border-gray-600'}
+                bg-black/80 grid grid-cols-3 items-center justify-items-start
+                text-white text-center ${teamColor} pl-12 py-6`}>
                 
                 <div className="flex gap-4 items-center font-bold">
-                    <p className={`rounded-full ${teamColor} text-black text-2xl px-3 py-1`}>
-                        {teamName}
-                    </p>
+                    <div className={`${teamLogo} bg-contain bg-no-repeat w-[100px] aspect-[1/1]`}></div>
                     <p className="text-4xl">
                         {player.name}
                     </p>
@@ -100,8 +99,8 @@ export function ShowRoundResult({
                 {divisionName}部門 {roundName}
             </p>
             <div className="
-            [text-shadow:_0_0_4px_purple]
-            text-3xl text-white
+            [text-shadow:_0_0_8px_purple]
+            text-3xl text-white font-semibold
             flex flex-col items-center">
                 <div className="text-left">
                     <p>① {playerA.song.title}</p>
