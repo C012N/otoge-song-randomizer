@@ -126,7 +126,7 @@ export function useTournamentState({
         const prevRoundState = tournamentState
             .divisionStates[numCurrentDivision]
             .roundStates[numPreviousRound];
-        prevRoundState.selectState = "round_card";
+        prevRoundState.selectState = "division_card";
         updateRoundState(() => prevRoundState)
     }
     const nextRound = () => {
@@ -136,7 +136,7 @@ export function useTournamentState({
         const nextRoundState = tournamentState
             .divisionStates[numCurrentDivision]
             .roundStates[numNextRound];
-        nextRoundState.selectState = "round_card";
+        nextRoundState.selectState = "division_card";
         updateRoundState(() => nextRoundState)
     };
 

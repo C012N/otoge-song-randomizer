@@ -21,7 +21,6 @@ export function ScoreInput({
 
             {scores.map((score, i) => (
                 <Fragment key={i}>
-                    <h3>{i + 1}曲目:</h3>
                     <NumberInput
                         value={score}
                         onChange={e => {

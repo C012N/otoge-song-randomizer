@@ -17,7 +17,7 @@ export function NumberInput({value, onChange}: {value: number, onChange: (e: Rea
             type="number"
             value={value}
             onChange={onChange}
-            className="border border-gray-300 rounded py-2 px-4"
+            className="border border-gray-300 rounded px-2 py-1"
         />
     );
 }

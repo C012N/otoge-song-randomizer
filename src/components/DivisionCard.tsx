@@ -17,9 +17,8 @@ export function DivisionCard({
     const currentDivisionTitle = currentDivision.gameTitle
     const currentDivisionState = tournamentState.divisionStates[numCurrentDivision]
 
-
-    const calcPoint = (scoreA: number, scoreB: number) => (scoreA >= scoreB) ? 1 : 0
     const calcTotalScore = (scores: number[]) => scores.reduce((acc, score) => acc + score, 0)
+
     const calcRoundPoint = (roundState: RoundState, teamName: string) => {
         const totalScoreA = calcTotalScore(roundState.scoresPlayerA)
         const totalScoreB = calcTotalScore(roundState.scoresPlayerB)
@@ -27,6 +26,7 @@ export function DivisionCard({
             ? (totalScoreA > totalScoreB ? 1 : 0)
             : (totalScoreB > totalScoreA ? 1 : 0)
     }
+    
     const calcDivisionPoint = (divisionState: DivisionState, teamName: string) =>
         divisionState.roundStates.reduce((acc, roundState) => acc + calcRoundPoint(roundState, teamName), 0)
 

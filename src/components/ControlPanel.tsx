@@ -50,7 +50,8 @@ export function ControlPanel({
     setNumCurrentDivision,
     numCurrentRound,
     setNumCurrentRound})
-    const currentRound = tournament.divisions[numCurrentDivision].rounds[numCurrentRound]
+    const currentDivision = tournament.divisions[numCurrentDivision]
+    const currentRound = currentDivision.rounds[numCurrentRound]
     const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound]
     const selectState = currentRoundState.selectState;
     const scoresPlayerA = currentRoundState.scoresPlayerA
@@ -58,7 +59,9 @@ export function ControlPanel({
     const numDivisions = tournamentState.divisionStates.length;
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
     return (
-        <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 py-4">
+            <h2>現在の部門: {currentDivision.gameTitle}</h2>
+            <h2>現在の試合: {currentRound.name}</h2>
             <Button
                 children="部門紹介画面を表示"
                 onClick={showDivisionCard}
@@ -144,13 +147,13 @@ export function ControlPanel({
             </div>
 
             <ScoreInput
-                label="Player A"
+                label={currentRound.playerA.name}
                 scores={scoresPlayerA}
                 onChange={setScoresPlayerA}
             />
 
             <ScoreInput
-                label="Player B"
+                label={currentRound.playerB.name}
                 scores={scoresPlayerB}
                 onChange={setScoresPlayerB}
             />
