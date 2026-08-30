@@ -1,18 +1,35 @@
-import type { Tournament } from "./types"
+import type { DivisionState, RoundState, Tournament, TournamentState } from "./types"
 
 type DivisionCardProps = {
     tournament: Tournament
+    tournamentState: TournamentState
     numCurrentDivision: number
 }
 
 export function DivisionCard({
     tournament,
+    tournamentState,
     numCurrentDivision
 }: DivisionCardProps) {
     const teamNameA = tournament.teamA.name
     const teamNameB = tournament.teamB.name
     const currentDivision = tournament.divisions[numCurrentDivision]
     const currentDivisionTitle = currentDivision.gameTitle
+    const currentDivisionState = tournamentState.divisionStates[numCurrentDivision]
+
+
+    const calcPoint = (scoreA: number, scoreB: number) => (scoreA >= scoreB) ? 1 : 0
+    const calcTotalScore = (scores: number[]) => scores.reduce((acc, score) => acc + score, 0)
+    const calcRoundPoint = (roundState: RoundState, teamName: string) => {
+        const totalScoreA = calcTotalScore(roundState.scoresPlayerA)
+        const totalScoreB = calcTotalScore(roundState.scoresPlayerB)
+        return teamName === tournament.teamA.name
+            ? (totalScoreA > totalScoreB ? 1 : 0)
+            : (totalScoreB > totalScoreA ? 1 : 0)
+    }
+    const calcDivisionPoint = (divisionState: DivisionState, teamName: string) =>
+        divisionState.roundStates.reduce((acc, roundState) => acc + calcRoundPoint(roundState, teamName), 0)
+
     return (
         <div className="pt-12">
             <div className="
@@ -45,7 +62,35 @@ export function DivisionCard({
                         <p>{currentDivision.rounds[4].playerA.name}</p>
                     </div>
                 </div>
-                <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[300px] h-[300px]"></div>
+                <div className="
+                    bg-black/80
+                    w-[100px] h-[680px]
+                    flex flex-col items-center pt-10 gap-12
+                    font-bold text-4xl">
+                    <p className="text-6xl">
+                        {calcDivisionPoint(currentDivisionState, teamNameA)}
+                    </p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[0], teamNameA)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[1], teamNameA)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[2], teamNameA)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[3], teamNameA)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[4], teamNameA)}</p>
+                </div>
+                <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[200px] h-[200px]"></div>
+                <div className="
+                    bg-black/80
+                    w-[100px] h-[680px]
+                    flex flex-col items-center pt-10 gap-12
+                    font-bold text-4xl">
+                    <p className="text-6xl">
+                        {calcDivisionPoint(currentDivisionState, teamNameB)}
+                    </p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[0], teamNameB)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[1], teamNameB)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[2], teamNameB)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[3], teamNameB)}</p>
+                    <p>{calcRoundPoint(currentDivisionState.roundStates[4], teamNameB)}</p>
+                </div>
                 <div className="
                     bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
                     w-[750px] h-[750px]

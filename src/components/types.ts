@@ -81,14 +81,10 @@ type RoundState = {
 
 type DivisionState = {
     roundStates: RoundState[];
-    scoreTeamA: number;
-    scoreTeamB: number;
 }
 
 type TournamentState = {
     divisionStates: DivisionState[];
-    scoreTeamA: number;
-    scoreTeamB: number;
 }
 
 export {

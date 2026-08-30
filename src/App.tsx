@@ -160,12 +160,8 @@ function App() {
             scoresPlayerB: [0, 0, 0],
             selectState: "division_card" as SelectState,
             isSongOpened: false
-          })),
-          scoreTeamA: 0,
-          scoreTeamB: 0
-        })),
-        scoreTeamA: 0,
-        scoreTeamB: 0
+          }))
+        }))
       }
     }
 
@@ -257,6 +253,7 @@ function App() {
       case "division_card":
         return <DivisionCard
           tournament={tournament}
+          tournamentState={tournamentState}
           numCurrentDivision={numCurrentDivision}
         />
 
@@ -315,6 +312,7 @@ function App() {
     text-white font-sans">
 
       <div className="
+      w-full min-h-screen
       bg-[url('/images/bg_tournament.png')]
       bg-no-repeat bg-center bg-cover">
         {isStreamingMode ? streamingView() : ControlView()}
