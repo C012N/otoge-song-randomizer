@@ -26,9 +26,8 @@ export function ShowSelectedSongs({
         return selectedSongs.map((song, i) => (
             <Fragment key={i}>
                 <p className="
-                text-6xl text-balance font-bold
-                [text-shadow:_0_0_10px_purple]
-                p-4">
+                text-6xl text-balance font-semibold
+                [text-shadow:_0_0_10px_purple]">
                     {song.title}
                 </p>
             </Fragment>
@@ -67,7 +66,7 @@ export function ShowSelectedSongs({
                   w-[1398px] h-[600px] flex flex-col items-center justify-center
                   tracking-widest"
                 style={{backgroundImage: `url(${url_bg_selectedSong})`}}>
-                <div className="max-w-6xl font-sans text-balance">
+                <div className="max-w-6xl flex flex-col gap-6 font-sans pt-24">
                     {createSongCols()}
                 </div>
             </div>

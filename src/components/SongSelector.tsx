@@ -26,11 +26,11 @@ export function SongSelector({
             level: ""
         }
         return (
-            <div>
+            <div className="flex flex-col gap-6 items-center justify-center pt-12">
                 <p className="text-6xl font-bold">
                     {songForDisplay.title}
                 </p>
-                <br />
+
                 <p className="text-4xl">
                     {songForDisplay.difficulty} {songForDisplay.level}
                 </p>
