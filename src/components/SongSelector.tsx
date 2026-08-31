@@ -2,6 +2,9 @@
 // 選曲中の楽曲情報を表示する
 
 import { type Song, type Tournament } from "./types"
+import url_bg_division from "../assets/images/roulette/bg_division.png";
+import url_bg_round from "../assets/images/roulette/bg_round.png";
+import url_bg_selectedSong from "../assets/images/roulette/bg_selectedSong.png";
 
 type SongSelectorProps = {
     tournament: Tournament
@@ -24,8 +27,6 @@ export function SongSelector({
         }
         return (
             <div>
-                <br />
-                <br />
                 <p className="text-6xl font-bold">
                     {songForDisplay.title}
                 </p>
@@ -42,32 +43,37 @@ export function SongSelector({
     .rounds[numCurrentRound].name
     return (
         <div className="
-                w-full h-screen
                 flex flex-col items-center justify-center select-none
                 [text-shadow:_0_0_10px_purple] font-serif">
 
-            <div className="
-                  bg-[url('/images/bg_division.png')] bg-no-repeat bg-center bg-contain
-                  w-[1394px] h-[236px] flex items-center justify-center">
+            <div
+                className="
+                  bg-no-repeat bg-center bg-contain
+                  w-[1394px] h-[236px] flex items-center justify-center"
+                style={{backgroundImage: `url(${url_bg_division})`}}>
                 <p className="
                     font-thin text-8xl">
                     {currentDivisionTitle} 部門
                 </p>
             </div>
 
-            <div className="
-                  bg-[url('/images/bg_round.png')] bg-no-repeat bg-center bg-contain
-                  w-[1188px] h-[161px] flex items-center justify-center">
+            <div
+                className="
+                  bg-no-repeat bg-center bg-contain
+                  w-[1188px] h-[161px] flex items-center justify-center"
+                style={{backgroundImage: `url(${url_bg_round})`}}>
                 <p className="
                     font-thin text-5xl">
                     {currentRoundName}
                 </p>
             </div>
 
-            <div className="
-                  bg-[url('/images/bg_selectedSong.png')] bg-no-repeat bg-center bg-contain
+            <div
+                className="
+                  bg-no-repeat bg-center bg-contain
                   w-[1398px] h-[600px] flex flex-col items-center justify-center
-                  tracking-widest">
+                  tracking-widest"
+                style={{backgroundImage: `url(${url_bg_selectedSong})`}}>
                 <div className="max-w-6xl font-sans text-balance">
                     {displaySongByState()}
                 </div>
