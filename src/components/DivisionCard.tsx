@@ -1,4 +1,11 @@
 import type { DivisionState, RoundState, Tournament, TournamentState } from "./types"
+import { Fragment } from "react/jsx-runtime";
+import url_card_identifier from "../assets/images/cards/card_identifier.png";
+import url_card_teamA from "../assets/images/cards/divisionCard_teamA.png";
+import url_card_teamB from "../assets/images/cards/divisionCard_teamB.png";
+import url_logo_teamA from "../assets/images/cards/logo_teamA.png";
+import url_logo_teamB from "../assets/images/cards/logo_teamB.png";
+import url_vs from "../assets/images/cards/vs.png"
 
 type DivisionCardProps = {
     tournament: Tournament
@@ -19,101 +26,151 @@ export function DivisionCard({
 
     const calcTotalScore = (scores: number[]) => scores.reduce((acc, score) => acc + score, 0)
 
-    const calcRoundPoint = (roundState: RoundState, teamName: string) => {
+    const roundPoint = (roundState: RoundState, teamName: string) => {
         const totalScoreA = calcTotalScore(roundState.scoresPlayerA)
         const totalScoreB = calcTotalScore(roundState.scoresPlayerB)
         return teamName === tournament.teamA.name
             ? (totalScoreA > totalScoreB ? 1 : 0)
             : (totalScoreB > totalScoreA ? 1 : 0)
     }
-    
-    const calcDivisionPoint = (divisionState: DivisionState, teamName: string) =>
-        divisionState.roundStates.reduce((acc, roundState) => acc + calcRoundPoint(roundState, teamName), 0)
+
+    const divisionPoint = (divisionState: DivisionState, teamName: string) =>
+        divisionState.roundStates.reduce((acc, roundState) => acc + roundPoint(roundState, teamName), 0)
+
+    function displayTeam(teamName: string) {
+        const memberNames = teamName === teamNameA
+            ? currentDivision.rounds.map(round => round.playerA.name)
+            : currentDivision.rounds.map(round => round.playerB.name);
+
+        return (
+            <div className="
+                flex flex-col gap-3
+                text-4xl
+                pl-25
+            ">
+                {memberNames.map((memberName, i) => {
+                    return (
+                        <div
+                            key={i}
+                            className="
+                                w-full h-[77px] bg-contain bg-no-repeat
+                                flex items-center justify-center"
+                        >
+                            {memberName}
+                        </div>
+                    )
+                })}
+            </div>
+        );
+    }
+
+    function displayTeamPoints(teamName: string) {
+        const roundPoints = currentDivisionState.roundStates.map(roundState => roundPoint(roundState, teamName));
+        return (
+            <div className="flex flex-col gap-9.5 items-center justify-center text-4xl">
+                <p className="h-[75px] text-6xl font-bold">
+                    {divisionPoint(currentDivisionState, teamName)}
+                </p>
+
+                <div className="flex flex-col gap-6.5">
+                    {roundPoints.map((roundPoint, i) => (
+                        <div
+                            key={i}
+                            className="h-[60px] flex items-center"
+                        >
+                            {roundPoint}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="pt-12">
-            <div className="
-                  bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
-                  w-5xl aspect-[6/1] mx-auto flex items-center justify-center">
-                <p className="font-bold text-5xl text-center text-balance">
-                    {tournament.name} {currentDivisionTitle}部門
-                </p>
+
+            {/* ヘッダ */}
+            <div
+                className="
+                  bg-contain bg-center bg-no-repeat
+                  w-6xl aspect-[7/1]
+                  mx-auto flex items-center justify-center
+                  font-bold text-5xl"
+                style={{backgroundImage: `url(${url_card_identifier})`}}
+            >
+                {tournament.name} {currentDivisionTitle}部門
             </div>
-            <div className="flex items-center justify-center pt-8">
-                <div className="
-                    bg-[url('/images/bg_division_card.png')] bg-contain bg-no-repeat
-                    w-[750px] h-[750px]
-                    [text-shadow:_0_0_4px_red]">
-                    <div className="flex pl-[60px] pt-[45px] items-center">
-                        <div className="
-                          bg-[url('/images/logo_teamA.png')] bg-contain bg-no-repeat
-                          w-[120px] aspect-[1/1]"></div>
-                        <p className="flex italic font-mono font-bold text-8xl pl-30">
-                            {teamNameA}
-                        </p>
+
+            {/* [teamA] vs [teamB] */}
+            <div className="flex items-center justify-center">
+
+                {/* [teamA] */}
+                <div
+                    className="
+                        bg-contain bg-no-repeat
+                        w-[800px] aspect-[1/1]
+                        flex
+                        [text-shadow:_0_0_10px_red]
+                        py-18"
+                    style={{backgroundImage: `url(${url_card_teamA})`}}
+                >
+                    <div className="w-[666px] pl-6 pr-4">
+                        <div className="w-full h-[120px] flex items-center pl-6">
+                            <img
+                                className="w-[100px] h-[100px] block"
+                                src={url_logo_teamA}/>
+                            <div className="w-full text-6xl font-bold italic">
+                                {teamNameA}
+                            </div>
+                        </div>
+
+                        <div className="pt-3">
+                            {displayTeam(teamNameA)}
+                        </div>
                     </div>
-                    <div className="
-                      flex flex-col gap-[45px] pt-[38px] pl-23
-                      font-bold text-5xl">
-                        <p>{currentDivision.rounds[0].playerA.name}</p>
-                        <p>{currentDivision.rounds[1].playerA.name}</p>
-                        <p>{currentDivision.rounds[2].playerA.name}</p>
-                        <p>{currentDivision.rounds[3].playerA.name}</p>
-                        <p>{currentDivision.rounds[4].playerA.name}</p>
+
+                    <div className="w-[134px] pl-5 pr-7 pt-9">
+                        {displayTeamPoints(teamNameA)}
                     </div>
                 </div>
-                <div className="
-                    bg-black/80
-                    w-[100px] h-[680px]
-                    flex flex-col items-center pt-10 gap-12
-                    font-bold text-4xl">
-                    <p className="text-6xl">
-                        {calcDivisionPoint(currentDivisionState, teamNameA)}
-                    </p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[0], teamNameA)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[1], teamNameA)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[2], teamNameA)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[3], teamNameA)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[4], teamNameA)}</p>
-                </div>
-                <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[200px] h-[200px]"></div>
-                <div className="
-                    bg-black/80
-                    w-[100px] h-[680px]
-                    flex flex-col items-center pt-10 gap-12
-                    font-bold text-4xl">
-                    <p className="text-6xl">
-                        {calcDivisionPoint(currentDivisionState, teamNameB)}
-                    </p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[0], teamNameB)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[1], teamNameB)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[2], teamNameB)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[3], teamNameB)}</p>
-                    <p>{calcRoundPoint(currentDivisionState.roundStates[4], teamNameB)}</p>
-                </div>
-                <div className="
-                    bg-[url('/images/bg_division_card.png')] bg-cover bg-no-repeat
-                    w-[750px] h-[750px]
-                    [text-shadow:_0_0_4px_blue]">
-                    <div className="flex pl-[60px] pt-[45px] items-center">
-                        <div className="
-                          bg-[url('/images/logo_teamB.png')] bg-contain bg-no-repeat
-                          w-[120px] aspect-[1/1]"></div>
-                        <p className="italic font-mono font-bold text-8xl pl-14">
-                            {teamNameB}
-                        </p>
+
+                {/* vs */}
+                <img
+                    className="w-[200px]"
+                    src={url_vs}
+                />
+
+                {/* [teamB] */}
+                <div
+                    className="
+                        bg-contain bg-no-repeat
+                        w-[800px] aspect-[1/1]
+                        flex
+                        [text-shadow:_0_0_10px_blue]
+                        py-18"
+                    style={{backgroundImage: `url(${url_card_teamB})`}}
+                >
+                    <div className="w-[128px] pl-6 pr-5 pt-9">
+                        {displayTeamPoints(teamNameB)}
                     </div>
-                    <div className="
-                      flex flex-col gap-[45px] pt-[38px] pl-23
-                      font-bold text-5xl">
-                        <p>{currentDivision.rounds[0].playerB.name}</p>
-                        <p>{currentDivision.rounds[1].playerB.name}</p>
-                        <p>{currentDivision.rounds[2].playerB.name}</p>
-                        <p>{currentDivision.rounds[3].playerB.name}</p>
-                        <p>{currentDivision.rounds[4].playerB.name}</p>
+
+                    <div className="w-[666px] pl-4 pr-6">
+                        <div className="w-full h-[120px] flex items-center pl-6">
+                            <img
+                                className="w-[100px] h-[100px] block"
+                                src={url_logo_teamB}/>
+                            <div className="w-full text-6xl font-bold italic">
+                                {teamNameB}
+                            </div>
+                        </div>
+
+                        <div className="pt-3">
+                            {displayTeam(teamNameB)}
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     )
 }

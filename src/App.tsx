@@ -19,6 +19,8 @@ import {
   useSyncNumCurrentRound
 } from "./components/hooks/useSyncTournamentState";
 import "./App.css"
+import url_background from "./assets/images/background.png";
+import url_logo_b4utech from "./assets/images/logo_b4utech.png";
 import { loadTournament } from "./components/loadTournament";
 import { ShowSelectedSongs } from "./components/ShowSelectedSongs"
 import { ShowRoundResult } from "./components/ShowRoundResult";
@@ -171,9 +173,11 @@ function App() {
   if (!tournament || !tournamentState) {
     return (
       <div className="
-      w-full min-h-screen
-      bg-[url('/images/bg_b4utech.png')] bg-center bg-cover
-      text-white items-center font-sans p-10">
+        w-full min-h-screen
+        bg-center bg-cover
+        text-white items-center font-sans p-10"
+      style={{backgroundImage: `url(${url_background})`}}
+      >
         <h1>Otoge Song Randomizer</h1>
 
         {isStreamingMode && (
@@ -181,30 +185,26 @@ function App() {
         )}
 
         {!isStreamingMode && (
-          <h3>1. 配信ビューを開く</h3>
-        )}
+          <div className="flex flex-col gap-4 items-center justify-center">
 
-        {!isStreamingMode && (
-          Button({
-            children: "配信ビューを開く",
-            onClick: () => {
-              const streamingURL = currentURL + "?viewmode=streaming";
-              window.open(streamingURL, "_blank");
-            },
-            disabled: false
-          })
-        )}
+            <h3>1. 配信ビューを開く</h3>
 
-        {!isStreamingMode && (
-          <h3>2. 大会データを選択</h3>
-        )}
+            <Button
+              children="配信ビューを開く"
+              onClick={() => {
+                const streamingURL = currentURL + "?viewmode=streaming";
+                window.open(streamingURL, "_blank");
+              }}
+              disabled={false} />
 
-        {!isStreamingMode && (
-          <input className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
-            type="file"
-            accept=".json,application/json"
-            onChange={onFileSelected}
-          />
+            <h3>2. 大会データの選択</h3>
+
+            <input className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded"
+              type="file"
+              accept=".json,application/json"
+              onChange={onFileSelected}
+            />
+          </div>
         )}
       </div>
     );
@@ -305,16 +305,20 @@ function App() {
   }
 
   return (
-    <div className="
-    w-full min-h-screen
-    bg-[url('/images/bg_b4utech.png')]
-    bg-no-repeat bg-center bg-cover
-    text-white font-sans">
+    <div
+      className="
+        w-full min-h-screen
+        bg-no-repeat bg-center bg-cover
+        text-white font-sans"
+      style={{backgroundImage: `url(${url_background})`}}
+    >
 
-      <div className="
-      w-full min-h-screen
-      bg-[url('/images/bg_tournament.png')]
-      bg-no-repeat bg-center bg-cover">
+      <div
+        className="
+          w-full min-h-screen
+          bg-no-repeat bg-center bg-cover"
+        style={{backgroundImage: `url(${url_logo_b4utech})`}}
+      >
         {isStreamingMode ? streamingView() : ControlView()}
       </div>
 
