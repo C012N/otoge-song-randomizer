@@ -83,12 +83,12 @@ export function DivisionCard({
 
     function displayTeamPoints(teamName: string) {
         return (
-            <div className="flex flex-col gap-9.5 items-center justify-center text-4xl">
+            <div className="flex flex-col gap-9 items-center justify-center text-4xl">
                 <p className="h-[75px] text-6xl font-bold">
                     {divisionPoint(teamName)}
                 </p>
 
-                <div className="flex flex-col gap-6.5">
+                <div className="flex flex-col gap-[30px]">
                     {roundPoints(teamName).map((roundPoint, i) => (
                         <div
                             key={i}
@@ -127,13 +127,13 @@ export function DivisionCard({
                         w-[800px] aspect-[1/1]
                         flex
                         [text-shadow:_0_0_10px_red]
-                        py-18"
+                        py-19"
                     style={{backgroundImage: `url(${url_card_teamA})`}}
                 >
                     <div className="w-[666px] pl-6 pr-4">
-                        <div className="w-full h-[120px] flex items-center pl-6">
+                        <div className="w-full h-[120px] flex items-center pl-8">
                             <img
-                                className="w-[100px] h-[100px] block"
+                                className="w-[110px] block"
                                 src={url_logo_teamA}/>
                             <div className="w-full text-6xl font-bold italic">
                                 {teamNameA}
@@ -145,7 +145,7 @@ export function DivisionCard({
                         </div>
                     </div>
 
-                    <div className="w-[134px] pl-5 pr-7 pt-9">
+                    <div className="w-[134px] pl-4 pr-8 pt-8">
                         {displayTeamPoints(teamNameA)}
                     </div>
                 </div>
@@ -163,17 +163,17 @@ export function DivisionCard({
                         w-[800px] aspect-[1/1]
                         flex
                         [text-shadow:_0_0_10px_blue]
-                        py-18"
+                        py-19"
                     style={{backgroundImage: `url(${url_card_teamB})`}}
                 >
-                    <div className="w-[128px] pl-6 pr-5 pt-9">
+                    <div className="w-[128px] pl-6 pr-5 pt-8">
                         {displayTeamPoints(teamNameB)}
                     </div>
 
                     <div className="w-[666px] pl-4 pr-6">
-                        <div className="w-full h-[120px] flex items-center pl-6">
+                        <div className="w-full h-[120px] flex items-center pl-8">
                             <img
-                                className="w-[100px] h-[100px] block"
+                                className="w-[110px] block"
                                 src={url_logo_teamB}/>
                             <div className="w-full text-6xl font-bold italic">
                                 {teamNameB}
