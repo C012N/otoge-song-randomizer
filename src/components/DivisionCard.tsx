@@ -1,5 +1,4 @@
 import type { DivisionState, RoundState, Tournament, TournamentState } from "./types"
-import { Fragment } from "react/jsx-runtime";
 import url_card_identifier from "../assets/images/cards/card_identifier.png";
 import url_card_teamA from "../assets/images/cards/divisionCard_teamA.png";
 import url_card_teamB from "../assets/images/cards/divisionCard_teamB.png";
