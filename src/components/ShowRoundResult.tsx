@@ -1,5 +1,7 @@
 // 試合結果を表形式で表示するコンポーネント
 import type { Player, RoundState, Tournament } from "./types";
+import url_logo_teamA from "../assets/images/cards/logo_teamA.png";
+import url_logo_teamB from "../assets/images/cards/logo_teamB.png";
 
 interface ShowRoundResultProps {
     tournament: Tournament
@@ -58,7 +60,7 @@ export function ShowRoundResult({
     }
 
     const showPlayerResult = (teamName: string, player: Player, scores: number[], winner: boolean) => {
-        const teamLogo = (teamName === teamNameA) ? "bg-[url('/images/logo_teamA.png')]" : "bg-[url('/images/logo_teamB.png')]";
+        const url_logo = (teamName === teamNameA) ? url_logo_teamA : url_logo_teamB;
         const teamColor = (teamName === teamNameA) ? "[text-shadow:_0_0_4px_red]" : "[text-shadow:_0_0_4px_blue]";
         const totalScore = scores.reduce((acc, score) => acc + score, 0);
         return (
@@ -69,7 +71,10 @@ export function ShowRoundResult({
                 text-white text-center ${teamColor} pl-12 py-6`}>
                 
                 <div className="flex gap-4 items-center font-bold">
-                    <div className={`${teamLogo} bg-contain bg-no-repeat w-[100px] aspect-[1/1]`}></div>
+                    <img
+                        className="w-[100px]"
+                        src={url_logo}
+                    />
                     <p className="text-4xl">
                         {player.name}
                     </p>
