@@ -1,4 +1,9 @@
 import type { Song, Tournament } from "./types"
+import url_roundCard from "../assets/images/cards/roundCard.png";
+import url_card_identifier from "../assets/images/cards/card_identifier.png";
+import url_logo_teamA from "../assets/images/cards/logo_teamA.png";
+import url_logo_teamB from "../assets/images/cards/logo_teamB.png";
+import url_vs from "../assets/images/cards/vs.png"
 
 type RoundCardProps = {
     tournament: Tournament
@@ -13,77 +18,108 @@ export function RoundCard({
     numCurrentRound,
     isSongOpened
 }: RoundCardProps) {
-    const division = tournament.divisions[numCurrentDivision]
-    const round = division.rounds[numCurrentRound]
+    const currentDivision = tournament.divisions[numCurrentDivision];
+    const currentRound = currentDivision.rounds[numCurrentRound];
+    const teamNameA = tournament.teamA.name;
+    const teamNameB = tournament.teamB.name;
 
-    const displaySong = (song: Song) => isSongOpened ? song : {
-        title: "???",
-        difficulty: "???",
-        level: "???"
+    function displaySong (song: Song) {
+        return isSongOpened ? song : {
+            title: "???",
+            difficulty: "???",
+            level: "???"
+        }
+    }
+
+    function displayPlayer (teamName: string) {
+        const url_logo = teamName === teamNameA
+            ? url_logo_teamA
+            : url_logo_teamB;
+
+        const teamColor = teamName === teamNameA
+            ? "[text-shadow:_0_0_10px_red]"
+            : "[text-shadow:_0_0_10px_blue]";
+
+        const player = teamName === teamNameA
+            ? currentRound.playerA
+            : currentRound.playerB;
+
+        const song = player.song;
+
+        return (
+            <div
+                className={`
+                    bg-contain bg-no-repeat    
+                    w-[700px] aspect-[1/1]
+                    ${teamColor}`}
+                style={{ backgroundImage: `url(${url_roundCard})` }}>
+
+                <div className="pt-11 pl-6 pr-8">
+                    <div className="flex items-center pl-7">
+                        <img
+                            className="w-[140px] block"
+                            src={url_logo}
+                        />
+
+                            <div className="w-full text-6xl font-bold italic">
+                                {teamName}
+                            </div>
+                        </div>
+                        <div className="
+                            h-[205px] flex items-center justify-center
+                            text-7xl text-balance font-semibold
+                            pt-5">
+                            {player.name}
+                        </div>
+                        <div className="
+                            h-[190px] flex items-center justify-center
+                            text-4xl
+                            pt-20">
+                            {displaySong(song).title} [{displaySong(song).difficulty} {displaySong(song).level}]
+                        </div>
+                    </div>
+                </div>
+        )
     }
 
     return (
         <div className="pt-12">
-            <div className="
-                bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
-                w-5xl aspect-[6/1] mx-auto flex items-center justify-center">
-                <p className="font-bold text-5xl text-center text-balance">
-                    {tournament.name} {division.gameTitle}部門
-                </p>
+            {/* ヘッダ2つ */}
+            <div
+                className="
+                    bg-contain bg-center bg-no-repeat
+                    w-6xl aspect-[7/1]
+                    mx-auto flex items-center justify-center
+                    font-bold text-5xl
+                "
+                style={{ backgroundImage: `url(${url_card_identifier})` }}>
+                {tournament.name} {currentDivision.gameTitle}部門
             </div>
 
-            <div className="
-                bg-[url('/images/bg_cardname.png')] bg-contain bg-no-repeat
-                w-xl aspect-[6/1] mx-auto flex items-center justify-center">
-                <p className="font-bold text-5xl text-center text-balance">
-                    {round.name}
-                </p>
+            <div
+                className="
+                    bg-contain bg-center bg-no-repeat
+                    w-2xl aspect-[7/1]
+                    mx-auto flex items-center justify-center
+                    font-bold text-4xl
+                "
+                style={{ backgroundImage: `url(${url_card_identifier})` }}>
+                {currentRound.name}
             </div>
 
+            {/* [playerA] vs [playerB] */}
             <div className="flex items-center justify-center">
-                <div className="
-                    bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
-                    w-[700px] h-[700px]
-                    [text-shadow:_0_0_4px_red]">
-                        <div className="flex items-center pl-[62px] pt-[54px]">
-                            <div className="
-                                  bg-[url('/images/logo_teamA.png')] bg-contain bg-no-repeat
-                                  w-[130px] aspect-[1/1]"></div>
-                            <p className="italic font-mono font-bold text-7xl pl-30">
-                                {tournament.teamA.name}
-                            </p>
-                        </div>
-                    <div className="flex flex-col gap-[160px] pt-[100px]">
-                        <p className="font-bold text-6xl">
-                            {round.playerA.name}
-                        </p>
-                        <p className="text-4xl">
-                            {displaySong(round.playerA.song).title} [{displaySong(round.playerA.song).difficulty}]
-                        </p>
-                    </div>
-                </div>
-                <div className="bg-[url('/images/vs.png')] bg-contain bg-no-repeat w-[300px] h-[300px]"></div>
-                <div className="
-                    bg-[url('/images/bg_round_card.png')] bg-contain bg-no-repeat
-                    w-[700px] h-[700px]
-                    [text-shadow:_0_0_4px_blue]">
-                    <div className="flex items-center pl-[62px] pt-[54px]">
-                            <div className="
-                                  bg-[url('/images/logo_teamB.png')] bg-contain bg-no-repeat
-                                  w-[130px] aspect-[1/1]"></div>
-                            <p className="italic font-mono font-bold text-7xl pl-16">
-                                {tournament.teamB.name}
-                            </p>
-                        </div>
-                    <div className="flex flex-col gap-[160px] pt-[100px]">
-                        <p className="font-bold text-6xl">
-                            {round.playerB.name}
-                        </p>
-                        <p className="text-4xl">
-                            {displaySong(round.playerB.song).title} [{displaySong(round.playerB.song).difficulty}]
-                        </p>
-                    </div>
-                </div>
+                {/* [playerA] */}
+                {displayPlayer(teamNameA)}
+
+                {/* vs */}
+                <img
+                    className="w-[200px]"
+                    src={url_vs}
+                />
+
+                {/* [playerB] */}
+                {displayPlayer(teamNameB)}
             </div>
         </div>
     )
