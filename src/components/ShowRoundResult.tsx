@@ -10,6 +10,49 @@ interface ShowRoundResultProps {
     currentRoundState: RoundState
 }
 
+export function judge({
+    tournament,
+    numCurrentDivision,
+    numCurrentRound,
+    currentRoundState
+}: ShowRoundResultProps, player: Player) {
+    const round = tournament.divisions[numCurrentDivision].rounds[numCurrentRound]
+    const roundjudge = round.judge;
+    const playerA = round.playerA;
+    const scoresPlayerA = currentRoundState.scoresPlayerA
+    const scoresPlayerB = currentRoundState.scoresPlayerB
+    const totalScoreA = scoresPlayerA.reduce((acc, score) => acc + score, 0);
+    const totalScoreB = scoresPlayerB.reduce((acc, score) => acc + score, 0);
+
+    if (totalScoreA === 0 && totalScoreB === 0) return false;
+
+    const calcPoint = (scoresA: number[], scoresB: number[]) => {
+        let pointA = 0;
+        let pointB = 0;
+
+        for (let i = 0; i < scoresA.length; i++) {
+            if (scoresA[i] >= scoresB[i]) pointA += 1;
+            if (scoresB[i] >= scoresA[i]) pointB += 1;
+        }
+
+        return { pointA, pointB };
+    }
+        switch (roundjudge) {
+            case "合計点制":
+                return (player === playerA)
+                    ? (totalScoreA >= totalScoreB)
+                    : (totalScoreB >= totalScoreA);
+            case "勝ち点制":
+                const { pointA, pointB } = calcPoint(scoresPlayerA, scoresPlayerB);
+                return (player === playerA)
+                    ? (pointA >= pointB)
+                    : (pointB >= pointA);
+            default:
+                return false;
+        
+    }
+}
+
 export function ShowRoundResult({
     tournament,
     numCurrentDivision,
@@ -28,7 +71,7 @@ export function ShowRoundResult({
     const scoresPlayerB = currentRoundState.scoresPlayerB
     const totalScoreA = scoresPlayerA.reduce((acc, score) => acc + score, 0);
     const totalScoreB = scoresPlayerB.reduce((acc, score) => acc + score, 0);
-    
+
     const formatScore = (score: number) => score.toLocaleString();
 
     const calcPoint = (scoresA: number[], scoresB: number[]) => {
@@ -40,20 +83,20 @@ export function ShowRoundResult({
             if (scoresB[i] >= scoresA[i]) pointB += 1;
         }
 
-        return {pointA, pointB};
+        return { pointA, pointB };
     }
 
-    const judge = (player: Player) => {
+    function judge (player: Player) {
         switch (roundjudge) {
-            case "合計点制": 
+            case "合計点制":
                 return (player === playerA)
-                ? (totalScoreA >= totalScoreB)
-                : (totalScoreB >= totalScoreA);
-            case "勝ち点制": 
-                const {pointA, pointB} = calcPoint(scoresPlayerA, scoresPlayerB);
+                    ? (totalScoreA >= totalScoreB)
+                    : (totalScoreB >= totalScoreA);
+            case "勝ち点制":
+                const { pointA, pointB } = calcPoint(scoresPlayerA, scoresPlayerB);
                 return (player === playerA)
-                ? (pointA >= pointB)
-                : (pointB >= pointA);
+                    ? (pointA >= pointB)
+                    : (pointB >= pointA);
             default:
                 return false;
         }
@@ -67,9 +110,9 @@ export function ShowRoundResult({
             <div className={`
                 w-full rounded-3xl border-3
                 ${winner ? 'border-pink-500' : 'border-gray-600'}
-                bg-black/80 grid grid-cols-3 items-center justify-items-start
-                text-white text-center ${teamColor} pl-12 py-6`}>
-                
+                bg-black/80 grid grid-cols-3 justify-items-start
+                text-white ${teamColor} pl-12 py-6`}>
+
                 <div className="flex gap-4 items-center font-bold">
                     <img
                         className="w-[100px]"
@@ -80,16 +123,21 @@ export function ShowRoundResult({
                     </p>
                 </div>
 
-                <p className="font-bold text-6xl">
+                <p className="flex items-center font-bold text-6xl">
                     {formatScore(totalScore)}
                 </p>
-                <p className="text-2xl">
-                    ①{formatScore(scores[0])} <br />
-                    ②{formatScore(scores[1])} <br />
-                    {(currentRoundState.selectedSong)
-                    ? `③${formatScore(scores[2])}`
-                    : ('')}
-                </p>
+                <div className="flex flex-col items-start text-2xl">
+                    <p>①{formatScore(scores[0])}</p>
+
+                    <p>②{formatScore(scores[1])}</p>
+
+                    <p>
+                        {(currentRoundState.selectedSong)
+                            ? `③${formatScore(scores[2])}`
+                            : ('')}
+                    </p>
+
+                </div>
             </div>
         );
     }
@@ -111,10 +159,10 @@ export function ShowRoundResult({
                     <p>① {playerA.song.title}</p>
                     <p>② {playerB.song.title}</p>
                     {(currentRoundState.selectedSong)
-                    ? (<p>③ {currentRoundState.selectedSong.title}</p>)
-                : (<br/>)}
+                        ? (<p>③ {currentRoundState.selectedSong.title}</p>)
+                        : (<br />)}
                 </div>
-                
+
             </div>
 
             {showPlayerResult(teamNameA, playerA, scoresPlayerA, judge(playerA))}
