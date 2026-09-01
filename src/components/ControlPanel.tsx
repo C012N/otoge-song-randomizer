@@ -28,7 +28,8 @@ export function ControlPanel({
     setNumCurrentRound,
     selectSong
 }: ControlPanelProps) {
-    const {showDivisionCard,
+    const {
+        showDivisionCard,
         showRoundCard,
         openSong,
         showRoulette,
@@ -50,6 +51,7 @@ export function ControlPanel({
     setNumCurrentDivision,
     numCurrentRound,
     setNumCurrentRound})
+
     const currentDivision = tournament.divisions[numCurrentDivision]
     const currentRound = currentDivision.rounds[numCurrentRound]
     const currentRoundState = tournamentState.divisionStates[numCurrentDivision].roundStates[numCurrentRound]
@@ -58,6 +60,7 @@ export function ControlPanel({
     const scoresPlayerB = currentRoundState.scoresPlayerB
     const numDivisions = tournamentState.divisionStates.length;
     const numRounds = tournamentState.divisionStates[numCurrentDivision].roundStates.length;
+
     return (
         <div className="flex flex-col items-center justify-center gap-4 py-4">
             <h2>現在の部門: {currentDivision.gameTitle}</h2>

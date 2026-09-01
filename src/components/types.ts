@@ -58,14 +58,20 @@ type LoadTournamentResult = {
 
 // 抽選状態
 type SelectState =
-    | "division_card"
-    | "round_card"
-    | "not_started"
-    | "spinning"
-    | "displaying"
-    | "banning" // 課題曲を並べ、BANを決定する時の画面
-    | "showResult" // 試合結果表示画面
-    | "finished"
+    | "division_card" // 部門紹介画面
+    | "round_card" // 試合紹介画面
+    | "not_started" // 抽選待機中
+    | "spinning" // 抽選中
+    | "displaying" // 抽選終了
+    | "banning" // 抽選楽曲一覧表示中
+    | "showResult" // 試合結果画面
+
+// 勝敗
+type Judge =
+    | "teamA"
+    | "teamB"
+    | "even"
+    | "none"
 
 // 試合、部門、大会のスコア付きデータ
 // useStateで管理するものはここ
@@ -77,14 +83,17 @@ type RoundState = {
     scoresPlayerB: number[];
     selectState: SelectState;
     isSongOpened: boolean;
+    judge: Judge;
 }
 
 type DivisionState = {
     roundStates: RoundState[];
+    judge: Judge;
 }
 
 type TournamentState = {
     divisionStates: DivisionState[];
+    judge: Judge;
 }
 
 export {
@@ -97,6 +106,7 @@ export {
     type Tournament,
     type LoadTournamentResult,
     type SelectState,
+    type Judge,
     type RoundState,
     type DivisionState,
     type TournamentState

@@ -1,5 +1,4 @@
-import type { Tournament, TournamentState } from "./types"
-import { judge } from "./ShowRoundResult";
+import type { DivisionState, RoundState, Tournament, TournamentState } from "./types"
 import url_card_identifier from "../assets/images/cards/card_identifier.png";
 import url_card_teamA from "../assets/images/cards/divisionCard_teamA.png";
 import url_card_teamB from "../assets/images/cards/divisionCard_teamB.png";
@@ -11,48 +10,22 @@ type DivisionCardProps = {
     tournament: Tournament
     tournamentState: TournamentState
     numCurrentDivision: number
+    calcRoundPoint: (roundState: RoundState, teamName: string) => number
+    calcDivisionPoint: (divisionState: DivisionState, teamName: string) => number
 }
 
 export function DivisionCard({
     tournament,
     tournamentState,
-    numCurrentDivision
+    numCurrentDivision,
+    calcRoundPoint,
+    calcDivisionPoint
 }: DivisionCardProps) {
-    const teamNameA = tournament.teamA.name
-    const teamNameB = tournament.teamB.name
-    const currentDivision = tournament.divisions[numCurrentDivision]
-    const currentDivisionTitle = currentDivision.gameTitle
-    const currentDivisionState = tournamentState.divisionStates[numCurrentDivision]
-
-    function roundPoints (teamName: string) {
-        const roundJudges = teamName === teamNameA
-            ? currentDivisionState.roundStates.map((roundState, i) =>
-                judge({
-                    tournament: tournament,
-                    numCurrentDivision: numCurrentDivision,
-                    numCurrentRound: i,
-                    currentRoundState: roundState
-                }, currentDivision.rounds[i].playerA))
-            : currentDivisionState.roundStates.map((roundState, i) =>
-                judge({
-                    tournament: tournament,
-                    numCurrentDivision: numCurrentDivision,
-                    numCurrentRound: i,
-                    currentRoundState: roundState
-                }, currentDivision.rounds[i].playerB));
-        
-        let result = [];
-
-        for (let i = 0; i < roundJudges.length; i++) {
-            if (roundJudges[i]) result.push(1);
-            else result.push(0);
-        }
-
-        return result;
-    }
-
-    const divisionPoint = (teamName: string) =>
-        roundPoints(teamName).reduce((acc, roundPoint) => acc + roundPoint, 0)
+    const teamNameA = tournament.teamA.name;
+    const teamNameB = tournament.teamB.name;
+    const currentDivision = tournament.divisions[numCurrentDivision];
+    const currentDivisionTitle = currentDivision.gameTitle;
+    const currentDivisionState = tournamentState.divisionStates[numCurrentDivision];
 
     function displayTeam(teamName: string) {
         const memberNames = teamName === teamNameA
@@ -82,14 +55,16 @@ export function DivisionCard({
     }
 
     function displayTeamPoints(teamName: string) {
+        const roundPoints = currentDivisionState.roundStates
+            .map(roundState => calcRoundPoint(roundState, teamName));
         return (
             <div className="flex flex-col gap-9 items-center justify-center text-4xl">
                 <p className="h-[75px] text-6xl font-bold">
-                    {divisionPoint(teamName)}
+                    {calcDivisionPoint(currentDivisionState, teamName)}
                 </p>
 
                 <div className="flex flex-col gap-[30px]">
-                    {roundPoints(teamName).map((roundPoint, i) => (
+                    {roundPoints.map((roundPoint, i) => (
                         <div
                             key={i}
                             className="h-[60px] flex items-center"

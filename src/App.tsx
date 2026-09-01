@@ -6,7 +6,8 @@ import { useSearchParams } from "react-router";
 import {
   type Tournament,
   type SelectState,
-  type TournamentState
+  type TournamentState,
+  type Judge
 } from "./components/types";
 import { SongSelector } from "./components/SongSelector";
 import { useSongSelector } from "./components/hooks/useSongSelector";
@@ -161,9 +162,12 @@ function App() {
             scoresPlayerA: [0, 0, 0],
             scoresPlayerB: [0, 0, 0],
             selectState: "division_card" as SelectState,
-            isSongOpened: false
-          }))
-        }))
+            isSongOpened: false,
+            judge: "none" as Judge
+          })),
+          judge: "none" as Judge
+        })),
+        judge: "none" as Judge
       }
     }
 
@@ -226,6 +230,9 @@ function App() {
     setSong,
     setSelectedSongs,
     setSelectState,
+    calcRoundPoint,
+    calcDivisionPoint,
+    // calcTournamentPoint
   } = useTournamentState({
     tournament,
     tournamentState,
@@ -255,6 +262,8 @@ function App() {
           tournament={tournament}
           tournamentState={tournamentState}
           numCurrentDivision={numCurrentDivision}
+          calcRoundPoint={calcRoundPoint}
+          calcDivisionPoint={calcDivisionPoint}
         />
 
       case "round_card":
