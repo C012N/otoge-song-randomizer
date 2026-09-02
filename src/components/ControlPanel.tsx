@@ -29,6 +29,7 @@ export function ControlPanel({
     selectSong
 }: ControlPanelProps) {
     const {
+        showTournamentCard,
         showDivisionCard,
         showRoundCard,
         openSong,
@@ -63,8 +64,20 @@ export function ControlPanel({
 
     return (
         <div className="flex flex-col items-center justify-center gap-4 py-4">
+
             <h2>現在の部門: {currentDivision.gameTitle}</h2>
+
             <h2>現在の試合: {currentRound.name}</h2>
+
+            <Button
+                children="大会紹介画面を表示"
+                onClick={showTournamentCard}
+                disabled={
+                    selectState === "spinning" ||
+                    selectState === "tournament_card"
+                }
+            />
+
             <Button
                 children="部門紹介画面を表示"
                 onClick={showDivisionCard}

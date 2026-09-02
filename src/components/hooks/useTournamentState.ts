@@ -173,6 +173,11 @@ export function useTournamentState({
     //     else setTournamentJudge("none");
     // }
 
+    // 大会カード画面への遷移
+    const showTournamentCard = () => {
+        setSelectState("tournament_card");
+    }
+
     // 部門カード画面への遷移
     const showDivisionCard = () => {
         judgeDivision(currentDivisionState);
@@ -265,6 +270,7 @@ export function useTournamentState({
         const numPreviousDivision = Math.max(numCurrentDivision - 1, 0);
         setNumCurrentDivision(numPreviousDivision);
         setNumCurrentRound(0);
+        setSelectState("tournament_card")
         const prevDivisionState = tournamentState
             .divisionStates[numPreviousDivision];
         updateDivisionState(() => prevDivisionState);        
@@ -275,6 +281,7 @@ export function useTournamentState({
             tournament.divisions.length - 1);
         setNumCurrentDivision(numNextDivision);
         setNumCurrentRound(0);
+        setSelectState("tournament_card")
         const nextDivisionState = tournamentState
             .divisionStates[numCurrentDivision];
         updateDivisionState(() => nextDivisionState);
@@ -287,6 +294,7 @@ export function useTournamentState({
         calcRoundPoint,
         calcDivisionPoint,
         calcTournamentPoint,
+        showTournamentCard,
         showDivisionCard,
         showRoundCard,
         openSong,

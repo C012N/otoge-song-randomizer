@@ -28,6 +28,7 @@ import { ShowRoundResult } from "./components/ShowRoundResult";
 import { Button } from "./components/TailwindCssDefaults";
 import { DivisionCard } from "./components/DivisionCard";
 import { RoundCard } from "./components/RoundCard";
+import { TournamentCard } from "./components/TournamentCard";
 
 function App() {
   // URLクエリの取得
@@ -161,7 +162,7 @@ function App() {
             setSongs: [],
             scoresPlayerA: [0, 0, 0],
             scoresPlayerB: [0, 0, 0],
-            selectState: "division_card" as SelectState,
+            selectState: "tournament_card" as SelectState,
             isSongOpened: false,
             judge: "none" as Judge
           })),
@@ -257,6 +258,12 @@ function App() {
 
   const streamingView = () => {
     switch (selectState) {
+      case "tournament_card":
+        return <TournamentCard
+          tournament={tournament}
+          tournamentState={tournamentState}
+        />
+
       case "division_card":
         return <DivisionCard
           tournament={tournament}

@@ -58,6 +58,7 @@ type LoadTournamentResult = {
 
 // 抽選状態
 type SelectState =
+    | "tournament_card" // 大会紹介画面
     | "division_card" // 部門紹介画面
     | "round_card" // 試合紹介画面
     | "not_started" // 抽選待機中
